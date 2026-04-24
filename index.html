@@ -719,7 +719,7 @@ src="https://www.facebook.com/tr?id=1506776830794331&ev=PageView&noscript=1"
       <a href="#amenities">Amenities</a>
       <a href="#reviews">Reviews</a>
     </div>
-    <a href="https://www.airbnb.co.in/rooms/1663080244487000761" target="_blank" rel="noopener" class="sticky-nav-cta">Book Now</a>
+    <a href="https://www.airbnb.co.in/rooms/1663080244487000761" target="_blank" rel="noopener" class="sticky-nav-cta" onclick="fbq('track','InitiateCheckout',{content_name:'Sticky Nav'})">Book Now</a>
   </div>
 </nav>
 
@@ -984,7 +984,7 @@ src="https://www.facebook.com/tr?id=1506776830794331&ev=PageView&noscript=1"
   <div class="booking-card">
     <div class="booking-card-title">Start your Vrindavan journey</div>
     <div class="booking-card-desc">Entire 1BHK apartment · Up to 4 guests · Free parking</div>
-    <a href="https://www.airbnb.co.in/rooms/1663080244487000761" target="_blank" rel="noopener" class="booking-btn">
+    <a href="https://www.airbnb.co.in/rooms/1663080244487000761" target="_blank" rel="noopener" class="booking-btn" onclick="fbq('track','InitiateCheckout',{content_name:'Booking Card'})">
       Check Availability on Airbnb
       <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
@@ -1044,7 +1044,7 @@ src="https://www.facebook.com/tr?id=1506776830794331&ev=PageView&noscript=1"
     <div class="sheet-success-icon">🎉</div>
     <h3 class="sheet-success-title">You're all set!</h3>
     <p class="sheet-success-desc">We'll reach out on WhatsApp shortly with the best rates and tips for your Vrindavan visit. Hare Krishna! 🙏</p>
-    <button type="button" class="sheet-submit" style="margin-top:20px;background:var(--sage)" onclick="window.open('https://www.airbnb.co.in/rooms/1663080244487000761','_blank')">Browse dates on Airbnb</button>
+    <button type="button" class="sheet-submit" style="margin-top:20px;background:var(--sage)" onclick="fbq('track','InitiateCheckout',{content_name:'Post Lead'});window.open('https://www.airbnb.co.in/rooms/1663080244487000761','_blank')">Browse dates on Airbnb</button>
     <button type="button" class="sheet-dismiss" onclick="closeSheet()">Close</button>
   </div>
 </div>
@@ -1128,15 +1128,28 @@ document.getElementById('sheetSubmit').addEventListener('click', () => {
     return;
   }
 
-  // Here you would send the data to your backend/webhook
-  // For now, log it and show success
-  console.log('Lead captured:', { name, phone, email });
+  // Track Meta Pixel Lead event
+  fbq('track','Lead',{content_name:'Homestay Inquiry'});
 
-  // You can integrate with:
-  // - Google Sheets API
-  // - WhatsApp Business API
-  // - Any webhook endpoint
-  // Example: fetch('YOUR_WEBHOOK_URL', { method: 'POST', body: JSON.stringify({ name, phone, email }) });
+  // Persist to Google Sheets via Apps Script Web App
+  const LEADS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbysPPtU9TxMh_99D_nf1imCfMZLDAgDE1a1xh2O8nKmb-DJNaFTGXudjo5XC_OZPsInLQ/exec';
+  try {
+    fetch(LEADS_ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        name,
+        phone,
+        email,
+        source: 'Pyari Kunj Landing',
+        userAgent: navigator.userAgent,
+        referrer: document.referrer || ''
+      })
+    }).catch(err => console.warn('Lead sync failed:', err));
+  } catch (err) {
+    console.warn('Lead sync error:', err);
+  }
 
   sheetForm.classList.add('hidden');
   sheetSuccess.classList.add('show');
@@ -1145,12 +1158,16 @@ document.getElementById('sheetSubmit').addEventListener('click', () => {
 // Footer contact link opens sheet
 document.getElementById('footerContact').addEventListener('click', (e) => {
   e.preventDefault();
+  fbq('track','Contact',{content_name:'Footer Link'});
   openSheet();
 });
 
 // ===== FLOATING CTA =====
 const floatingCta = document.getElementById('floatingCta');
-floatingCta.addEventListener('click', openSheet);
+floatingCta.addEventListener('click', () => {
+  fbq('track','Contact',{content_name:'Floating CTA'});
+  openSheet();
+});
 
 // ===== STICKY NAV =====
 const stickyNav = document.getElementById('stickyNav');
