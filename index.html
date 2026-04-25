@@ -80,149 +80,410 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
 .icon-btn-row{display:flex;gap:8px}
 
 /* ===== HERO FULLSCREEN ===== */
-@keyframes kenburns{
-  from{transform:scale(1)}
-  to{transform:scale(1.05)}
-}
 @keyframes promoPop{
   0%,100%{transform:scale(1) rotate(-4deg)}
   50%{transform:scale(1.15) rotate(4deg)}
 }
-.hero-full{
+@keyframes cloudSweep{
+  0%{transform:translateX(-120%)}
+  100%{transform:translateX(120%)}
+}
+
+/* ===== MOSAIC HERO ===== */
+.mosaic-hero{
   position:relative;
   width:100%;
-  aspect-ratio:16/9;
-  overflow:hidden;
   background:#1a1208;
+  user-select:none;
+  -webkit-user-select:none;
 }
-.hero-full-img{
-  position:absolute;
-  inset:0;
-  width:100%;height:100%;
-  object-fit:cover;
-  animation:kenburns 20s ease-out forwards;
-}
-.hero-gradient{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(
-    to bottom,
-    rgba(0,0,0,0.32) 0%,
-    transparent 28%,
-    transparent 42%,
-    rgba(0,0,0,0.68) 100%
-  );
-}
-.hero-nav{
+.mosaic-nav{
   position:absolute;
   top:env(safe-area-inset-top,12px);
   left:0;right:0;
   padding:12px 16px;
   display:flex;align-items:center;justify-content:space-between;
+  z-index:10;
+}
+.hero-top-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:38px;
+  padding:0 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.92);
+  color:var(--ink);
+  font-size:13px;
+  font-weight:700;
+  box-shadow:var(--shadow-icon);
+}
+.mosaic-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-auto-rows:calc((100vw - 6px) / 3);
+  gap:3px;
+  width:100%;
+}
+.mosaic-tile{
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  background:#2a1a10;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform 600ms cubic-bezier(0.34,1.56,0.64,1),box-shadow 600ms ease;
+  z-index:1;
+  will-change:transform;
+  border:none;
+  padding:0;
+  display:block;
+}
+.mosaic-tile.blooming{
+  transform:scale(1.32) rotate(-1deg);
+  box-shadow:0 16px 40px rgba(0,0,0,0.4);
   z-index:5;
 }
-.hero-bottom-info{
+.mosaic-tile[data-big="1"].blooming{
+  transform:scale(1.14) rotate(-0.5deg);
+}
+.mosaic-tile img{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+  pointer-events:none;
+}
+.mosaic-tile:nth-child(1){grid-column:1;grid-row:1}
+.mosaic-tile:nth-child(2){grid-column:2/4;grid-row:1/3}
+.mosaic-tile:nth-child(3){grid-column:1;grid-row:2}
+.mosaic-tile:nth-child(4){grid-column:1/3;grid-row:3}
+.mosaic-tile:nth-child(5){grid-column:3;grid-row:3}
+.mosaic-tile:nth-child(6){grid-column:1;grid-row:4}
+.mosaic-tile:nth-child(7){grid-column:2;grid-row:4}
+.mosaic-tile:nth-child(8){grid-column:3;grid-row:4}
+.mosaic-tile:nth-child(9){grid-column:1/3;grid-row:5}
+.mosaic-tile:nth-child(10){grid-column:3;grid-row:5}
+.mosaic-tile-badge{
   position:absolute;
-  bottom:0;left:0;right:0;
-  padding:0 16px 14px;
-  z-index:5;
+  bottom:8px;right:8px;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
   color:#fff;
+  font-size:11px;font-weight:600;
+  padding:3px 8px;
+  border-radius:999px;
+  pointer-events:none;
+  line-height:1.4;
 }
-.hero-title-text{
+.mosaic-cloud{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:3;
+  overflow:hidden;
+}
+.mosaic-cloud::after{
+  content:'';
+  position:absolute;
+  top:0;bottom:0;
+  width:55%;
+  background:linear-gradient(110deg,transparent 0%,rgba(255,255,255,0.055) 50%,transparent 100%);
+  animation:cloudSweep 14s linear infinite;
+}
+@media(prefers-reduced-motion:reduce){
+  .mosaic-tile{transition:none}
+  .mosaic-cloud::after{animation:none}
+}
+@media(min-width:768px){
+  .mosaic-grid{
+    grid-template-columns:repeat(4,1fr);
+    grid-auto-rows:calc((min(100vw,1280px) - 9px) / 4);
+    max-height:72vh;
+    overflow:hidden;
+  }
+  .mosaic-tile:nth-child(1){grid-column:1;grid-row:1}
+  .mosaic-tile:nth-child(2){grid-column:2/4;grid-row:1/3}
+  .mosaic-tile:nth-child(3){grid-column:4;grid-row:1}
+  .mosaic-tile:nth-child(4){grid-column:4;grid-row:2}
+  .mosaic-tile:nth-child(5){grid-column:1;grid-row:2}
+  .mosaic-tile:nth-child(6){grid-column:1/3;grid-row:3}
+  .mosaic-tile:nth-child(7){grid-column:3;grid-row:3}
+  .mosaic-tile:nth-child(8){grid-column:4;grid-row:3}
+  .mosaic-tile:nth-child(9){grid-column:1;grid-row:4}
+  .mosaic-tile:nth-child(10){grid-column:2/4;grid-row:4}
+}
+
+/* ===== MOSAIC CONTENT STRIP ===== */
+.mosaic-content{
+  padding:20px 20px 24px;
+  background:var(--canvas);
+  border-bottom:1px solid var(--hairline-soft);
+}
+.mosaic-kicker{
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--rausch);
+  margin-bottom:8px;
+}
+.mosaic-title{
   font-size:22px;
   font-weight:700;
   letter-spacing:-0.022em;
   line-height:1.18;
-  text-shadow:0 2px 8px rgba(0,0,0,0.5);
-  margin-bottom:8px;
+  color:var(--ink);
+  margin-bottom:14px;
 }
-@media(min-width:768px){.hero-title-text{font-size:30px}}
-.hero-pills{
+@media(min-width:768px){.mosaic-title{font-size:28px}}
+.mosaic-pills{
   display:flex;
   align-items:center;
   gap:8px;
   flex-wrap:wrap;
+  margin-bottom:16px;
 }
-.hero-pill{
+.mosaic-pill{
   display:inline-flex;
   align-items:center;
   gap:5px;
-  background:rgba(255,255,255,0.16);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,0.28);
+  background:var(--soft-cloud);
+  border:1px solid var(--hairline);
   border-radius:999px;
   padding:6px 13px;
   font-size:13px;font-weight:600;
-  color:#fff;
-  letter-spacing:0.01em;
+  color:var(--ink);
 }
-
-/* ===== PHOTO REEL ===== */
-.photo-reel{
-  padding:20px 0 6px;
-  background:var(--canvas);
-}
-.reel-track{
+.mosaic-cta-row{
   display:flex;
-  gap:12px;
-  overflow-x:auto;
+  align-items:stretch;
+  gap:10px;
+}
+.mosaic-cta-primary{
+  flex:1;
+  min-height:52px;
+  padding:0 18px;
+  border-radius:var(--r-8);
+  background:linear-gradient(90deg,var(--rausch) 0%,var(--rausch-deep) 50%,#92174d 100%);
+  color:#fff;
+  font-size:15px;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform 0.12s ease,opacity 0.2s ease;
+  -webkit-tap-highlight-color:transparent;
+  border:none;
+  cursor:pointer;
+  font-family:var(--font-sans);
+}
+.mosaic-cta-primary:active{transform:scale(0.97);opacity:0.95}
+.mosaic-cta-secondary{
+  min-height:52px;
+  padding:0 16px;
+  border-radius:var(--r-8);
+  border:1px solid var(--hairline);
+  background:var(--canvas);
+  color:var(--ink);
+  font-size:15px;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+  transition:transform 0.12s ease;
+  -webkit-tap-highlight-color:transparent;
+  text-decoration:none;
+}
+.mosaic-cta-secondary:active{transform:scale(0.97)}
+
+/* ===== LIGHTBOX ===== */
+.mosaic-lightbox{
+  position:fixed;
+  inset:0;
+  z-index:1001;
+  background:rgba(0,0,0,0.97);
+  display:flex;
+  flex-direction:column;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.25s ease;
+}
+.mosaic-lightbox.open{
+  opacity:1;
+  pointer-events:auto;
+}
+.lb-header{
+  position:absolute;
+  top:0;left:0;right:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:max(14px,env(safe-area-inset-top)) 16px 14px;
+  z-index:2;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.6) 0%,transparent 100%);
+}
+.lb-counter{
+  font-size:14px;font-weight:600;
+  color:rgba(255,255,255,0.85);
+}
+.lb-close{
+  width:36px;height:36px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s ease;
+  border:none;cursor:pointer;
+}
+.lb-close:hover{background:rgba(255,255,255,0.28)}
+.lb-track{
+  flex:1;
+  display:flex;
+  overflow-x:scroll;
   scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
-  padding:0 20px;
+  align-items:center;
 }
-.reel-track::-webkit-scrollbar{display:none}
-.reel-slide{
-  flex:0 0 78vw;
-  max-width:320px;
+.lb-track::-webkit-scrollbar{display:none}
+.lb-slide{
+  flex:0 0 100%;
+  height:100%;
   scroll-snap-align:start;
-  border-radius:18px;
-  overflow:hidden;
-  position:relative;
-  aspect-ratio:4/3;
-  background:var(--soft-cloud);
-  flex-shrink:0;
-  box-shadow:rgba(0,0,0,0.08) 0 4px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:60px 12px 40px;
 }
-@media(min-width:768px){.reel-slide{flex:0 0 320px}}
-.reel-slide img{
-  width:100%;height:100%;
-  object-fit:cover;
-  display:block;
-  transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
+.lb-slide img{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  border-radius:8px;
 }
-.reel-slide:active img{transform:scale(0.97)}
-.reel-caption{
+.lb-nav{
   position:absolute;
-  bottom:0;left:0;right:0;
-  background:linear-gradient(transparent,rgba(0,0,0,0.65));
-  padding:36px 14px 14px;
+  top:50%;
+  transform:translateY(-50%);
+  width:40px;height:40px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
   color:#fff;
-  font-size:13px;font-weight:600;
-  letter-spacing:0.03em;
-  text-transform:uppercase;
-  text-shadow:0 1px 4px rgba(0,0,0,0.3);
+  font-size:24px;
+  display:flex;align-items:center;justify-content:center;
+  z-index:2;
+  transition:background 0.15s ease;
+  border:none;cursor:pointer;
+  line-height:1;
 }
-.reel-dots{
+.lb-nav:hover{background:rgba(255,255,255,0.28)}
+.lb-prev{left:12px}
+.lb-next{right:12px}
+@media(max-width:767px){.lb-nav{display:none}}
+
+/* ===== FRICTION MODAL ===== */
+.friction-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:1002;
+  background:rgba(0,0,0,0.55);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.2s ease;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+.friction-backdrop.show{opacity:1;pointer-events:auto}
+.friction-modal{
+  background:var(--canvas);
+  border-radius:20px;
+  padding:24px;
+  max-width:340px;
+  width:100%;
+  box-shadow:rgba(0,0,0,0.3) 0 20px 60px;
+  text-align:center;
+  transform:scale(0.92);
+  transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.friction-backdrop.show .friction-modal{transform:scale(1)}
+.friction-title{
+  font-size:18px;font-weight:700;
+  color:var(--ink);
+  margin-bottom:8px;
+  letter-spacing:-0.015em;
+}
+.friction-desc{
+  font-size:14px;font-weight:500;
+  color:var(--ash);
+  line-height:1.55;
+  margin-bottom:20px;
+}
+.friction-stay{
+  width:100%;
+  min-height:48px;
+  border-radius:var(--r-8);
+  background:linear-gradient(90deg,var(--rausch) 0%,var(--rausch-deep) 100%);
+  color:#fff;
+  font-size:15px;font-weight:700;
+  margin-bottom:10px;
+  transition:transform 0.12s ease;
+  border:none;cursor:pointer;
+  font-family:var(--font-sans);
+}
+.friction-stay:active{transform:scale(0.97)}
+.friction-skip{
+  font-size:13px;font-weight:500;
+  color:var(--ash);
+  padding:8px;width:100%;
+  background:none;border:none;
+  cursor:pointer;font-family:var(--font-sans);
+}
+.friction-skip:hover{color:var(--ink)}
+
+/* ===== WHATSAPP FAB ===== */
+.wa-fab{
+  position:fixed;
+  right:16px;
+  bottom:88px;
+  z-index:46;
+  width:54px;height:54px;
+  border-radius:50%;
+  background:#25d366;
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:rgba(37,211,102,0.45) 0 4px 20px,rgba(0,0,0,0.18) 0 2px 8px;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(12px) scale(0.9);
+  transition:opacity 0.3s ease,transform 0.3s ease;
+  -webkit-tap-highlight-color:transparent;
+  text-decoration:none;
+}
+.wa-fab.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+.wa-fab:active{transform:scale(0.92)!important}
+
+/* Sheet WhatsApp link */
+.sheet-wa-link{
   display:flex;
   align-items:center;
   justify-content:center;
   gap:6px;
-  padding:14px 0 4px;
+  margin-top:14px;
+  font-size:14px;font-weight:600;
+  color:#1d241f;
+  text-decoration:none;
+  padding:4px;
 }
-.reel-dot{
-  height:6px;width:6px;
-  border-radius:4px;
-  background:var(--stone);
-  transition:background 0.25s ease,width 0.25s ease;
-  cursor:pointer;
-  flex-shrink:0;
-}
-.reel-dot.active{
-  width:22px;
-  background:var(--ink);
-}
+.sheet-wa-link:active{opacity:0.8}
 
 /* ===== PAGE WRAP ===== */
 .wrap{
@@ -254,6 +515,75 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
   color:var(--ink);font-weight:700;
 }
 .listing-meta .dot{color:var(--stone)}
+
+/* ===== QUICK CONTACT ===== */
+.quick-contact{
+  padding:24px 0 6px;
+}
+.quick-contact-card{
+  background:linear-gradient(180deg,#fff7f8 0%,#ffffff 100%);
+  border:1px solid #ffd3dc;
+  border-radius:20px;
+  padding:20px;
+  box-shadow:rgba(255,56,92,0.08) 0 12px 28px;
+}
+.quick-contact-kicker{
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--rausch-deep);
+}
+.quick-contact-title{
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:-0.02em;
+  line-height:1.18;
+  color:var(--ink);
+  margin-top:10px;
+}
+.quick-contact-desc{
+  font-size:15px;
+  line-height:1.65;
+  color:var(--ash);
+  margin-top:10px;
+}
+.quick-contact-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.quick-contact-btn{
+  min-height:48px;
+  padding:0 18px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--rausch) 0%,var(--rausch-deep) 50%,#92174d 100%);
+  color:#fff;
+  font-size:15px;
+  font-weight:700;
+  transition:transform 0.12s ease,opacity 0.2s ease;
+}
+.quick-contact-btn:active{transform:scale(0.97);opacity:0.95}
+.quick-contact-link{
+  display:inline-flex;
+  align-items:center;
+  min-height:48px;
+  padding:0 18px;
+  border-radius:999px;
+  border:1px solid var(--hairline);
+  background:#fff;
+  color:var(--ink);
+  font-size:15px;
+  font-weight:700;
+}
+.quick-contact-note{
+  font-size:13px;
+  line-height:1.55;
+  color:var(--ash);
+  margin-top:14px;
+}
 
 /* ===== HIGHLIGHTS ===== */
 .highlights-section{padding:20px 0 28px}
@@ -527,6 +857,13 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
   width:100%;padding:8px;
 }
 .sheet-dismiss:hover{color:var(--ink)}
+.sheet-note{
+  margin-top:12px;
+  font-size:12px;
+  line-height:1.5;
+  color:var(--ash);
+  text-align:center;
+}
 .sheet-success{display:none;text-align:center;padding:16px 0 8px}
 .sheet-success.show{display:block}
 .sheet-success-icon{
@@ -571,6 +908,12 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
   .intro-card,.location-card,.comparison-card,.faq-card{
     padding:18px;
   }
+  .quick-contact-card{
+    padding:18px;
+  }
+  .quick-contact-title{
+    font-size:20px;
+  }
 }
 
 /* ===== ROTATED REEL IMAGE ===== */
@@ -578,42 +921,84 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
   transform:rotate(90deg) scale(1.34);
 }
 
+/* ===== PROMO TOOLTIP ===== */
+.promo-tooltip{
+  position:fixed;
+  right:16px;
+  bottom:246px; /* 154 bubble-bottom + 80 bubble-height + 12 gap */
+  z-index:45;
+  background:#fff;
+  color:var(--ink);
+  font-size:12px;font-weight:700;
+  letter-spacing:0.01em;
+  padding:7px 13px;
+  border-radius:999px;
+  box-shadow:rgba(0,0,0,0.14) 0 4px 14px;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(16px);
+  transition:opacity 0.28s ease,transform 0.28s ease;
+}
+.promo-tooltip.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
+  animation:promoPop 1.6s ease-in-out 2;
+}
+.promo-tooltip::after{
+  content:'';
+  position:absolute;
+  bottom:-5px;
+  right:33px;
+  width:0;height:0;
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-top:5px solid #fff;
+}
+
 /* ===== PROMO BUBBLE ===== */
 .promo-bubble{
   position:fixed;
   right:16px;
-  bottom:100px;
+  bottom:154px;
   z-index:45;
-  width:74px;height:74px;
+  width:80px;height:80px;
   border-radius:50%;
-  background:linear-gradient(135deg,#f59e0b 0%,#dc2626 100%);
+  background:linear-gradient(135deg,var(--rausch) 0%,var(--rausch-deep) 55%,#92174d 100%);
   color:#fff;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   cursor:pointer;
-  box-shadow:rgba(245,158,11,0.55) 0 6px 24px,rgba(0,0,0,0.18) 0 2px 8px;
-  animation:promoPop 1.3s ease-in-out infinite;
+  box-shadow:rgba(255,56,92,0.5) 0 6px 24px,rgba(0,0,0,0.18) 0 2px 8px;
   user-select:none;
   -webkit-tap-highlight-color:transparent;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(16px);
+  transition:opacity 0.28s ease,transform 0.28s ease;
+}
+.promo-bubble.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
+  animation:promoPop 1.6s ease-in-out 2;
 }
 .promo-bubble:active{transform:scale(0.93)!important}
 .promo-bubble .pb-pct{
-  font-size:22px;font-weight:800;
+  font-size:26px;font-weight:800;
   line-height:1;
-  letter-spacing:-0.03em;
+  letter-spacing:-0.04em;
 }
 .promo-bubble .pb-off{
-  font-size:10px;font-weight:700;
-  letter-spacing:0.06em;
+  font-size:11px;font-weight:700;
+  letter-spacing:0.1em;
   text-transform:uppercase;
-  opacity:0.92;
-  margin-top:1px;
+  opacity:0.9;
+  margin-top:2px;
 }
 .promo-bubble .pb-tap{
-  font-size:8px;font-weight:600;
-  letter-spacing:0.04em;
-  opacity:0.82;
-  margin-top:2px;
+  display:none;
 }
 
 /* ===== FADE-UP ===== */
@@ -724,21 +1109,14 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
 </head>
 <body>
 
-<!-- ===== HERO FULLSCREEN ===== -->
-<section class="hero-full" id="hero">
-  <img
-    class="hero-full-img"
-    src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Curtains_closed.png"
-    alt="Pyari Kunj Vrindavan homestay bedroom near Banke Bihari Temple"
-    fetchpriority="high"
-    decoding="async"
-    width="1200"
-    height="900"
-  >
-  <div class="hero-gradient"></div>
-  <nav class="hero-nav">
-    <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="icon-btn" aria-label="View on Airbnb">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+<!-- ===== MOSAIC HERO ===== -->
+<section class="mosaic-hero" id="hero">
+
+  <!-- Top nav overlay -->
+  <nav class="mosaic-nav">
+    <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="hero-top-link js-airbnb-link" data-source="hero-nav" aria-label="View the official Airbnb listing">
+      Official Airbnb
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
     </a>
     <div class="icon-btn-row">
       <button type="button" class="icon-btn" id="shareBtn" aria-label="Share">
@@ -746,55 +1124,123 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
       </button>
     </div>
   </nav>
+
+  <!-- Cloud sweep overlay -->
+  <div class="mosaic-cloud" aria-hidden="true"></div>
+
+  <!-- Bento grid — 10 tiles, 3-col × 5-row on mobile, 4-col on desktop -->
+  <div class="mosaic-grid" id="mosaicGrid">
+
+    <!-- Tile 1: exterior (1×1, col1 row1) -->
+   <button class="mosaic-tile reel-slide img-rotate-right" data-photo-index="20" aria-label="View photo: outside the building">
+  <img 
+    src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/exterior.webp" 
+    alt="Outside the building" 
+    loading="eager" 
+    decoding="async"
+  >
+</button>
+
+    <!-- Tile 2: Curtains_closed (2×2, col2–3 row1–2) — hero tile -->
+    <button class="mosaic-tile" data-big="1" data-photo-index="0" aria-label="View photo: bedroom">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Curtains_closed.png" alt="Pyari Kunj Vrindavan — bedroom" fetchpriority="high" decoding="async">
+      <span class="mosaic-tile-badge">21 photos</span>
+    </button>
+
+    <!-- Tile 3: lr-temple (1×1, col1 row2) -->
+    <button class="mosaic-tile" data-photo-index="7" aria-label="View photo: prayer space">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-temple.webp" alt="Prayer space at Pyari Kunj" loading="lazy" decoding="async">
+    </button>
+
+    <!-- Tile 4: bedroom-front (2×1, col1–2 row3) -->
+    <button class="mosaic-tile" data-photo-index="9" aria-label="View photo: bedroom front view">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-front.webp" alt="Bedroom front view" loading="lazy" decoding="async">
+    </button>
+
+    <!-- Tile 5: lr-flower (1×1, col3 row3) -->
+    <button class="mosaic-tile" data-photo-index="6" aria-label="View photo: floral detail">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-flower.webp" alt="Hand-painted floral detail" loading="lazy" decoding="async">
+    </button>
+
+    <!-- Tile 6: kitchen-wide (1×1, col1 row4) -->
+    <button class="mosaic-tile" data-photo-index="16" aria-label="View photo: full kitchen">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-wide.webp" alt="Full kitchen" loading="lazy" decoding="async">
+    </button>
+
+    <!-- Tile 7: bath-wide (1×1, col2 row4) -->
+    <button class="mosaic-tile" data-photo-index="13" aria-label="View photo: bathroom">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-wide.webp" alt="Full bathroom" loading="lazy" decoding="async">
+    </button>
+
+    <!-- Tile 8: lr-wide1 (1×1, col3 row4) -->
+    <button class="mosaic-tile" data-photo-index="2" aria-label="View photo: living room">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide1.webp" alt="Living room wide angle" loading="lazy" decoding="async">
+    </button>
+
+    <!-- Tile 9: lr-insta (2×1, col1–2 row5) -->
+    <button class="mosaic-tile" data-photo-index="8" aria-label="View photo: living room moment">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-insta.webp" alt="Living room detail moment" loading="lazy" decoding="async">
+    </button>
+
+    <!-- Tile 10: bedroom-curtains-open (1×1, col3 row5) -->
+    <button class="mosaic-tile" data-photo-index="10" aria-label="View photo: bedroom with open curtains">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-curtains-open.webp" alt="Bedroom with curtains drawn open" loading="lazy" decoding="async">
+    </button>
+
+  </div><!-- /mosaic-grid -->
+
+  <!-- Lightbox — all 21 photos -->
+  <div class="mosaic-lightbox" id="mosaicLightbox" role="dialog" aria-modal="true" aria-label="Photo gallery">
+    <div class="lb-header">
+      <span class="lb-counter" id="lbCounter">1 / 21</span>
+      <button class="lb-close" id="lbClose" aria-label="Close gallery">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="lb-track" id="lbTrack">
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Curtains_closed.png" alt="Bedroom with curtains closed" loading="eager" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-almirah.webp" alt="Hand-painted almirah in living room" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide1.webp" alt="Living room wide angle" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide2.webp" alt="Living room from another angle" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide3.webp" alt="Living room view" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide4.webp" alt="Living room corner" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-flower.webp" alt="Hand-painted floral detail" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-temple.webp" alt="Prayer space at Pyari Kunj" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-insta.webp" alt="Living room detail moment" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-front.webp" alt="Bedroom front view" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-curtains-open.webp" alt="Bedroom with curtains drawn open" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-side.webp" alt="Bedroom side angle" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-lamp.webp" alt="Bedside lamp detail" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-wide.webp" alt="Full bathroom wide angle" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-side.webp" alt="Bathroom side angle" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-essentials.webp" alt="Bathroom essentials" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-wide.webp" alt="Full kitchen wide angle" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-1.webp" alt="Kitchenette" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-2.webp" alt="Kitchenette from another angle" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-crockery.webp" alt="Crockery in kitchen" loading="lazy" decoding="async"></div>
+      <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/exterior.webp" alt="Outside the building" loading="lazy" decoding="async"></div>
+    </div>
+    <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous photo">&#8249;</button>
+    <button class="lb-nav lb-next" id="lbNext" aria-label="Next photo">&#8250;</button>
+  </div>
+
 </section>
 
-<!-- ===== PHOTO REEL ===== -->
-<section class="photo-reel" aria-label="Property photos">
-  <div class="reel-track" id="reelTrack">
-    <div class="reel-slide">
-      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-front.webp" alt="Sunlit bedroom at Pyari Kunj homestay in Vrindavan" loading="lazy" decoding="async">
-      <div class="reel-caption">Vrindavan bedroom</div>
-    </div>
-    <div class="reel-slide">
-      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide1.webp" alt="Living room inside Pyari Kunj Vrindavan" loading="lazy" decoding="async">
-      <div class="reel-caption">Spacious living room</div>
-    </div>
-    <div class="reel-slide">
-      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/WhatsApp%20Image%202026-04-24%20at%2000.55.00.jpeg" alt="Decor and spiritual ambience at Pyari Kunj in Vrindavan" loading="lazy" decoding="async">
-      <div class="reel-caption">Spiritual ambience</div>
-    </div>
-    <div class="reel-slide">
-      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-temple.webp" alt="Prayer corner inside the Pyari Kunj homestay" loading="lazy" decoding="async">
-      <div class="reel-caption">Prayer corner</div>
-    </div>
-    <div class="reel-slide">
-      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-flower.webp" alt="Hand-painted details at Pyari Kunj Vrindavan" loading="lazy" decoding="async">
-      <div class="reel-caption">Artisan details</div>
-    </div>
-    <div class="reel-slide">
-      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-wide.webp" alt="Private bathroom in the Vrindavan homestay" loading="lazy" decoding="async">
-      <div class="reel-caption">Private bathroom</div>
-    </div>
-    <div class="reel-slide">
-      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-wide.webp" alt="Kitchen at Pyari Kunj Airbnb in Vrindavan" loading="lazy" decoding="async">
-      <div class="reel-caption">Full kitchen</div>
-    </div>
-    <div class="reel-slide img-rotate-right">
-      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/exterior.webp" alt="Outdoor area at the Pyari Kunj stay in Vrindavan" loading="lazy" decoding="async">
-      <div class="reel-caption">Outdoor area</div>
-    </div>
+<!-- Content strip below mosaic -->
+<!-- <div class="mosaic-content">
+  <p class="mosaic-kicker">Peaceful family stay in Vrindavan</p>
+  <p class="mosaic-title">Private 1BHK homestay near Banke Bihari Temple</p>
+  <div class="mosaic-pills">
+    <span class="mosaic-pill">5.0 rated stay</span>
+    <span class="mosaic-pill">4 guests</span>
+    <span class="mosaic-pill">Free parking</span>
+    <span class="mosaic-pill">Self check-in</span>
   </div>
-  <div class="reel-dots" id="reelDots" aria-hidden="true">
-    <button class="reel-dot active" data-idx="0"></button>
-    <button class="reel-dot" data-idx="1"></button>
-    <button class="reel-dot" data-idx="2"></button>
-    <button class="reel-dot" data-idx="3"></button>
-    <button class="reel-dot" data-idx="4"></button>
-    <button class="reel-dot" data-idx="5"></button>
-    <button class="reel-dot" data-idx="6"></button>
-    <button class="reel-dot" data-idx="7"></button>
+  <div class="mosaic-cta-row">
+    <button type="button" class="mosaic-cta-primary js-open-sheet" data-source="hero-primary">Get best price on WhatsApp</button>
+    <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="mosaic-cta-secondary js-airbnb-link" data-source="hero-secondary">Check availability</a>
   </div>
-</section>
+</div> -->
 
 <main class="wrap">
 
@@ -814,6 +1260,19 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
       Self check-in
       <span class="dot">·</span>
       Free parking
+    </div>
+  </section>
+
+  <section class="quick-contact fade-up" id="best-rate">
+    <div class="quick-contact-card">
+      <p class="quick-contact-kicker">Direct host help</p>
+      <h2 class="quick-contact-title">Get your best rate on WhatsApp</h2>
+      <p class="quick-contact-desc">Share your WhatsApp number to get the best available rate, parking details, and booking help for your dates. If you prefer, you can still go straight to Airbnb.</p>
+      <div class="quick-contact-actions">
+        <button type="button" class="quick-contact-btn js-open-sheet" data-source="inline-card">Get my rate on WhatsApp</button>
+        <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="quick-contact-link js-airbnb-link" data-source="inline-card-airbnb">Go to Airbnb</a>
+      </div>
+      <p class="quick-contact-note">We only use your number for this stay enquiry, and you can still complete the booking on Airbnb.</p>
     </div>
   </section>
 
@@ -956,7 +1415,7 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
 <footer class="footer">
   <div class="footer-inner">
     <span>© Pyari Kunj Vrindavan · Homestay in Vrindavan, Uttar Pradesh</span>
-    <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener">View on Airbnb</a>
+    <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="js-airbnb-link" data-source="footer">View on Airbnb</a>
     <a href="/privacy-policy.html">Privacy policy</a>
     <a href="/terms-and-booking.html">Terms and booking</a>
   </div>
@@ -971,88 +1430,231 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
       5.0 · Vrindavan
     </span>
   </div>
-  <a class="reserve-bar-cta" href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" onclick="fbq('track','InitiateCheckout',{content_name:'Reserve Bar'})">Check availability</a>
+  <a class="reserve-bar-cta js-airbnb-link" data-source="reserve-bar" href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener">Check availability</a>
 </div>
 
 <!-- ===== PROMO BUBBLE ===== -->
-<button class="promo-bubble" id="promoBubble" aria-label="Tap to get 10% discount">
+<div class="promo-tooltip" id="promoTooltip">Tap to avail</div>
+<button class="promo-bubble" id="promoBubble" aria-label="Get 10% off — ask on WhatsApp">
   <span class="pb-pct">10%</span>
   <span class="pb-off">OFF</span>
-  <span class="pb-tap">Tap to claim</span>
 </button>
+
+<!-- ===== FRICTION MODAL ===== -->
+<div class="friction-backdrop" id="frictionBackdrop">
+  <div class="friction-modal">
+    <p class="friction-title">Skip your discount?</p>
+    <p class="friction-desc">You'll see standard prices on Airbnb. Stay back to lock in a private rate only available here.</p>
+    <button type="button" class="friction-stay" id="frictionStay">Keep my discount</button>
+    <button type="button" class="friction-skip" id="frictionSkip">Skip anyway</button>
+  </div>
+</div>
+
+<!-- ===== WHATSAPP FAB ===== -->
+<a href="https://wa.me/918791567123?text=Hi%21%20I%27m%20interested%20in%20Pyari%20Kunj%20Vrindavan.%20Could%20you%20share%20availability%20and%20best%20price%20for%20my%20dates%3F" target="_blank" rel="noopener" class="wa-fab" id="waFab" aria-label="Chat on WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
 
 <!-- ===== BOTTOM SHEET ===== -->
 <div class="sheet-backdrop" id="sheetBackdrop"></div>
-<div class="bottom-sheet" id="bottomSheet" role="dialog" aria-modal="true" aria-label="Get exclusive rates for Pyari Kunj">
+<div class="bottom-sheet" id="bottomSheet" role="dialog" aria-modal="true" aria-label="Get the best rate for Pyari Kunj">
   <div class="sheet-handle"></div>
   <div class="sheet-form" id="sheetForm">
-    <h3 class="sheet-title">Unlock 10% off your stay</h3>
-    <p class="sheet-desc">Share your WhatsApp number and we'll send your exclusive discount code instantly.</p>
+    <h3 class="sheet-title">Planning a Vrindavan trip? Lock in a private rate.</h3>
+    <p class="sheet-desc">Share your dates and we'll send a discount only available off-platform.</p>
     <div class="discount-badge">
       <div class="discount-badge-pct">10%</div>
       <div class="discount-badge-text">
-        <span class="d-title">Discount on your booking</span>
-        <span class="d-sub">Enter your number below to claim it</span>
+        <span class="d-title">Exclusive saving when available</span>
+        <span class="d-sub">Enter your number below to check your best rate</span>
       </div>
     </div>
     <div class="input-group">
-      <label for="leadPhone">WhatsApp number</label>
+      <label for="leadPhone">Phone number</label>
       <input type="tel" id="leadPhone" name="phone" placeholder="+91 98765 43210" autocomplete="tel" inputmode="tel" required>
     </div>
-    <button type="button" class="sheet-submit" id="sheetSubmit">Claim my 10% discount</button>
-    <button type="button" class="sheet-dismiss" id="sheetDismiss">Maybe later</button>
+    <button type="button" class="sheet-submit" id="sheetSubmit">Send me the best rate</button>
+    <button type="button" class="sheet-dismiss" id="sheetDismiss">Continue browsing</button>
+    <a href="https://wa.me/918791567123?text=Hi%21%20I%27m%20interested%20in%20Pyari%20Kunj%20Vrindavan.%20Could%20you%20share%20availability%20and%20best%20price%20for%20my%20dates%3F" target="_blank" rel="noopener" class="sheet-wa-link" id="sheetWaLink">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Click To Book
+    </a>
+    <!-- <p class="sheet-note">We only use your number for this stay enquiry.</p> -->
   </div>
   <div class="sheet-success" id="sheetSuccess">
     <div class="sheet-success-icon" aria-hidden="true">
       <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
     </div>
     <h3 class="sheet-success-title">You're all set!</h3>
-    <p class="sheet-success-desc">We'll reach out on WhatsApp shortly with the best rates and tips for your Vrindavan visit.</p>
+    <p class="sheet-success-desc">We'll reach out on WhatsApp shortly with the best rate, stay details, and your Airbnb booking link.</p>
     <div class="airbnb-opening" id="airbnbOpening">
       <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
       Opening Airbnb listing for you…
     </div>
-    <button type="button" class="sheet-dismiss" onclick="closeSheet()" style="margin-top:18px">Close</button>
+    <button type="button" class="sheet-dismiss" onclick="closeSheet('success-close')" style="margin-top:18px">Close</button>
   </div>
 </div>
 
 <script>
-// ===== BOTTOM SHEET =====
+// ===== LEAD CAPTURE + ENGAGEMENT =====
 const sheet = document.getElementById('bottomSheet');
 const backdrop = document.getElementById('sheetBackdrop');
 const sheetForm = document.getElementById('sheetForm');
 const sheetSuccess = document.getElementById('sheetSuccess');
-let sheetShown = false;
-let sheetDismissed = false;
-let carouselSwipes = 0;
+const promoBubble = document.getElementById('promoBubble');
 const AIRBNB_URL = 'https://www.airbnb.co.in/h/pyari-kunj';
+const leadButtons = document.querySelectorAll('.js-open-sheet');
+const airbnbLinks = document.querySelectorAll('.js-airbnb-link');
+const scrollMarks = { 25: false, 50: false, 75: false };
 
-function openSheet() {
-  if (sheetShown) return;
+window.__phQueue = window.__phQueue || [];
+
+let sheetShown = false;
+let sheetDismissed = sessionStorage.getItem('lead_prompt_blocked') === '1';
+let sheetSource = 'unknown';
+let activeSeconds = 0;
+let autoPromptTriggered = false;
+let promoBubbleShown = false;
+
+function safeTrack(eventName, properties = {}) {
+  if (window.posthog && typeof window.posthog.capture === 'function') {
+    window.posthog.capture(eventName, properties);
+    return;
+  }
+  window.__phQueue.push([eventName, properties]);
+}
+
+function flushQueuedTracks() {
+  if (!window.posthog || typeof window.posthog.capture !== 'function' || !Array.isArray(window.__phQueue)) return;
+  while (window.__phQueue.length) {
+    const nextEvent = window.__phQueue.shift();
+    if (nextEvent) window.posthog.capture(nextEvent[0], nextEvent[1] || {});
+  }
+}
+
+window.flushQueuedTracks = flushQueuedTracks;
+
+function getScrollDepth() {
+  const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+  if (scrollable <= 0) return 0;
+  return Math.min(100, Math.round((window.scrollY / scrollable) * 100));
+}
+
+function setLeadPromptBlocked(value) {
+  if (value) {
+    sessionStorage.setItem('lead_prompt_blocked', '1');
+  } else {
+    sessionStorage.removeItem('lead_prompt_blocked');
+  }
+}
+
+function revealPromoBubble(reason = 'engaged') {
+  if (promoBubbleShown) return;
+  promoBubbleShown = true;
+  promoBubble.classList.add('show');
+  const promoTooltip = document.getElementById('promoTooltip');
+  if (promoTooltip) promoTooltip.classList.add('show');
+  safeTrack('promo_bubble_shown', {
+    reason,
+    active_seconds: activeSeconds,
+    scroll_depth: getScrollDepth()
+  });
+}
+
+function openSheet(source = 'manual', force = false) {
+  if (sheetShown || (!force && sheetDismissed)) return;
+  sheetForm.classList.remove('hidden');
+  sheetSuccess.classList.remove('show');
   sheet.classList.add('show');
   backdrop.classList.add('show');
   sheetShown = true;
+  sheetSource = source;
   document.body.style.overflow = 'hidden';
+  safeTrack('lead_sheet_shown', {
+    source,
+    active_seconds: activeSeconds,
+    scroll_depth: getScrollDepth()
+  });
   setTimeout(() => {
     const input = sheet.querySelector('input');
     if (input && window.innerWidth >= 768) input.focus();
   }, 420);
 }
 
-function closeSheet() {
+function closeSheet(reason = 'dismiss', persist = true) {
+  const wasOpen = sheetShown;
   sheet.classList.remove('show');
   backdrop.classList.remove('show');
-  sheetDismissed = true;
+  sheetShown = false;
   document.body.style.overflow = '';
+  sheet.style.transform = '';
+  if (persist) {
+    sheetDismissed = true;
+    setLeadPromptBlocked(true);
+  }
+  if (wasOpen) {
+    safeTrack('lead_sheet_dismissed', {
+      reason,
+      source: sheetSource,
+      active_seconds: activeSeconds,
+      scroll_depth: getScrollDepth()
+    });
+  }
 }
 
-function tryOpenSheet() {
-  if (sheetShown || sheetDismissed) return;
-  openSheet();
+function tryAutoPrompt(source) {
+  if (autoPromptTriggered || sheetShown || sheetDismissed) return;
+  autoPromptTriggered = true;
+  openSheet(source);
 }
 
-backdrop.addEventListener('click', closeSheet);
-document.getElementById('sheetDismiss').addEventListener('click', closeSheet);
+function forceOpenSheet(source) {
+  sheetDismissed = false;
+  setLeadPromptBlocked(false);
+  openSheet(source, true);
+}
+
+const frictionBackdrop = document.getElementById('frictionBackdrop');
+const frictionStay = document.getElementById('frictionStay');
+const frictionSkip = document.getElementById('frictionSkip');
+
+backdrop.addEventListener('click', () => {
+  safeTrack('sheet_dismiss_attempted', { source: sheetSource, active_seconds: activeSeconds });
+  frictionBackdrop.classList.add('show');
+});
+frictionStay.addEventListener('click', () => {
+  frictionBackdrop.classList.remove('show');
+  safeTrack('sheet_dismiss_recovered', { source: sheetSource, active_seconds: activeSeconds });
+});
+frictionSkip.addEventListener('click', () => {
+  frictionBackdrop.classList.remove('show');
+  closeSheet('backdrop-skip');
+});
+document.getElementById('sheetDismiss').addEventListener('click', () => closeSheet('continue-browsing'));
+
+leadButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const source = button.dataset.source || 'manual';
+    safeTrack('lead_cta_clicked', {
+      source,
+      active_seconds: activeSeconds,
+      scroll_depth: getScrollDepth()
+    });
+    forceOpenSheet(source);
+  });
+});
+
+airbnbLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    const source = link.dataset.source || 'airbnb';
+    safeTrack('airbnb_cta_clicked', {
+      source,
+      active_seconds: activeSeconds,
+      scroll_depth: getScrollDepth()
+    });
+    fbq('track', 'InitiateCheckout', { content_name: source });
+  });
+});
 
 // Swipe-to-dismiss
 let touchStartY = 0, touchCurrentY = 0;
@@ -1067,40 +1669,60 @@ sheet.addEventListener('touchmove', e => {
   }
 }, { passive: true });
 sheet.addEventListener('touchend', () => {
-  if (touchCurrentY - touchStartY > 100) closeSheet();
+  if (touchCurrentY - touchStartY > 100) closeSheet('swipe');
   sheet.style.transform = '';
-  touchStartY = 0; touchCurrentY = 0;
+  touchStartY = 0;
+  touchCurrentY = 0;
 });
 
-// ===== ENGAGEMENT-BASED TRIGGER =====
-// Fires on first of: 6s active page time | highlights scrolled into view | 2+ carousel swipes | desktop exit intent
-
-let activeSeconds = 0;
+// ===== ENGAGEMENT =====
 const engageTick = setInterval(() => {
-  if (!document.hidden) {
-    activeSeconds++;
-    if (activeSeconds >= 6) {
-      clearInterval(engageTick);
-      tryOpenSheet();
-    }
+  if (document.hidden) return;
+  activeSeconds++;
+  if (activeSeconds === 8) revealPromoBubble('8s-active');
+  if (activeSeconds >= 18 && getScrollDepth() >= 30) {
+    tryAutoPrompt('auto-long-view');
   }
 }, 1000);
 
-// Highlights viewed (user has seen the content — peak interest moment)
+function handleScrollEngagement() {
+  const depth = getScrollDepth();
+  Object.keys(scrollMarks).forEach(mark => {
+    const numericMark = Number(mark);
+    if (!scrollMarks[mark] && depth >= numericMark) {
+      scrollMarks[mark] = true;
+      safeTrack('scroll_depth_reached', {
+        depth: numericMark,
+        active_seconds: activeSeconds
+      });
+    }
+  });
+  if (depth >= 35) revealPromoBubble('35-scroll');
+  if (depth >= 65 && activeSeconds >= 10) {
+    tryAutoPrompt('auto-deep-scroll');
+  }
+}
+
+window.addEventListener('scroll', handleScrollEngagement, { passive: true });
+
 const highlightsEl = document.querySelector('.highlights-section');
 if (highlightsEl) {
   const highlightsObs = new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting) {
-      highlightsObs.disconnect();
-      tryOpenSheet();
-    }
-  }, { threshold: 0.5 });
+    if (!entries[0].isIntersecting) return;
+    safeTrack('highlights_viewed', {
+      active_seconds: activeSeconds,
+      scroll_depth: getScrollDepth()
+    });
+    revealPromoBubble('highlights-view');
+    highlightsObs.disconnect();
+  }, { threshold: 0.45 });
   highlightsObs.observe(highlightsEl);
 }
 
-// Desktop exit intent
 document.addEventListener('mouseleave', e => {
-  if (e.clientY <= 0) tryOpenSheet();
+  if (e.clientY <= 0 && activeSeconds >= 8 && getScrollDepth() >= 12) {
+    tryAutoPrompt('auto-exit-intent');
+  }
 });
 
 // ===== ATTRIBUTION CAPTURE =====
@@ -1128,14 +1750,26 @@ function readAttribution(key) {
 document.getElementById('sheetSubmit').addEventListener('click', () => {
   const phoneEl = document.getElementById('leadPhone');
   const phone = phoneEl.value.trim();
+  const digitsOnly = phone.replace(/\D/g,'');
   phoneEl.classList.remove('error');
 
-  if (!phone || phone.replace(/\D/g,'').length < 8) {
+  if (!phone || digitsOnly.length < 8) {
     phoneEl.focus();
     phoneEl.classList.add('error');
+    safeTrack('lead_validation_failed', {
+      source: sheetSource,
+      active_seconds: activeSeconds,
+      scroll_depth: getScrollDepth()
+    });
     return;
   }
 
+  safeTrack('lead_submitted', {
+    source: sheetSource,
+    digits: digitsOnly.length,
+    active_seconds: activeSeconds,
+    scroll_depth: getScrollDepth()
+  });
   fbq('track','Lead',{content_name:'Homestay Inquiry'});
   fbq('track','InitiateCheckout',{content_name:'Post Lead'});
 
@@ -1153,6 +1787,7 @@ document.getElementById('sheetSubmit').addEventListener('click', () => {
       body: JSON.stringify({
         phone,
         source: 'Pyari Kunj Landing',
+        lead_source: sheetSource,
         submitted_at: new Date().toISOString(),
         current_url: window.location.href,
         referrer: document.referrer || '',
@@ -1171,56 +1806,155 @@ document.getElementById('sheetSubmit').addEventListener('click', () => {
     }).catch(err => console.warn('Lead sync failed:', err));
   } catch(err) { console.warn('Lead sync error:', err); }
 
+  sheetDismissed = true;
+  setLeadPromptBlocked(true);
   sheetForm.classList.add('hidden');
   sheetSuccess.classList.add('show');
 });
 
-// ===== PHOTO REEL DOTS + CAROUSEL ENGAGEMENT TRIGGER =====
-const reelTrack = document.getElementById('reelTrack');
-const reelDots  = document.querySelectorAll('.reel-dot');
-let lastReelIdx = 0;
+// ===== MOSAIC BLOOM =====
+const BLOOM_ORDER = [1, 3, 0, 2, 9, 4, 8, 5, 6, 7]; // curated tile indices
+let bloomIndex = 0;
+let bloomTimer = null;
+let bloomPaused = false;
+let currentBloomTile = null;
+let galleryEngaged = false;
 
-if (reelTrack && reelDots.length) {
-  reelTrack.addEventListener('scroll', () => {
-    const slides = reelTrack.querySelectorAll('.reel-slide');
-    if (!slides.length) return;
-    const slideWidth = slides[0].offsetWidth + 12;
-    const idx = Math.min(Math.round(reelTrack.scrollLeft / slideWidth), slides.length - 1);
-    if (idx !== lastReelIdx) {
-      reelDots.forEach((d, i) => d.classList.toggle('active', i === idx));
-      if (idx > lastReelIdx) {
-        carouselSwipes++;
-        if (carouselSwipes >= 2) tryOpenSheet();
-      }
-      lastReelIdx = idx;
-    }
-  }, { passive: true });
-
-  reelDots.forEach((dot, i) => {
-    dot.addEventListener('click', () => {
-      const slides = reelTrack.querySelectorAll('.reel-slide');
-      if (slides[i]) {
-        reelTrack.scrollTo({ left: i * (slides[0].offsetWidth + 12), behavior: 'smooth' });
-      }
-    });
-  });
+function doBloom() {
+  if (bloomPaused) return;
+  if (currentBloomTile) {
+    currentBloomTile.classList.remove('blooming');
+    currentBloomTile = null;
+  }
+  const tiles = document.querySelectorAll('.mosaic-tile');
+  const tileIdx = BLOOM_ORDER[bloomIndex % BLOOM_ORDER.length];
+  const tile = tiles[tileIdx];
+  bloomIndex++;
+  if (!tile) { scheduleBloom(); return; }
+  tile.classList.add('blooming');
+  currentBloomTile = tile;
+  setTimeout(() => {
+    tile.classList.remove('blooming');
+    currentBloomTile = null;
+    setTimeout(scheduleBloom, 500);
+  }, 2000);
 }
+
+function scheduleBloom() {
+  clearTimeout(bloomTimer);
+  bloomTimer = setTimeout(doBloom, 400);
+}
+
+// Start after first paint
+requestAnimationFrame(() => setTimeout(scheduleBloom, 800));
+
+// Tile click → open lightbox
+document.querySelectorAll('.mosaic-tile').forEach((tile, i) => {
+  tile.addEventListener('click', () => {
+    const photoIndex = parseInt(tile.dataset.photoIndex || '0', 10);
+    safeTrack('mosaic_tile_clicked', { tile_index: i, photo_index: photoIndex, active_seconds: activeSeconds });
+    if (!galleryEngaged) {
+      galleryEngaged = true;
+      safeTrack('gallery_engaged', { active_seconds: activeSeconds, scroll_depth: getScrollDepth() });
+      revealPromoBubble('gallery-engaged');
+    }
+    openLightbox(photoIndex);
+  });
+});
+
+// ===== LIGHTBOX =====
+const lightbox = document.getElementById('mosaicLightbox');
+const lbTrack = document.getElementById('lbTrack');
+const lbCounterEl = document.getElementById('lbCounter');
+const lbClose = document.getElementById('lbClose');
+const lbPrev = document.getElementById('lbPrev');
+const lbNext = document.getElementById('lbNext');
+const LB_TOTAL = 21;
+let lbCurrentIndex = 0;
+
+function openLightbox(index) {
+  bloomPaused = true;
+  lbCurrentIndex = index;
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  scrollLbTo(index, 'instant');
+  safeTrack('lightbox_opened', { photo_index: index, active_seconds: activeSeconds });
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+  safeTrack('lightbox_closed', { last_index: lbCurrentIndex, active_seconds: activeSeconds });
+  setTimeout(() => { bloomPaused = false; scheduleBloom(); }, 5000);
+}
+
+function scrollLbTo(index, behavior) {
+  const slide = lbTrack.children[index];
+  if (slide) slide.scrollIntoView({ behavior: behavior || 'smooth', block: 'nearest', inline: 'start' });
+  lbCurrentIndex = index;
+  lbCounterEl.textContent = (index + 1) + ' / ' + LB_TOTAL;
+}
+
+lbClose.addEventListener('click', closeLightbox);
+lbPrev.addEventListener('click', () => { if (lbCurrentIndex > 0) scrollLbTo(lbCurrentIndex - 1); });
+lbNext.addEventListener('click', () => { if (lbCurrentIndex < LB_TOTAL - 1) scrollLbTo(lbCurrentIndex + 1); });
+
+lbTrack.addEventListener('scroll', () => {
+  const idx = Math.round(lbTrack.scrollLeft / lbTrack.offsetWidth);
+  if (idx !== lbCurrentIndex && idx >= 0 && idx < LB_TOTAL) {
+    safeTrack('lightbox_swipe', { from: lbCurrentIndex, to: idx, active_seconds: activeSeconds });
+    lbCurrentIndex = idx;
+    lbCounterEl.textContent = (idx + 1) + ' / ' + LB_TOTAL;
+  }
+}, { passive: true });
+
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft' && lbCurrentIndex > 0) scrollLbTo(lbCurrentIndex - 1);
+  if (e.key === 'ArrowRight' && lbCurrentIndex < LB_TOTAL - 1) scrollLbTo(lbCurrentIndex + 1);
+});
+
+// ===== WHATSAPP FAB =====
+const waFab = document.getElementById('waFab');
+const heroSec = document.getElementById('hero');
+if (waFab && heroSec) {
+  const heroObs = new IntersectionObserver(entries => {
+    waFab.classList.toggle('show', !entries[0].isIntersecting);
+  }, { threshold: 0 });
+  heroObs.observe(heroSec);
+}
+waFab && waFab.addEventListener('click', () => {
+  safeTrack('whatsapp_fab_clicked', { active_seconds: activeSeconds, scroll_depth: getScrollDepth() });
+});
+document.getElementById('sheetWaLink') && document.getElementById('sheetWaLink').addEventListener('click', () => {
+  safeTrack('whatsapp_sheet_link_clicked', { source: sheetSource, active_seconds: activeSeconds });
+});
 
 // ===== FADE-UP SECTIONS =====
 const fadeObs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
 
 // ===== PROMO BUBBLE =====
-document.getElementById('promoBubble').addEventListener('click', () => {
-  sheetShown = false; // allow re-open if already dismissed
-  sheetDismissed = false;
-  openSheet();
+promoBubble.addEventListener('click', () => {
+  safeTrack('lead_cta_clicked', {
+    source: 'promo-bubble',
+    active_seconds: activeSeconds,
+    scroll_depth: getScrollDepth()
+  });
+  forceOpenSheet('promo-bubble');
 });
 
 // ===== SHARE BUTTON =====
 document.getElementById('shareBtn').addEventListener('click', () => {
+  safeTrack('share_clicked', {
+    active_seconds: activeSeconds,
+    scroll_depth: getScrollDepth()
+  });
   if (navigator.share) {
     navigator.share({ title: 'Pyari Kunj Homestay – Vrindavan', url: window.location.href }).catch(() => {});
   } else {
@@ -1242,6 +1976,7 @@ window.addEventListener('load', function() {
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog&&window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="Ai Ri init Vi Yi Rr zi Gi Zi capture calculateEventProperties en register register_once register_for_session unregister unregister_for_session sn getFeatureFlag getFeatureFlagPayload getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync an identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException addExceptionStep captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty rn Ki createPersonProfile setInternalOrTestUser nn $i hn opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing Xi debug Mr tn getPageViewId captureTraceFeedback captureTraceMetric Di".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
     posthog.init('phc_9ZhWhlT5mwHuusPgzjmNf133RcTa11WqXarKD1FAA4k',{api_host:'https://us.i.posthog.com',defaults:'2026-01-30',person_profiles:'identified_only',session_recording:{maskAllInputs:false}});
     var uid=localStorage.getItem('ph_user_id');if(!uid){uid='anon_'+Math.random().toString(36).slice(2);localStorage.setItem('ph_user_id',uid);}posthog.identify(uid);
+    if (window.flushQueuedTracks) window.flushQueuedTracks();
 
     // Vercel Speed Insights
     import('https://esm.sh/@vercel/speed-insights').then(function(m){m.injectSpeedInsights()}).catch(function(){});
