@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "mcp__Claude_Preview__preview_start",
-      "Bash(grep -iE '\\\\.\\(jpg|jpeg|png\\)$')"
+      "Bash(grep -iE '\\\\.\\(jpg|jpeg|png\\)$')",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(curl -sI https://pyari-kunj.vercel.app/uihf4iwwlbb67ilbe6gvitevcezboa.html)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__resize_window",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__get_page_text",
+      "mcp__Claude_in_Chrome__read_page"
     ]
   }
 }
