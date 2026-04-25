@@ -1,3 +1,22 @@
 .claude
 .vercel
 .env*.local
+.DS_Store
+
+# Original unoptimized images — only deploy /img/ (optimized WebP)
+Bedroom/
+Living Room/
+Full Bathroom/
+Full Kitchen/
+Exterior/
+Additional Photos/
+Entry_1.JPG
+Entry_2.JPG
+Stairs_1.JPG
+1st Floor (1).png
+insta1.jpeg
+insta2.jpg
+videotour-ai.mp4
+
+# Build helpers
+optimize-images.sh
