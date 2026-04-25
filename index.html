@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
 <title>Pyari Kunj Homestay – Near Bankey Bihari Temple · Vrindavan</title>
-<meta name="description" content="Entire rental unit in Vrindavan — a peaceful sanctuary just 7 min from Banke Bihari Temple. Hand-painted décor, sun-lit rooms.">
+<meta name="description" content="Entire rental unit in Vrindavan — a peaceful sanctuary just 5 min from Banke Bihari Temple. Hand-painted décor, sun-lit rooms.">
 <meta property="og:title" content="Pyari Kunj Homestay – Near Bankey Bihari Temple">
 <meta property="og:description" content="Entire rental unit in Vrindavan, India · 5.0 ★ · Hosted by Saar.">
 <meta property="og:type" content="website">
@@ -24,19 +24,16 @@
   --hairline:#dddddd;
   --hairline-soft:#ebebeb;
   --ink:#222222;
-  --charcoal:#3f3f3f;
   --ash:#6a6a6a;
   --mute:#929292;
   --stone:#c1c1c1;
   --error:#c13515;
   --r-8:8px;
   --r-12:12px;
-  --r-14:14px;
   --r-20:20px;
   --r-32:32px;
-  --shadow-icon:rgba(0,0,0,0.15) 0 2px 4px;
-  --shadow-bar:rgba(0,0,0,0.04) 0 -2px 8px;
-  --shadow-panel:rgba(0,0,0,0.02) 0 0 0 1px,rgba(0,0,0,0.04) 0 2px 6px 0,rgba(0,0,0,0.1) 0 4px 8px 0;
+  --shadow-icon:rgba(0,0,0,0.18) 0 2px 6px;
+  --shadow-bar:rgba(0,0,0,0.06) 0 -2px 12px;
   --font-sans:'Inter',Circular,-apple-system,system-ui,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
 }
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -48,7 +45,6 @@ body{
   line-height:1.5;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
-  font-feature-settings:'salt' on;
   padding-bottom:84px;
 }
 img{max-width:100%;display:block}
@@ -56,508 +52,228 @@ a{text-decoration:none;color:inherit}
 button{border:none;cursor:pointer;font-family:inherit;background:none;color:inherit}
 hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
 
-/* ========= HERO ========= */
-.hero{position:relative;background:var(--soft-cloud)}
-.hero-track{
-  display:flex;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-}
-.hero-track::-webkit-scrollbar{display:none}
-.hero-slide{
-  flex:0 0 100%;
-  scroll-snap-align:center;
-  aspect-ratio:1/1;
-  background:var(--soft-cloud);
-  overflow:hidden;
-}
-.hero-slide img{
-  width:100%;height:100%;
-  object-fit:cover;
-}
-.hero-actions{
-  position:absolute;
-  top:env(safe-area-inset-top, 12px);
-  left:0;right:0;
-  padding:12px 16px;
-  display:flex;align-items:center;justify-content:space-between;
-  z-index:5;
-  pointer-events:none;
-}
-.hero-actions > *{pointer-events:auto}
+/* ===== ICON BUTTON ===== */
 .icon-btn{
-  width:32px;height:32px;
+  width:34px;height:34px;
   border-radius:50%;
-  background:var(--canvas);
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
   color:var(--ink);
   display:inline-flex;align-items:center;justify-content:center;
   box-shadow:var(--shadow-icon);
   transition:transform 0.15s ease;
+  flex-shrink:0;
 }
-.icon-btn:active{transform:scale(0.92)}
+.icon-btn:active{transform:scale(0.91)}
 .icon-btn-row{display:flex;gap:8px}
-.photo-counter{
-  position:absolute;
-  left:50%;
-  bottom:16px;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,0.7);
-  color:#fff;
-  padding:5px 12px;
-  border-radius:var(--r-32);
-  font-size:12px;font-weight:500;
-  z-index:4;
-  letter-spacing:0.02em;
+
+/* ===== HERO FULLSCREEN ===== */
+@keyframes kenburns{
+  from{transform:scale(1)}
+  to{transform:scale(1.05)}
 }
-@media(min-width:744px){
-  .hero-slide{aspect-ratio:16/9;max-height:560px}
-  .hero{max-width:1024px;margin:0 auto}
+@keyframes promoPop{
+  0%,100%{transform:scale(1) rotate(-4deg)}
+  50%{transform:scale(1.15) rotate(4deg)}
+}
+.hero-full{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  background:#1a1208;
+}
+.hero-full-img{
+  position:absolute;
+  inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  animation:kenburns 20s ease-out forwards;
+}
+.hero-gradient{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.32) 0%,
+    transparent 28%,
+    transparent 42%,
+    rgba(0,0,0,0.68) 100%
+  );
+}
+.hero-nav{
+  position:absolute;
+  top:env(safe-area-inset-top,12px);
+  left:0;right:0;
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:5;
+}
+.hero-bottom-info{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  padding:0 16px 14px;
+  z-index:5;
+  color:#fff;
+}
+.hero-title-text{
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:-0.022em;
+  line-height:1.18;
+  text-shadow:0 2px 8px rgba(0,0,0,0.5);
+  margin-bottom:8px;
+}
+@media(min-width:768px){.hero-title-text{font-size:30px}}
+.hero-pills{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.hero-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  background:rgba(255,255,255,0.16);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.28);
+  border-radius:999px;
+  padding:6px 13px;
+  font-size:13px;font-weight:600;
+  color:#fff;
+  letter-spacing:0.01em;
 }
 
-/* ========= PAGE WRAP ========= */
+/* ===== PHOTO REEL ===== */
+.photo-reel{
+  padding:20px 0 6px;
+  background:var(--canvas);
+}
+.reel-track{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  padding:0 20px;
+}
+.reel-track::-webkit-scrollbar{display:none}
+.reel-slide{
+  flex:0 0 78vw;
+  max-width:320px;
+  scroll-snap-align:start;
+  border-radius:18px;
+  overflow:hidden;
+  position:relative;
+  aspect-ratio:4/3;
+  background:var(--soft-cloud);
+  flex-shrink:0;
+  box-shadow:rgba(0,0,0,0.08) 0 4px 16px;
+}
+@media(min-width:768px){.reel-slide{flex:0 0 320px}}
+.reel-slide img{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+  transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.reel-slide:active img{transform:scale(0.97)}
+.reel-caption{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,0.65));
+  padding:36px 14px 14px;
+  color:#fff;
+  font-size:13px;font-weight:600;
+  letter-spacing:0.03em;
+  text-transform:uppercase;
+  text-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+.reel-dots{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:14px 0 4px;
+}
+.reel-dot{
+  height:6px;width:6px;
+  border-radius:4px;
+  background:var(--stone);
+  transition:background 0.25s ease,width 0.25s ease;
+  cursor:pointer;
+  flex-shrink:0;
+}
+.reel-dot.active{
+  width:22px;
+  background:var(--ink);
+}
+
+/* ===== PAGE WRAP ===== */
 .wrap{
   max-width:744px;
   margin:0 auto;
   padding:0 24px;
 }
 
-/* ========= TITLE BLOCK ========= */
-.title-block{padding:24px 0 20px}
+/* ===== TITLE BLOCK ===== */
+.title-block{padding:22px 0 6px}
 .listing-title{
-  font-size:26px;
-  font-weight:600;
-  letter-spacing:-0.02em;
-  color:var(--ink);
-  line-height:1.18;
-}
-
-/* ========= SECTIONS ========= */
-.section{padding:24px 0}
-.section h2{
   font-size:22px;
-  font-weight:600;
+  font-weight:700;
   letter-spacing:-0.022em;
-  line-height:1.2;
   color:var(--ink);
-  margin-bottom:8px;
-}
-.section h2.tight{margin-bottom:16px}
-.section h2 + .sub{
-  font-size:15px;font-weight:500;
-  color:var(--ink);
-}
-.section h2 + .sub.muted{color:var(--ash)}
-
-/* ========= SUMMARY ROW ========= */
-.summary{padding-bottom:20px}
-.summary-title{
-  font-size:18px;font-weight:600;
-  color:var(--ink);
-  margin-bottom:6px;
-}
-.summary-meta{
-  font-size:15px;font-weight:500;
-  color:var(--ink);
+  line-height:1.22;
   margin-bottom:10px;
 }
-.summary-meta .dot{margin:0 4px;color:var(--ash)}
-.summary-rating{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:14px;font-weight:600;
-  color:var(--ink);
+.listing-meta{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  font-size:14px;font-weight:500;
+  color:var(--ash);
 }
-.summary-rating .star{display:inline-flex;color:var(--ink)}
-.summary-rating a{
-  text-decoration:underline;
-  color:var(--ink);
-  font-weight:600;
+.listing-meta .rating{
+  display:inline-flex;align-items:center;gap:4px;
+  color:var(--ink);font-weight:700;
 }
+.listing-meta .dot{color:var(--stone)}
 
-/* ========= HOST STRIP ========= */
-.host-strip{
-  display:flex;align-items:center;
-  gap:12px;
-  padding:20px 0;
-}
-.host-avatar{
-  width:48px;height:48px;
-  border-radius:50%;
-  background:linear-gradient(135deg,var(--rausch),var(--rausch-deep));
-  color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;font-weight:700;
-  flex-shrink:0;
-  position:relative;
-}
-.host-info .h-name{
-  font-size:15px;font-weight:600;color:var(--ink);
-  display:flex;align-items:center;gap:6px;
-}
-.new-host-pill{
-  display:inline-block;
-  font-size:11px;font-weight:600;
-  background:var(--soft-cloud);
-  border:1px solid var(--hairline);
+/* ===== HIGHLIGHTS ===== */
+.highlights-section{padding:20px 0 28px}
+.highlights-section h2{
+  font-size:19px;font-weight:700;
+  letter-spacing:-0.018em;
   color:var(--ink);
-  padding:2px 8px;
-  border-radius:var(--r-32);
-  letter-spacing:0;
+  margin-bottom:22px;
 }
-.host-info .h-meta{
-  font-size:13px;font-weight:500;color:var(--ash);
-  margin-top:2px;
-}
-
-/* ========= HIGHLIGHTS ========= */
-.highlights{display:flex;flex-direction:column;gap:24px;padding:8px 0}
+.highlights{display:flex;flex-direction:column;gap:22px}
 .highlight{display:flex;align-items:flex-start;gap:16px}
 .highlight svg{flex-shrink:0;color:var(--ink);margin-top:2px}
-.highlight .h-title{font-size:16px;font-weight:600;color:var(--ink);line-height:1.3}
-.highlight .h-desc{font-size:14px;font-weight:500;color:var(--ash);margin-top:2px;line-height:1.4}
+.highlight .h-title{font-size:16px;font-weight:700;color:var(--ink);line-height:1.3}
+.highlight .h-desc{font-size:14px;font-weight:500;color:var(--ash);margin-top:3px;line-height:1.45}
 
-/* ========= ABOUT ========= */
-.about-text{
-  font-size:16px;font-weight:500;
-  color:var(--ink);
-  line-height:1.5;
-}
-.about-text p{margin-bottom:12px}
-.about-text p:last-child{margin-bottom:0}
-.show-more-link{
-  display:inline-block;
-  margin-top:16px;
-  font-size:16px;font-weight:600;
-  color:var(--ink);
-  text-decoration:underline;
-}
-
-/* ========= SLEEP CARDS ========= */
-.sleep-scroll{
-  display:flex;gap:16px;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-  margin:16px -24px 0;
-  padding:0 24px 8px;
-  scrollbar-width:none;
-}
-.sleep-scroll::-webkit-scrollbar{display:none}
-.sleep-card{
-  flex:0 0 65%;
-  max-width:240px;
-  scroll-snap-align:start;
-}
-.sleep-card .img{
-  aspect-ratio:1/1;
-  border-radius:var(--r-12);
-  overflow:hidden;
-  background:var(--soft-cloud);
-}
-.sleep-card .img img{width:100%;height:100%;object-fit:cover}
-.sleep-card .label{
-  font-size:15px;font-weight:600;
-  color:var(--ink);
-  margin-top:12px;
-}
-.sleep-card .meta{
-  font-size:14px;font-weight:500;
-  color:var(--ash);
-  margin-top:2px;
-}
-
-/* ========= AMENITIES ========= */
-.amenities-list{display:flex;flex-direction:column;gap:0;margin-top:12px}
-.amenity{
-  display:flex;align-items:center;gap:16px;
-  padding:14px 0;
-  font-size:16px;font-weight:500;
-  color:var(--ink);
-  border-bottom:1px solid var(--hairline-soft);
-}
-.amenity:last-child{border-bottom:none}
-.amenity svg{flex-shrink:0;color:var(--ink)}
-.amenity.unavailable{color:var(--ash);text-decoration:line-through;text-decoration-thickness:1px}
-.amenity.unavailable svg{color:var(--ash)}
-.show-all-btn{
-  display:inline-block;
-  margin-top:20px;
-  padding:13px 24px;
-  border:1px solid var(--ink);
-  border-radius:var(--r-8);
-  font-size:16px;font-weight:600;
-  color:var(--ink);
-  background:var(--canvas);
-  transition:background 0.15s ease,transform 0.12s ease;
-}
-.show-all-btn:hover{background:var(--soft-cloud)}
-.show-all-btn:active{transform:scale(0.98)}
-
-/* ========= LOCATION ========= */
-.map-wrap{
-  margin-top:16px;
-  border-radius:var(--r-12);
-  overflow:hidden;
-  border:1px solid var(--hairline);
-  aspect-ratio:16/10;
-  background:linear-gradient(135deg,#e8e6e1 0%,#d8e4d0 100%);
-  position:relative;
-}
-.map-pin{
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-100%);
-  display:inline-flex;align-items:center;justify-content:center;
-  width:36px;height:36px;
-  border-radius:50%;
-  background:var(--rausch);
-  color:#fff;
-  box-shadow:rgba(0,0,0,0.18) 0 4px 12px;
-}
-.map-label{
-  position:absolute;
-  left:16px;bottom:16px;
-  background:var(--canvas);
-  color:var(--ink);
-  padding:8px 14px;
-  border-radius:var(--r-32);
-  font-size:13px;font-weight:600;
-  box-shadow:rgba(0,0,0,0.12) 0 2px 8px;
-}
-.location-note{
-  font-size:14px;font-weight:500;
-  color:var(--ash);
-  margin-top:14px;
-}
-.neighbourhood{
-  margin-top:24px;
-}
-.neighbourhood h3{
-  font-size:16px;font-weight:600;
-  color:var(--ink);
-  margin-bottom:8px;
-}
-.neighbourhood p{
-  font-size:15px;font-weight:500;
-  color:var(--ink);
-  line-height:1.5;
-}
-
-/* ========= REVIEWS ========= */
-.reviews-header{
-  display:flex;align-items:center;
-  gap:8px;
-  margin-bottom:6px;
-}
-.reviews-header .star{color:var(--ink)}
-.reviews-header h2{
-  font-size:22px;font-weight:600;
-  letter-spacing:-0.022em;
-  color:var(--ink);
-  margin:0;
-}
-.reviews-header .count{
-  font-size:15px;font-weight:500;
-  color:var(--ash);
-}
-.review-mentions{
-  display:flex;gap:8px;
-  flex-wrap:wrap;
-  margin:16px 0 24px;
-}
-.mention-pill{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:8px 14px;
-  border:1px solid var(--hairline);
-  border-radius:var(--r-32);
-  font-size:14px;font-weight:600;
-  color:var(--ink);
-  background:var(--canvas);
-}
-.review-list{display:flex;flex-direction:column;gap:24px}
-.review{padding:0}
-.review-author{
-  display:flex;align-items:center;gap:12px;
-  margin-bottom:10px;
-}
-.review-avatar{
-  width:40px;height:40px;
-  border-radius:50%;
-  background:var(--soft-cloud);
-  border:1px solid var(--hairline);
-  display:flex;align-items:center;justify-content:center;
-  font-size:15px;font-weight:600;
-  color:var(--ink);
-  flex-shrink:0;
-}
-.review-name{font-size:15px;font-weight:600;color:var(--ink);line-height:1.2}
-.review-tenure{font-size:13px;font-weight:500;color:var(--ash);margin-top:2px}
-.review-meta{
-  display:flex;align-items:center;gap:8px;
-  margin-bottom:6px;
-  font-size:13px;font-weight:500;color:var(--ink);
-}
-.review-stars{display:inline-flex;gap:1px;color:var(--ink)}
-.review-meta .dot{color:var(--ash)}
-.review-body{
-  font-size:15px;font-weight:500;
-  color:var(--ink);
-  line-height:1.5;
-}
-
-/* ========= MEET HOST ========= */
-.meet-host-card{
-  margin-top:8px;
-  padding:24px;
-  border:1px solid var(--hairline);
-  border-radius:var(--r-14);
-  box-shadow:var(--shadow-panel);
-  display:flex;flex-direction:column;align-items:center;
-  text-align:center;
-}
-.meet-avatar{
-  width:96px;height:96px;
-  border-radius:50%;
-  background:linear-gradient(135deg,var(--rausch),var(--rausch-deep));
-  color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-size:36px;font-weight:700;
-  margin-bottom:16px;
-  position:relative;
-}
-.meet-verified{
-  position:absolute;
-  bottom:0;right:0;
-  width:28px;height:28px;
-  border-radius:50%;
-  background:var(--rausch);
-  color:#fff;
-  border:2px solid var(--canvas);
-  display:flex;align-items:center;justify-content:center;
-}
-.meet-name{
-  font-size:22px;font-weight:600;
-  color:var(--ink);
-  letter-spacing:-0.02em;
-}
-.meet-role{
-  font-size:14px;font-weight:500;
-  color:var(--ash);
-  margin-top:2px;
-  margin-bottom:16px;
-}
-.meet-stats{
-  display:flex;align-items:center;justify-content:center;
-  gap:16px;
-  width:100%;
-  padding:16px 0;
-  border-top:1px solid var(--hairline);
-  border-bottom:1px solid var(--hairline);
-  margin-bottom:16px;
-}
-.meet-stat{flex:1;text-align:center}
-.meet-stat .v{font-size:18px;font-weight:600;color:var(--ink)}
-.meet-stat .l{font-size:11px;font-weight:500;color:var(--ash);margin-top:2px}
-.meet-stat + .meet-stat{border-left:1px solid var(--hairline);padding-left:16px}
-.host-meta-rows{
-  width:100%;
-  text-align:left;
-  font-size:14px;font-weight:500;
-  color:var(--ink);
-  display:flex;flex-direction:column;gap:12px;
-  margin-bottom:16px;
-}
-.host-meta-row{display:flex;align-items:center;gap:12px}
-.host-meta-row svg{flex-shrink:0;color:var(--ink)}
-.cohost-row{
-  width:100%;text-align:left;
-  margin-bottom:16px;
-  padding-top:16px;
-  border-top:1px solid var(--hairline);
-}
-.cohost-row h3{
-  font-size:14px;font-weight:600;
-  color:var(--ink);
-  margin-bottom:10px;
-}
-.cohost{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--ink)}
-.cohost-avatar{
-  width:32px;height:32px;border-radius:50%;
-  background:var(--soft-cloud);
-  border:1px solid var(--hairline);
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:600;
-}
-.host-details-list{
-  width:100%;
-  text-align:left;
-  font-size:14px;font-weight:500;
-  color:var(--ink);
-  display:flex;flex-direction:column;gap:6px;
-  margin-bottom:20px;
-}
-.host-details-list .strong{font-weight:600}
-.message-host-btn{
-  display:block;width:100%;
-  padding:13px 24px;
-  border-radius:var(--r-8);
-  font-size:16px;font-weight:600;
-  color:#fff;
-  background:linear-gradient(90deg,var(--rausch) 0%,var(--rausch-deep) 50%,#92174d 100%);
-  text-align:center;
-  transition:transform 0.12s ease,opacity 0.2s ease;
-}
-.message-host-btn:active{transform:scale(0.98);opacity:0.95}
-.protect-note{
-  font-size:11px;font-weight:500;
-  color:var(--ash);
-  margin-top:14px;
-  display:flex;align-items:flex-start;gap:6px;
-  text-align:left;
-}
-.protect-note svg{flex-shrink:0;color:var(--ink);margin-top:2px}
-
-/* ========= THINGS TO KNOW ========= */
-.ttk{display:flex;flex-direction:column;gap:24px;margin-top:8px}
-@media(min-width:600px){.ttk{flex-direction:row;gap:32px}.ttk-col{flex:1}}
-.ttk-col h3{
-  font-size:16px;font-weight:600;
-  color:var(--ink);
-  margin-bottom:10px;
-}
-.ttk-col ul{list-style:none;padding:0;margin:0}
-.ttk-col li{
-  font-size:14px;font-weight:500;
-  color:var(--ink);
-  line-height:1.5;
-  padding:3px 0;
-}
-.ttk-col li.muted{color:var(--ash)}
-.ttk-col .more{
-  display:inline-block;
-  margin-top:8px;
-  font-size:14px;font-weight:600;
-  color:var(--ink);
-  text-decoration:underline;
-}
-
-/* ========= FOOTER ========= */
+/* ===== FOOTER ===== */
 .footer{
   background:var(--soft-cloud);
   border-top:1px solid var(--hairline);
-  padding:24px 24px 32px;
-  margin-top:8px;
+  padding:20px 24px 28px;
+  margin-top:4px;
 }
 .footer-inner{
   max-width:744px;margin:0 auto;
-  font-size:13px;font-weight:500;color:var(--ash);
+  font-size:12px;font-weight:500;color:var(--ash);
   display:flex;justify-content:space-between;align-items:center;
   gap:12px;flex-wrap:wrap;
 }
-.footer a{color:var(--ink);text-decoration:underline;font-weight:500}
+.footer a{color:var(--ink);text-decoration:underline;font-weight:600}
 
-/* ========= STICKY BOTTOM RESERVE BAR ========= */
+/* ===== STICKY BOTTOM RESERVE BAR ===== */
 .reserve-bar{
   position:fixed;
   left:0;right:0;bottom:0;
@@ -570,15 +286,17 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
   gap:12px;
 }
 .reserve-bar-left{display:flex;flex-direction:column;font-size:12px;font-weight:500;color:var(--ash);min-width:0}
-.reserve-bar-left .price{
-  font-size:16px;font-weight:600;
+.reserve-bar-left .prop-name{
+  font-size:15px;font-weight:700;
   color:var(--ink);
-  text-decoration:underline;
   margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.reserve-bar-left .stars{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--ink)}
+.reserve-bar-left .stars{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:12px;font-weight:500;color:var(--ink);
+}
 .reserve-bar-left .stars svg{color:var(--ink)}
-.reserve-bar-left .stars a{text-decoration:underline;color:var(--ash)}
 .reserve-bar-cta{
   background:linear-gradient(90deg,var(--rausch) 0%,var(--rausch-deep) 50%,#92174d 100%);
   color:#fff;
@@ -586,44 +304,15 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
   border-radius:var(--r-8);
   font-size:15px;font-weight:600;
   flex-shrink:0;
+  white-space:nowrap;
   transition:transform 0.12s ease,opacity 0.2s ease;
 }
 .reserve-bar-cta:active{transform:scale(0.96);opacity:0.95}
 
-/* ========= INLINE LEAD-GEN ENTRY ========= */
-.lead-entry{
-  display:block;
-  margin:24px 0 8px;
-  text-align:center;
-  font-size:14px;font-weight:600;
-  color:var(--ink);
-  text-decoration:underline;
-  width:100%;
-  padding:8px;
-}
-
-/* ========= FLOATING CTA ========= */
-.floating-cta{
-  position:fixed;
-  right:20px;bottom:88px;
-  z-index:35;
-  background:var(--ink);
-  color:#fff;
-  padding:12px 18px;
-  border-radius:var(--r-32);
-  font-size:13px;font-weight:600;
-  display:none;align-items:center;gap:8px;
-  box-shadow:rgba(0,0,0,0.18) 0 8px 24px;
-  opacity:0;
-  transform:translateY(80px);
-  transition:transform 0.3s cubic-bezier(0.32,0.72,0,1),opacity 0.3s ease;
-}
-.floating-cta.visible{display:inline-flex;opacity:1;transform:translateY(0)}
-
-/* ========= BOTTOM SHEET (FORM PRESERVED) ========= */
+/* ===== BOTTOM SHEET ===== */
 .sheet-backdrop{
   position:fixed;inset:0;
-  background:rgba(0,0,0,0.45);
+  background:rgba(0,0,0,0.48);
   z-index:998;
   opacity:0;pointer-events:none;
   transition:opacity 0.3s ease;
@@ -635,19 +324,18 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
   z-index:999;
   background:var(--canvas);
   border-radius:var(--r-20) var(--r-20) 0 0;
-  padding:16px 24px max(28px,env(safe-area-inset-bottom));
-  box-shadow:rgba(0,0,0,0.18) 0 -8px 40px;
+  padding:16px 24px max(32px,env(safe-area-inset-bottom));
+  box-shadow:rgba(0,0,0,0.2) 0 -8px 40px;
   transform:translateY(100%);
-  transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);
-  max-width:520px;margin:0 auto;
+  transition:transform 0.38s cubic-bezier(0.32,0.72,0,1);
 }
 .bottom-sheet.show{transform:translateY(0)}
 .sheet-handle{
-  width:36px;height:4px;border-radius:4px;
-  background:var(--stone);margin:0 auto 20px;
+  width:40px;height:4px;border-radius:4px;
+  background:var(--stone);margin:0 auto 22px;
 }
 .sheet-title{
-  font-size:22px;font-weight:600;
+  font-size:22px;font-weight:700;
   letter-spacing:-0.022em;color:var(--ink);
   margin-bottom:6px;
 }
@@ -655,22 +343,42 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
   font-size:14px;font-weight:500;color:var(--ash);
   margin-bottom:20px;line-height:1.5;
 }
-.sheet-perks{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-.sheet-perk{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--soft-cloud);
-  padding:6px 12px;border-radius:var(--r-32);
-  font-size:12px;font-weight:600;color:var(--ink);
-  border:1px solid var(--hairline);
+.discount-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,#fff7ed,#fff0e0);
+  border:1.5px solid #f59e0b;
+  border-radius:var(--r-12);
+  padding:12px 16px;
+  margin-bottom:20px;
+  width:100%;
 }
-.sheet-perk svg{color:var(--ink);flex-shrink:0}
+.discount-badge-pct{
+  font-size:28px;font-weight:800;
+  color:#d97706;
+  letter-spacing:-0.03em;
+  line-height:1;
+  flex-shrink:0;
+}
+.discount-badge-text{
+  display:flex;flex-direction:column;gap:1px;
+}
+.discount-badge-text .d-title{
+  font-size:14px;font-weight:700;
+  color:#92400e;
+  line-height:1.2;
+}
+.discount-badge-text .d-sub{
+  font-size:12px;font-weight:500;
+  color:#b45309;
+  line-height:1.3;
+}
 .input-group{margin-bottom:12px}
 .input-group label{
   font-size:12px;font-weight:600;color:var(--ink);
   display:block;margin-bottom:6px;
 }
 .input-group input{
-  width:100%;padding:14px 16px;
+  width:100%;padding:15px 16px;
   border:1px solid var(--hairline);
   border-radius:var(--r-8);
   font-size:16px;font-family:var(--font-sans);
@@ -683,422 +391,226 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
 .input-group input:focus{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
 .input-group input.error{border-color:var(--error);box-shadow:0 0 0 1px var(--error)}
 .sheet-submit{
-  width:100%;padding:14px 24px;
+  width:100%;padding:15px 24px;
   background:linear-gradient(90deg,var(--rausch) 0%,var(--rausch-deep) 50%,#92174d 100%);
   color:#fff;border-radius:var(--r-8);
   font-size:16px;font-weight:600;
-  margin-top:6px;
+  margin-top:8px;
   transition:opacity 0.2s ease,transform 0.12s ease;
 }
-.sheet-submit:active{transform:scale(0.96);opacity:0.95}
+.sheet-submit:active{transform:scale(0.97);opacity:0.95}
 .sheet-dismiss{
   display:block;text-align:center;margin-top:12px;
   font-size:13px;font-weight:500;color:var(--ash);
   width:100%;padding:8px;
 }
 .sheet-dismiss:hover{color:var(--ink)}
-.sheet-success{display:none;text-align:center;padding:20px 0}
+.sheet-success{display:none;text-align:center;padding:16px 0 8px}
 .sheet-success.show{display:block}
 .sheet-success-icon{
   width:64px;height:64px;border-radius:50%;
-  background:var(--rausch);color:#fff;
+  background:linear-gradient(135deg,var(--rausch),#92174d);
+  color:#fff;
   display:flex;align-items:center;justify-content:center;
-  margin:0 auto 16px;
+  margin:0 auto 18px;
 }
 .sheet-success-title{
-  font-size:22px;font-weight:600;
+  font-size:22px;font-weight:700;
   letter-spacing:-0.022em;color:var(--ink);
-  margin-bottom:6px;
+  margin-bottom:8px;
 }
-.sheet-success-desc{font-size:14px;color:var(--ash);line-height:1.5;font-weight:500}
+.sheet-success-desc{
+  font-size:14px;color:var(--ash);
+  line-height:1.55;font-weight:500;
+}
+.airbnb-opening{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:22px;
+  font-size:14px;font-weight:600;
+  color:var(--rausch);
+  animation:pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
 .sheet-form.hidden{display:none}
+
 @media(min-width:768px){
-  .bottom-sheet{left:50%;right:auto;width:480px;transform:translate(-50%,100%)}
+  .bottom-sheet{
+    left:50%;right:auto;
+    width:480px;
+    transform:translate(-50%,100%);
+  }
   .bottom-sheet.show{transform:translate(-50%,0)}
 }
 
-/* ========= FADE-UP ========= */
-.fade-up{opacity:0;transform:translateY(12px);transition:opacity 0.5s ease,transform 0.5s ease}
+/* ===== ROTATED REEL IMAGE ===== */
+.reel-slide.img-rotate-right img{
+  transform:rotate(90deg) scale(1.34);
+}
+
+/* ===== PROMO BUBBLE ===== */
+.promo-bubble{
+  position:fixed;
+  right:16px;
+  bottom:100px;
+  z-index:45;
+  width:74px;height:74px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#f59e0b 0%,#dc2626 100%);
+  color:#fff;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  cursor:pointer;
+  box-shadow:rgba(245,158,11,0.55) 0 6px 24px,rgba(0,0,0,0.18) 0 2px 8px;
+  animation:promoPop 1.3s ease-in-out infinite;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.promo-bubble:active{transform:scale(0.93)!important}
+.promo-bubble .pb-pct{
+  font-size:22px;font-weight:800;
+  line-height:1;
+  letter-spacing:-0.03em;
+}
+.promo-bubble .pb-off{
+  font-size:10px;font-weight:700;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  opacity:0.92;
+  margin-top:1px;
+}
+.promo-bubble .pb-tap{
+  font-size:8px;font-weight:600;
+  letter-spacing:0.04em;
+  opacity:0.82;
+  margin-top:2px;
+}
+
+/* ===== FADE-UP ===== */
+.fade-up{opacity:0;transform:translateY(14px);transition:opacity 0.55s ease,transform 0.55s ease}
 .fade-up.visible{opacity:1;transform:translateY(0)}
 </style>
-
 </head>
 <body>
 
-<!-- ===== HERO ===== -->
-<section class="hero" id="photos">
-  <div class="hero-actions">
-    <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="icon-btn" aria-label="Back">
+<!-- ===== HERO FULLSCREEN ===== -->
+<section class="hero-full" id="hero">
+  <img
+    class="hero-full-img"
+    src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Curtains_closed.png"
+    alt="Pyari Kunj Homestay — sunlit bedroom"
+    fetchpriority="high"
+    decoding="async"
+    width="1200"
+    height="900"
+  >
+  <div class="hero-gradient"></div>
+  <nav class="hero-nav">
+    <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="icon-btn" aria-label="View on Airbnb">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
     </a>
     <div class="icon-btn-row">
-      <button type="button" class="icon-btn" aria-label="Share">
+      <button type="button" class="icon-btn" id="shareBtn" aria-label="Share">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
       </button>
-      <button type="button" class="icon-btn" aria-label="Save">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-      </button>
+    </div>
+  </nav>
+</section>
+
+<!-- ===== PHOTO REEL ===== -->
+<section class="photo-reel" aria-label="Property photos">
+  <div class="reel-track" id="reelTrack">
+    <div class="reel-slide">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-front.webp" alt="Sunlit bedroom" loading="lazy" decoding="async">
+      <div class="reel-caption">Sunlit bedroom</div>
+    </div>
+    <div class="reel-slide">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide1.webp" alt="Spacious living room" loading="lazy" decoding="async">
+      <div class="reel-caption">Spacious living room</div>
+    </div>
+    <div class="reel-slide">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/WhatsApp%20Image%202026-04-24%20at%2000.55.00.jpeg" alt="Spiritual vibe" loading="lazy" decoding="async">
+      <div class="reel-caption">Spiritual vibe</div>
+    </div>
+    <div class="reel-slide">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-temple.webp" alt="Serene prayer corner" loading="lazy" decoding="async">
+      <div class="reel-caption">Serene prayer corner</div>
+    </div>
+    <div class="reel-slide">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-flower.webp" alt="Artisan details" loading="lazy" decoding="async">
+      <div class="reel-caption">Artisan details</div>
+    </div>
+    <div class="reel-slide">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-wide.webp" alt="Private bathroom" loading="lazy" decoding="async">
+      <div class="reel-caption">Private bathroom</div>
+    </div>
+    <div class="reel-slide">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-wide.webp" alt="Full kitchen" loading="lazy" decoding="async">
+      <div class="reel-caption">Full kitchen</div>
+    </div>
+    <div class="reel-slide img-rotate-right">
+      <img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/exterior.webp" alt="Outdoor dining area" loading="lazy" decoding="async">
+      <div class="reel-caption">Outdoor dining area</div>
     </div>
   </div>
-  <div class="hero-track" id="galleryScroll">
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Curtains_closed.png" alt="Bedroom with curtains closed" fetchpriority="high" decoding="async" width="600" height="600"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-almirah.webp" alt="Pyari Kunj — living room with hand-painted almirah" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide1.webp" alt="Living room wide angle" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide2.webp" alt="Living room from another angle" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide3.webp" alt="Living room view" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide4.webp" alt="Living room corner" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-flower.webp" alt="Hand-painted floral detail in living room" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-temple.webp" alt="Prayer space at Pyari Kunj" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-insta.webp" alt="Detail moment in the living room" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-front.webp" alt="Bedroom — front view" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-curtains-open.webp" alt="Bedroom with curtains drawn open" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-side.webp" alt="Bedroom side angle" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-lamp.webp" alt="Bedside lamp detail" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-wide.webp" alt="Full bathroom wide angle" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-side.webp" alt="Bathroom side angle" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-essentials.webp" alt="Bathroom essentials" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-wide.webp" alt="Full kitchen wide angle" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-1.webp" alt="Kitchenette" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-2.webp" alt="Kitchenette from another angle" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-crockery.webp" alt="Crockery in kitchen" loading="lazy" decoding="async"></div>
-    <div class="hero-slide gallery-card"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/exterior.webp" alt="Outside the building" loading="lazy" decoding="async"></div>
+  <div class="reel-dots" id="reelDots" aria-hidden="true">
+    <button class="reel-dot active" data-idx="0"></button>
+    <button class="reel-dot" data-idx="1"></button>
+    <button class="reel-dot" data-idx="2"></button>
+    <button class="reel-dot" data-idx="3"></button>
+    <button class="reel-dot" data-idx="4"></button>
+    <button class="reel-dot" data-idx="5"></button>
+    <button class="reel-dot" data-idx="6"></button>
+    <button class="reel-dot" data-idx="7"></button>
   </div>
-  <div class="photo-counter" id="photoCounter">1 / 21</div>
 </section>
 
 <div class="wrap">
 
   <!-- ===== TITLE ===== -->
   <section class="title-block">
-    <h1 class="listing-title">Pyari Kunj Homestay – Near Bankey Bihari Temple</h1>
-  </section>
-
-  <hr class="div">
-
-  <!-- ===== SUMMARY ===== -->
-  <section class="section summary">
-    <h2 style="font-size:18px;font-weight:600;letter-spacing:-0.012em;margin-bottom:6px">Entire rental unit in Vrindavan, India</h2>
-    <div class="summary-meta">
-      4 guests <span class="dot">·</span> 1 bedroom <span class="dot">·</span> 1 bed <span class="dot">·</span> 1 bathroom
-    </div>
-    <div class="summary-rating">
-      <span class="star">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    <h1 class="listing-title">Entire 1BHK · Near Bankey Bihari Temple, Vrindavan</h1>
+    <div class="listing-meta">
+      <span class="rating">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        5.0
       </span>
-      5.0 <span class="dot">·</span> <a href="#reviews">3 reviews</a>
+      <span class="dot">·</span>
+      4 guests
+      <span class="dot">·</span>
+      1 bedroom
+      <span class="dot">·</span>
+      Self check-in
     </div>
   </section>
 
   <hr class="div">
 
-  <!-- ===== HOST STRIP ===== -->
-  <section class="host-strip">
-    <div class="host-avatar" aria-hidden="true">S</div>
-    <div class="host-info">
-      <div class="h-name">Hosted by Saar <span class="new-host-pill">New Host</span></div>
-      <div class="h-meta">Co-hosted by Rahul</div>
-    </div>
-  </section>
-
-  <hr class="div">
-
-  <!-- ===== LISTING HIGHLIGHTS ===== -->
-  <section class="section fade-up">
+  <!-- ===== HIGHLIGHTS ===== -->
+  <section class="highlights-section fade-up">
+    <h2>Why guests love it here</h2>
     <div class="highlights">
-      <div class="highlight">
-        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-        <div>
-          <div class="h-title">Self check-in</div>
-          <div class="h-desc">You can check in with the building staff.</div>
-        </div>
-      </div>
       <div class="highlight">
         <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
         <div>
-          <div class="h-title">Unbeatable location</div>
-          <div class="h-desc">100% of guests in the past year gave this location a 5-star rating.</div>
+          <div class="h-title">5 min from Banke Bihari Temple</div>
+          <div class="h-desc">100% of recent guests gave the location 5 stars. Walk to the major temples, ghats, and markets in minutes.</div>
+        </div>
+      </div>
+      <div class="highlight">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
+        <div>
+          <div class="h-title">Hand-painted heritage décor</div>
+          <div class="h-desc">Rooted in generations of Shringaar Seva — a serene prayer space, artisan hand-painted walls, and a peaceful home atmosphere.</div>
         </div>
       </div>
       <div class="highlight">
         <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V7h4a4 4 0 010 8H9"/></svg>
         <div>
-          <div class="h-title">Park for free</div>
-          <div class="h-desc">This is one of the few places in the area with free parking.</div>
+          <div class="h-title">Free parking · AC · Self check-in</div>
+          <div class="h-desc">One of the few Vrindavan properties with free on-premises parking, flexible self check-in via building staff, and full air conditioning.</div>
         </div>
       </div>
     </div>
-  </section>
-
-  <hr class="div">
-
-  <!-- ===== ABOUT ===== -->
-  <section class="section fade-up" id="about">
-    <div class="about-text">
-      <p>A peaceful sanctuary just 7 min from Banke Bihari Temple 🌸. Tucked in a quiet lane, our sun-lit 1BHK is the perfect retreat for families and devotees seeking the true divine energy of Vrindavan.</p>
-      <p>Rooted in our family's generations of Shringaar Seva for Bankey Bihari Ji, we offer this home in the spirit of Seva Bhav — hand-painted décor, a serene prayer space, and everything you need for a comfortable stay.</p>
-    </div>
-    <a href="#" class="show-more-link" id="aboutMore">Show more</a>
-  </section>
-
-  <hr class="div">
-
-  <!-- ===== WHERE YOU'LL SLEEP ===== -->
-  <section class="section fade-up">
-    <h2 class="tight">Where you'll sleep</h2>
-    <div class="sleep-scroll">
-      <div class="sleep-card">
-        <div class="img"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/sleep-bedroom.webp" alt="Bedroom" loading="lazy" decoding="async"></div>
-        <div class="label">Bedroom</div>
-        <div class="meta">1 double bed</div>
-      </div>
-      <div class="sleep-card">
-        <div class="img"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/sleep-living.webp" alt="Living room" loading="lazy" decoding="async"></div>
-        <div class="label">Living room</div>
-        <div class="meta">1 floor mattress</div>
-      </div>
-    </div>
-  </section>
-
-  <hr class="div">
-
-  <!-- ===== AMENITIES ===== -->
-  <section class="section fade-up" id="amenities">
-    <h2 class="tight">What this place offers</h2>
-    <div class="amenities-list">
-      <div class="amenity">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h12"/></svg>
-        Kitchen
-      </div>
-      <div class="amenity">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 22h8m-4-4v4"/></svg>
-        Dedicated workspace
-      </div>
-      <div class="amenity">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V7h4a4 4 0 010 8H9"/></svg>
-        Free parking on premises
-      </div>
-      <div class="amenity">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2"/></svg>
-        Air conditioning
-      </div>
-      <div class="amenity">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
-        Hand-painted décor
-      </div>
-      <div class="amenity">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg>
-        Balcony
-      </div>
-      <div class="amenity unavailable">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
-        Carbon monoxide alarm
-      </div>
-      <div class="amenity unavailable">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
-        Smoke alarm
-      </div>
-    </div>
-    <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="show-all-btn">Show all 20 amenities</a>
-  </section>
-
-  <hr class="div">
-
-  <!-- ===== WHERE YOU'LL BE ===== -->
-  <section class="section fade-up" id="location">
-    <h2 class="tight">Where you'll be</h2>
-    <div class="sub muted" style="font-size:15px;color:var(--ash)">Vrindavan, Uttar Pradesh, India</div>
-    <div class="map-wrap">
-      <span class="map-pin" aria-hidden="true">
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      </span>
-      <span class="map-label">Vrindavan, UP</span>
-    </div>
-    <div class="location-note">Exact location will be provided after booking.</div>
-    <div class="neighbourhood">
-      <h3>Neighbourhood highlights</h3>
-      <p>Families living in their own independent flats — quiet, residential, and just a short walk from major temples.</p>
-    </div>
-  </section>
-
-  <hr class="div">
-
-  <!-- ===== REVIEWS ===== -->
-  <section class="section fade-up" id="reviews">
-    <div class="reviews-header">
-      <span class="star"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
-      <h2>5.0</h2>
-      <span class="count">· 3 reviews</span>
-    </div>
-    <p class="sub muted" style="font-size:14px;font-weight:500;color:var(--ash);margin-bottom:8px">Guest reviews mention</p>
-    <div class="review-mentions">
-      <span class="mention-pill">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        Check-in
-      </span>
-      <span class="mention-pill">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-        Accuracy
-      </span>
-      <span class="mention-pill">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-        Hospitality
-      </span>
-    </div>
-    <div class="review-list">
-      <article class="review">
-        <div class="review-author">
-          <div class="review-avatar">S</div>
-          <div>
-            <div class="review-name">Saanvi</div>
-            <div class="review-tenure">1 year on Airbnb</div>
-          </div>
-        </div>
-        <div class="review-meta">
-          <span class="review-stars" aria-label="5 stars">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </span>
-          <span class="dot">·</span>
-          <span>1 week ago</span>
-        </div>
-        <p class="review-body">Travelled with my parents and wanted them to be comfortable — they loved the place. The space is just as shown in the photos and the hosts looked after us throughout.</p>
-      </article>
-
-      <article class="review">
-        <div class="review-author">
-          <div class="review-avatar">R</div>
-          <div>
-            <div class="review-name">Ritwij</div>
-            <div class="review-tenure">2 years on Airbnb</div>
-          </div>
-        </div>
-        <div class="review-meta">
-          <span class="review-stars" aria-label="5 stars">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </span>
-          <span class="dot">·</span>
-          <span>1 week ago</span>
-        </div>
-        <p class="review-body">Beautiful and authentic stay. Spacious, accurate to the listing, and Dinesh made check-in easy. A genuine homestay vibe rather than a generic apartment.</p>
-      </article>
-
-      <article class="review">
-        <div class="review-author">
-          <div class="review-avatar">A</div>
-          <div>
-            <div class="review-name">Abhishek</div>
-            <div class="review-tenure">4 years on Airbnb</div>
-          </div>
-        </div>
-        <div class="review-meta">
-          <span class="review-stars" aria-label="5 stars">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </span>
-          <span class="dot">·</span>
-          <span>6 days ago</span>
-        </div>
-        <p class="review-body">First time in Vrindavan and a little hesitant going in — ended up loving it. Walking distance to the temples and the host took care of everything.</p>
-      </article>
-    </div>
-  </section>
-
-  <hr class="div">
-
-  <!-- ===== MEET HOST ===== -->
-  <section class="section fade-up" id="host">
-    <h2 class="tight">Meet your host</h2>
-    <div class="meet-host-card">
-      <div class="meet-avatar">
-        S
-        <span class="meet-verified" aria-hidden="true">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-        </span>
-      </div>
-      <div class="meet-name">Saar</div>
-      <div class="meet-role">Host</div>
-      <div class="meet-stats">
-        <div class="meet-stat">
-          <div class="v">3</div>
-          <div class="l">Reviews</div>
-        </div>
-        <div class="meet-stat">
-          <div class="v">5.0 ★</div>
-          <div class="l">Rating</div>
-        </div>
-      </div>
-      <div class="host-meta-rows">
-        <div class="host-meta-row">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 22a8 8 0 0116 0"/></svg>
-          Born in the 00s
-        </div>
-        <div class="host-meta-row">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M22 10L12 4 2 10l10 6 10-6z"/><path d="M6 12v5a6 6 0 0012 0v-5"/></svg>
-          Where I went to school: Delhi College of Engineering
-        </div>
-      </div>
-      <div class="cohost-row">
-        <h3>Co-Hosts</h3>
-        <div class="cohost">
-          <div class="cohost-avatar">R</div>
-          Rahul
-        </div>
-      </div>
-      <div class="host-details-list">
-        <div><span class="strong">Response rate:</span> 100%</div>
-        <div><span class="strong">Responds within an hour</span></div>
-      </div>
-      <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="message-host-btn" onclick="fbq('track','Contact',{content_name:'Message Host'})">Message host</a>
-      <p class="protect-note">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5.5-3.8 10-9 11-5.2-1-9-5.5-9-11V6l9-4z"/></svg>
-        To help protect your payment, always use Airbnb to send money and communicate with hosts.
-      </p>
-    </div>
-  </section>
-
-  <hr class="div">
-
-  <!-- ===== THINGS TO KNOW ===== -->
-  <section class="section fade-up" id="ttk">
-    <h2 class="tight">Things to know</h2>
-    <div class="ttk">
-      <div class="ttk-col">
-        <h3>House rules</h3>
-        <ul>
-          <li>Check-in: 12:00 pm – 6:00 pm</li>
-          <li>Checkout before 10:00 am</li>
-          <li>4 guests maximum</li>
-        </ul>
-        <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="more">Show more</a>
-      </div>
-      <div class="ttk-col">
-        <h3>Safety &amp; property</h3>
-        <ul>
-          <li class="muted">No smoke alarm</li>
-          <li class="muted">Carbon monoxide detector not required</li>
-          <li>Must climb stairs</li>
-        </ul>
-        <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="more">Show more</a>
-      </div>
-      <div class="ttk-col">
-        <h3>Cancellation policy</h3>
-        <ul>
-          <li class="muted">Add your trip dates to get the cancellation details for this stay.</li>
-        </ul>
-        <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" class="more">Show more</a>
-      </div>
-    </div>
-    <button type="button" class="lead-entry" id="bookingPanelLead">Get the best rate on WhatsApp →</button>
   </section>
 
 </div>
@@ -1107,50 +619,61 @@ hr.div{border:none;border-top:1px solid var(--hairline);margin:0}
 <footer class="footer">
   <div class="footer-inner">
     <span>© Pyari Kunj Homestay · Vrindavan, Uttar Pradesh</span>
-    <span>Questions? <a href="#" id="footerContact">Get in touch</a></span>
+    <a href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener">View on Airbnb</a>
   </div>
 </footer>
 
 <!-- ===== STICKY RESERVE BAR ===== -->
 <div class="reserve-bar" role="region" aria-label="Reserve">
   <div class="reserve-bar-left">
-    <span class="price">Add dates for prices</span>
+    <span class="prop-name">Pyari Kunj Homestay</span>
     <span class="stars">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      5.0 · <a href="#reviews">3 reviews</a>
+      5.0 · Vrindavan
     </span>
   </div>
-  <a class="reserve-bar-cta" href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" onclick="fbq('track','InitiateCheckout',{content_name:'Mobile Reserve Bar'})">Check availability</a>
+  <a class="reserve-bar-cta" href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener" onclick="fbq('track','InitiateCheckout',{content_name:'Reserve Bar'})">Check availability</a>
 </div>
 
-<!-- ===== FLOATING CTA (lead-gen) ===== -->
-<button class="floating-cta" id="floatingCta" type="button" aria-label="Get exclusive rates">
-  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/></svg>
-  Exclusive rates
+<!-- ===== PROMO BUBBLE ===== -->
+<button class="promo-bubble" id="promoBubble" aria-label="Tap to get 10% discount">
+  <span class="pb-pct">10%</span>
+  <span class="pb-off">OFF</span>
+  <span class="pb-tap">Tap to claim</span>
 </button>
 
-<!-- ===== BOTTOM SHEET (form preserved) ===== -->
+<!-- ===== BOTTOM SHEET ===== -->
 <div class="sheet-backdrop" id="sheetBackdrop"></div>
 <div class="bottom-sheet" id="bottomSheet" role="dialog" aria-modal="true" aria-label="Get exclusive rates for Pyari Kunj">
   <div class="sheet-handle"></div>
   <div class="sheet-form" id="sheetForm">
-    <h3 class="sheet-title">Get the best rate</h3>
-    <p class="sheet-desc">Drop your WhatsApp number — the host will message you the best available rate.</p>
+    <h3 class="sheet-title">Unlock 10% off your stay</h3>
+    <p class="sheet-desc">Share your WhatsApp number and we'll send your exclusive discount code instantly.</p>
+    <div class="discount-badge">
+      <div class="discount-badge-pct">10%</div>
+      <div class="discount-badge-text">
+        <span class="d-title">Discount on your booking</span>
+        <span class="d-sub">Enter your number below to claim it</span>
+      </div>
+    </div>
     <div class="input-group">
       <label for="leadPhone">WhatsApp number</label>
       <input type="tel" id="leadPhone" name="phone" placeholder="+91 98765 43210" autocomplete="tel" inputmode="tel" required>
     </div>
-    <button type="button" class="sheet-submit" id="sheetSubmit">Send me the rate</button>
+    <button type="button" class="sheet-submit" id="sheetSubmit">Claim my 10% discount</button>
     <button type="button" class="sheet-dismiss" id="sheetDismiss">Maybe later</button>
   </div>
   <div class="sheet-success" id="sheetSuccess">
     <div class="sheet-success-icon" aria-hidden="true">
       <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
     </div>
-    <h3 class="sheet-success-title">You're all set</h3>
+    <h3 class="sheet-success-title">You're all set!</h3>
     <p class="sheet-success-desc">We'll reach out on WhatsApp shortly with the best rates and tips for your Vrindavan visit.</p>
-    <button type="button" class="sheet-submit" style="margin-top:20px" onclick="fbq('track','InitiateCheckout',{content_name:'Post Lead'});window.open('https://www.airbnb.co.in/h/pyari-kunj','_blank')">Browse dates on Airbnb</button>
-    <button type="button" class="sheet-dismiss" onclick="closeSheet()">Close</button>
+    <div class="airbnb-opening" id="airbnbOpening">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
+      Opening Airbnb listing for you…
+    </div>
+    <button type="button" class="sheet-dismiss" onclick="closeSheet()" style="margin-top:18px">Close</button>
   </div>
 </div>
 
@@ -1162,16 +685,19 @@ const sheetForm = document.getElementById('sheetForm');
 const sheetSuccess = document.getElementById('sheetSuccess');
 let sheetShown = false;
 let sheetDismissed = false;
+let carouselSwipes = 0;
+const AIRBNB_URL = 'https://www.airbnb.co.in/h/pyari-kunj';
 
 function openSheet() {
+  if (sheetShown) return;
   sheet.classList.add('show');
   backdrop.classList.add('show');
   sheetShown = true;
   document.body.style.overflow = 'hidden';
   setTimeout(() => {
-    const firstInput = sheet.querySelector('input');
-    if (firstInput) firstInput.focus();
-  }, 400);
+    const input = sheet.querySelector('input');
+    if (input && window.innerWidth >= 768) input.focus();
+  }, 420);
 }
 
 function closeSheet() {
@@ -1181,73 +707,106 @@ function closeSheet() {
   document.body.style.overflow = '';
 }
 
-setTimeout(() => { if (!sheetDismissed) openSheet(); }, 3000);
+function tryOpenSheet() {
+  if (sheetShown || sheetDismissed) return;
+  openSheet();
+}
 
 backdrop.addEventListener('click', closeSheet);
 document.getElementById('sheetDismiss').addEventListener('click', closeSheet);
 
-// Swipe to dismiss
-let startY = 0, currentY = 0;
-sheet.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; }, { passive: true });
-sheet.addEventListener('touchmove', (e) => {
-  currentY = e.touches[0].clientY;
-  const diff = currentY - startY;
+// Swipe-to-dismiss
+let touchStartY = 0, touchCurrentY = 0;
+sheet.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+sheet.addEventListener('touchmove', e => {
+  touchCurrentY = e.touches[0].clientY;
+  const diff = touchCurrentY - touchStartY;
   if (diff > 0) {
-    sheet.style.transform = `translateY(${diff}px)`;
-    if (window.innerWidth >= 768) sheet.style.transform = `translate(-50%, ${diff}px)`;
+    sheet.style.transform = window.innerWidth >= 768
+      ? `translate(-50%,${diff}px)`
+      : `translateY(${diff}px)`;
   }
 }, { passive: true });
 sheet.addEventListener('touchend', () => {
-  const diff = currentY - startY;
-  if (diff > 100) closeSheet();
+  if (touchCurrentY - touchStartY > 100) closeSheet();
   sheet.style.transform = '';
-  startY = 0; currentY = 0;
+  touchStartY = 0; touchCurrentY = 0;
 });
 
-// ===== ATTRIBUTION CAPTURE (first-touch + last-touch) =====
-// Captures UTM/fbclid/gclid from URL into localStorage so attribution
-// survives across visits — even if the user lands via Meta ad once and
-// returns later from a direct link.
+// ===== ENGAGEMENT-BASED TRIGGER =====
+// Fires on first of: 6s active page time | highlights scrolled into view | 2+ carousel swipes | desktop exit intent
+
+let activeSeconds = 0;
+const engageTick = setInterval(() => {
+  if (!document.hidden) {
+    activeSeconds++;
+    if (activeSeconds >= 6) {
+      clearInterval(engageTick);
+      tryOpenSheet();
+    }
+  }
+}, 1000);
+
+// Highlights viewed (user has seen the content — peak interest moment)
+const highlightsEl = document.querySelector('.highlights-section');
+if (highlightsEl) {
+  const highlightsObs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      highlightsObs.disconnect();
+      tryOpenSheet();
+    }
+  }, { threshold: 0.5 });
+  highlightsObs.observe(highlightsEl);
+}
+
+// Desktop exit intent
+document.addEventListener('mouseleave', e => {
+  if (e.clientY <= 0) tryOpenSheet();
+});
+
+// ===== ATTRIBUTION CAPTURE =====
 (function captureAttribution() {
   try {
     const params = new URLSearchParams(window.location.search);
     const fields = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid','msclkid'];
     const current = {};
     fields.forEach(k => { const v = params.get(k); if (v) current[k] = v; });
-    if (Object.keys(current).length === 0) return;
+    if (!Object.keys(current).length) return;
     current.captured_at = new Date().toISOString();
     current.landing_url = window.location.href;
     localStorage.setItem('attribution_last', JSON.stringify(current));
     if (!localStorage.getItem('attribution_first')) {
       localStorage.setItem('attribution_first', JSON.stringify(current));
     }
-  } catch (e) { /* localStorage may be blocked — silently ignore */ }
+  } catch(e) {}
 })();
 
 function readAttribution(key) {
-  try { return JSON.parse(localStorage.getItem(key) || '{}'); }
-  catch (e) { return {}; }
+  try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) { return {}; }
 }
 
-// Form submission — phone-only, with attribution payload
+// ===== FORM SUBMISSION =====
 document.getElementById('sheetSubmit').addEventListener('click', () => {
   const phoneEl = document.getElementById('leadPhone');
   const phone = phoneEl.value.trim();
-
   phoneEl.classList.remove('error');
 
-  if (!phone || phone.replace(/\D/g, '').length < 8) {
+  if (!phone || phone.replace(/\D/g,'').length < 8) {
     phoneEl.focus();
     phoneEl.classList.add('error');
     return;
   }
 
   fbq('track','Lead',{content_name:'Homestay Inquiry'});
+  fbq('track','InitiateCheckout',{content_name:'Post Lead'});
+
+  // Open Airbnb synchronously within the click handler (avoids popup blockers)
+  window.open(AIRBNB_URL, '_blank', 'noopener');
 
   const attrFirst = readAttribution('attribution_first');
-  const attrLast = readAttribution('attribution_last');
-
+  const attrLast  = readAttribution('attribution_last');
   const LEADS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbysPPtU9TxMh_99D_nf1imCfMZLDAgDE1a1xh2O8nKmb-DJNaFTGXudjo5XC_OZPsInLQ/exec';
+
   try {
     fetch(LEADS_ENDPOINT, {
       method: 'POST', mode: 'no-cors',
@@ -1259,88 +818,79 @@ document.getElementById('sheetSubmit').addEventListener('click', () => {
         current_url: window.location.href,
         referrer: document.referrer || '',
         userAgent: navigator.userAgent,
-        utm_source: attrLast.utm_source || '',
-        utm_medium: attrLast.utm_medium || '',
-        utm_campaign: attrLast.utm_campaign || '',
-        utm_content: attrLast.utm_content || '',
-        utm_term: attrLast.utm_term || '',
-        fbclid: attrLast.fbclid || '',
-        gclid: attrLast.gclid || '',
+        utm_source:       attrLast.utm_source || '',
+        utm_medium:       attrLast.utm_medium || '',
+        utm_campaign:     attrLast.utm_campaign || '',
+        utm_content:      attrLast.utm_content || '',
+        utm_term:         attrLast.utm_term || '',
+        fbclid:           attrLast.fbclid || '',
+        gclid:            attrLast.gclid || '',
         first_utm_source: attrFirst.utm_source || '',
         first_utm_campaign: attrFirst.utm_campaign || '',
         first_landing_at: attrFirst.captured_at || ''
       })
     }).catch(err => console.warn('Lead sync failed:', err));
-  } catch (err) { console.warn('Lead sync error:', err); }
+  } catch(err) { console.warn('Lead sync error:', err); }
 
   sheetForm.classList.add('hidden');
   sheetSuccess.classList.add('show');
 });
 
-// Footer + inline + show-more triggers
-document.getElementById('footerContact').addEventListener('click', (e) => {
-  e.preventDefault();
-  fbq('track','Contact',{content_name:'Footer Link'});
-  openSheet();
-});
-document.getElementById('bookingPanelLead').addEventListener('click', () => {
-  fbq('track','Contact',{content_name:'Booking Panel Secondary'});
-  openSheet();
-});
-document.getElementById('aboutMore').addEventListener('click', (e) => {
-  e.preventDefault();
-  window.open('https://www.airbnb.co.in/h/pyari-kunj','_blank','noopener');
-});
+// ===== PHOTO REEL DOTS + CAROUSEL ENGAGEMENT TRIGGER =====
+const reelTrack = document.getElementById('reelTrack');
+const reelDots  = document.querySelectorAll('.reel-dot');
+let lastReelIdx = 0;
 
-// Floating CTA
-const floatingCta = document.getElementById('floatingCta');
-floatingCta.addEventListener('click', () => {
-  fbq('track','Contact',{content_name:'Floating CTA'});
-  openSheet();
-});
-
-// ===== HERO PHOTO COUNTER =====
-const galleryScroll = document.getElementById('galleryScroll');
-const counter = document.getElementById('photoCounter');
-const totalSlides = galleryScroll ? galleryScroll.querySelectorAll('.hero-slide').length : 0;
-if (galleryScroll && counter) {
-  galleryScroll.addEventListener('scroll', () => {
-    const scrollLeft = galleryScroll.scrollLeft;
-    const card = galleryScroll.querySelector('.hero-slide');
-    if (!card) return;
-    const w = card.offsetWidth;
-    const idx = Math.round(scrollLeft / w);
-    counter.textContent = `${Math.min(idx + 1, totalSlides)} / ${totalSlides}`;
+if (reelTrack && reelDots.length) {
+  reelTrack.addEventListener('scroll', () => {
+    const slides = reelTrack.querySelectorAll('.reel-slide');
+    if (!slides.length) return;
+    const slideWidth = slides[0].offsetWidth + 12;
+    const idx = Math.min(Math.round(reelTrack.scrollLeft / slideWidth), slides.length - 1);
+    if (idx !== lastReelIdx) {
+      reelDots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      if (idx > lastReelIdx) {
+        carouselSwipes++;
+        if (carouselSwipes >= 2) tryOpenSheet();
+      }
+      lastReelIdx = idx;
+    }
   }, { passive: true });
+
+  reelDots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      const slides = reelTrack.querySelectorAll('.reel-slide');
+      if (slides[i]) {
+        reelTrack.scrollTo({ left: i * (slides[0].offsetWidth + 12), behavior: 'smooth' });
+      }
+    });
+  });
 }
 
-// ===== FADE-UP + FLOATING CTA TRIGGER =====
-const heroSection = document.querySelector('.hero');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.target === heroSection) {
-      floatingCta.classList.toggle('visible', !entry.isIntersecting && sheetDismissed);
-    }
-    if (entry.target.classList.contains('fade-up') && entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
-}, { threshold: 0.05, rootMargin: '-40px' });
-if (heroSection) observer.observe(heroSection);
-document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+// ===== FADE-UP SECTIONS =====
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
 
-// Smooth scroll for in-page anchors
-document.querySelectorAll('a[href^="#"]').forEach(link => {
-  const href = link.getAttribute('href');
-  if (!href || href === '#' || href.length < 2) return;
-  link.addEventListener('click', (e) => {
-    const target = document.querySelector(href);
-    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  });
+// ===== PROMO BUBBLE =====
+document.getElementById('promoBubble').addEventListener('click', () => {
+  sheetShown = false; // allow re-open if already dismissed
+  sheetDismissed = false;
+  openSheet();
+});
+
+// ===== SHARE BUTTON =====
+document.getElementById('shareBtn').addEventListener('click', () => {
+  if (navigator.share) {
+    navigator.share({ title: 'Pyari Kunj Homestay – Vrindavan', url: window.location.href }).catch(() => {});
+  } else {
+    navigator.clipboard?.writeText(window.location.href).catch(() => {});
+  }
 });
 </script>
 
-<!-- All third-party analytics load AFTER page is interactive -->
+<!-- Analytics deferred until after page is interactive -->
 <script>
 window.addEventListener('load', function() {
   setTimeout(function() {
