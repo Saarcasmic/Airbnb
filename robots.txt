@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pyari-kunj.vercel.app/sitemap.xml
