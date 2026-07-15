@@ -18,9 +18,26 @@ insta1.jpeg
 insta2.jpg
 videotour-ai.mp4
 
+# Unrelated projects / heavy source assets — never deploy
+final/
+saree/
+collection/
+reel/
+overlay/
+*.mp4
+BB_gate.jpeg
+guestFav.png
+review1.png
+reveiew2.png
+review3.png
+noor.json
+gen_collection.sh
+gen_sarees.sh
+google.sh
+
 # Build helpers
 optimize-images.sh
 temp_auto_push.bat
 temp_interactive_push.bat
-.gitignore
+.env*
 branch_structure.json
