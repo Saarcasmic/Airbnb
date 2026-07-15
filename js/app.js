@@ -12,8 +12,8 @@ var CONFIG = {
   minNights: 1,
   maxGuests: 4,
   maxAdvanceMonths: 6,      // booking horizon for the calendar
-  upiId: 'REPLACE-BEFORE-LAUNCH@upi',
-  payeeName: 'REPLACE BEFORE LAUNCH',
+  upiId: 'vrand0939@okicici',
+  payeeName: 'Pyari Kunj Vrindavan',
   whatsapp: '918791567123',
   airbnbUrl: 'https://www.airbnb.co.in/h/pyari-kunj',
   propertyName: 'Pyari Kunj Vrindavan',
