@@ -42,9 +42,50 @@ function flushQueuedTracks() {
 }
 window.flushQueuedTracks = flushQueuedTracks;
 
-function metaTrack(eventName, properties) {
-  try { window.fbq('track', eventName, properties || {}); } catch (e) {}
+/* Meta dual-send: Pixel (browser) + CAPI (server) share ONE eventID so Meta
+   deduplicates the two copies. Purchase is NEVER sent from here — it is fired
+   server-side only, from a verified & captured Razorpay payment. */
+function getCookie(name) {
+  var m = document.cookie.match('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)');
+  return m ? decodeURIComponent(m[1]) : null;
 }
+function uuid() {
+  return (self.crypto && crypto.randomUUID) ? crypto.randomUUID()
+    : 'e-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+}
+function metaUserData() {
+  var fbp = getCookie('_fbp');
+  var fbc = getCookie('_fbc');
+  if (!fbc) {
+    try {
+      var cid = new URLSearchParams(location.search).get('fbclid');
+      if (cid) fbc = 'fb.1.' + Date.now() + '.' + cid;
+    } catch (e) {}
+  }
+  return { fbp: fbp, fbc: fbc };
+}
+function sendCapi(eventName, id, customData, userData) {
+  var ud = metaUserData();
+  var payload = {
+    event_name: eventName, event_id: id, event_source_url: location.href,
+    custom_data: customData || {}, fbp: ud.fbp, fbc: ud.fbc
+  };
+  if (userData && userData.em) payload.em = userData.em;
+  if (userData && userData.ph) payload.ph = userData.ph;
+  try {
+    fetch('/api/meta-event', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload), keepalive: true
+    }).catch(function () {});
+  } catch (e) {}
+}
+function metaTrack(eventName, customData, userData) {
+  var id = uuid();
+  try { window.fbq && window.fbq('track', eventName, customData || {}, { eventID: id }); } catch (e) {}
+  sendCapi(eventName, id, customData || {}, userData);
+}
+// Browser PageView already fired inline (window.__pkPV); mirror it to CAPI once.
+function sendPageViewCapi() { if (window.__pkPV) sendCapi('PageView', window.__pkPV, {}, null); }
 
 /* ================= DATE HELPERS =================
    All dates are 'YYYY-MM-DD' strings; math via Date.UTC (no TZ drift). */
@@ -89,7 +130,7 @@ function quote(nights) {
 var NIGHTLY_OFF = Math.round(CONFIG.basePrice * (1 - CONFIG.discountPct));
 
 /* ================= DRAFT STORE (localStorage + TTL) ================= */
-var FUNNEL_STATES = ['idle', 'review', 'awaiting_confirmation', 'payment', 'payment_claimed'];
+var FUNNEL_STATES = ['idle', 'review', 'confirmed'];
 
 function stateRank(s) { return FUNNEL_STATES.indexOf(s); }
 
@@ -117,6 +158,7 @@ function saveDraft() {
       checkin: booking.checkin,
       checkout: booking.checkout,
       guests: booking.guests,
+      ref: lastRef,
       savedAt: Date.now()
     }));
   } catch (e) {}
@@ -129,6 +171,8 @@ function clearDraft() {
 /* ================= BOOKING STATE ================= */
 var booking = { state: 'idle', checkin: null, checkout: null, guests: 2 };
 var lastTrackedTotal = null;
+var lastRef = null;      // reservation ref of the confirmed booking
+var reserving = false;   // guards against double checkout starts
 
 function setState(next) {
   booking.state = next;
@@ -149,32 +193,17 @@ function downgradeIfNeeded() {
 function waUrl(message) {
   return 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(message);
 }
-function waConfirmUrl() {
+function hostBookingUrl(ref) {
   var q = quote(nightsBetween(booking.checkin, booking.checkout));
   return waUrl(
-    'Hi Saar! I’d like to book ' + CONFIG.propertyName + '.\n' +
+    'Hi Saar! My Pyari Kunj booking is confirmed and paid.\n' +
+    'Ref: ' + (ref || '—') + '\n' +
     'Check-in: ' + fmtLong(booking.checkin) + '\n' +
     'Check-out: ' + fmtLong(booking.checkout) + ' (' + q.nights + ' night' + (q.nights > 1 ? 's' : '') + ')\n' +
     'Guests: ' + booking.guests + '\n' +
-    'Total with 10% direct discount: ' + rupees(q.total) + '\n' +
-    'Are these dates available?'
+    'Paid: ' + rupees(q.total) + ' via Razorpay.\n' +
+    'Please share the exact location and check-in details.'
   );
-}
-function waPaidUrl() {
-  var q = quote(nightsBetween(booking.checkin, booking.checkout));
-  return waUrl(
-    'Hi Saar! I’ve paid ' + rupees(q.total) + ' via UPI for ' +
-    fmtRange(booking.checkin, booking.checkout) + ' (' + booking.guests + ' guest' + (booking.guests > 1 ? 's' : '') + '). ' +
-    'Sending the payment screenshot now.'
-  );
-}
-function upiUrl() {
-  var q = quote(nightsBetween(booking.checkin, booking.checkout));
-  var note = (CONFIG.propertyName + ' ' + fmtRange(booking.checkin, booking.checkout)).slice(0, 48);
-  return 'upi://pay?pa=' + encodeURIComponent(CONFIG.upiId) +
-    '&pn=' + encodeURIComponent(CONFIG.payeeName) +
-    '&am=' + q.total.toFixed(2) +
-    '&cu=INR&tn=' + encodeURIComponent(note);
 }
 
 /* ================= DOM ================= */
@@ -386,14 +415,11 @@ function fillSummaries() {
   var q = quote(nightsBetween(booking.checkin, booking.checkout));
   var dates = fmtShort(booking.checkin) + ' → ' + fmtShort(booking.checkout);
   var guests = booking.guests + ' guest' + (booking.guests > 1 ? 's' : '');
-  var ids = ['awaitDates', 'payDates', 'doneDates'];
-  for (var i = 0; i < ids.length; i++) if (el[ids[i]]) el[ids[i]].textContent = dates;
-  var gids = ['awaitGuests', 'payGuests', 'doneGuests'];
-  for (var j = 0; j < gids.length; j++) if (el[gids[j]]) el[gids[j]].textContent = guests;
-  var tids = ['awaitTotal', 'doneTotal'];
-  for (var k = 0; k < tids.length; k++) if (el[tids[k]]) el[tids[k]].textContent = rupees(q.total);
-  el.payAmount.textContent = rupees(q.total);
-  el.payAmountSub.textContent = q.nights + ' night' + (q.nights > 1 ? 's' : '') + ' · ' + guests + ' · ' + dates;
+  if (el.doneDates) el.doneDates.textContent = dates;
+  if (el.doneGuests) el.doneGuests.textContent = guests;
+  if (el.doneTotal) el.doneTotal.textContent = rupees(q.total);
+  if (el.confRef) el.confRef.textContent = lastRef || '—';
+  if (el.msgHostBtn) el.msgHostBtn.setAttribute('href', hostBookingUrl(lastRef));
 }
 
 function render() {
@@ -409,7 +435,7 @@ function render() {
     el.bdDiscount.textContent = '−' + rupees(q.discount);
     el.bdTotal.textContent = rupees(q.total);
     el.breakdown.classList.add('show');
-    el.waConfirmBtn.classList.remove('is-disabled');
+    if (el.reserveBtn) el.reserveBtn.classList.remove('is-disabled');
     if (q.total !== lastTrackedTotal) {
       lastTrackedTotal = q.total;
       safeTrack('price_viewed', { nights: q.nights, guests: booking.guests, total: q.total });
@@ -419,8 +445,7 @@ function render() {
     el.datesValue.textContent = 'Add dates';
     el.datesValue.classList.add('placeholder');
     el.breakdown.classList.remove('show');
-    el.waConfirmBtn.classList.add('is-disabled');
-    el.waConfirmBtn.removeAttribute('href');
+    if (el.reserveBtn) el.reserveBtn.classList.add('is-disabled');
   }
   el.guestCount.textContent = booking.guests;
   el.guestMinus.disabled = booking.guests <= 1;
@@ -429,17 +454,7 @@ function render() {
   // --- step visibility ---
   var step = booking.state === 'idle' ? 'review' : booking.state;
   showStep(step);
-  if (hasDates && stateRank(booking.state) >= stateRank('awaiting_confirmation')) fillSummaries();
-
-  // --- payment link (rebuilt each render so amount stays correct) ---
-  if (hasDates) {
-    el.upiPayBtn.setAttribute('href', upiUrl());
-    el.waPaidBtn.setAttribute('href', waPaidUrl());
-    el.waConfirmBtn.setAttribute('href', waConfirmUrl());
-    el.waAgainBtn.setAttribute('href', waConfirmUrl());
-  }
-  el.upiIdText.textContent = CONFIG.upiId;
-  el.upiNameText.textContent = 'Paying ' + CONFIG.payeeName;
+  if (booking.state === 'confirmed' && hasDates) fillSummaries();
 
   renderBar();
   renderResume();
@@ -466,17 +481,7 @@ function renderBar() {
         cta = 'Check dates';
       }
       break;
-    case 'awaiting_confirmation':
-      main = fmtRange(booking.checkin, booking.checkout) + ' · ' + rupees(q.total);
-      sub = 'Waiting for Saar to confirm on WhatsApp';
-      cta = 'Got confirmation?';
-      break;
-    case 'payment':
-      main = rupees(q.total) + ' <span class="bb-unit">to pay</span>';
-      sub = fmtRange(booking.checkin, booking.checkout) + ' · ' + booking.guests + ' guests';
-      cta = 'Pay via UPI';
-      break;
-    case 'payment_claimed':
+    case 'confirmed':
       hidden = true;
       break;
   }
@@ -487,45 +492,102 @@ function renderBar() {
 }
 
 function renderResume() {
-  var show = stateRank(booking.state) >= stateRank('awaiting_confirmation') && booking.checkin;
+  var show = booking.state === 'confirmed' && booking.checkin;
   el.resumeBanner.classList.toggle('show', !!show);
   if (show) {
     var q = quote(nightsBetween(booking.checkin, booking.checkout));
     el.resumeSub.textContent = fmtRange(booking.checkin, booking.checkout) + ' · ' +
-      booking.guests + ' guest' + (booking.guests > 1 ? 's' : '') + ' · ' + rupees(q.total) +
-      (booking.state === 'payment_claimed' ? ' · request sent' : '');
+      booking.guests + ' guest' + (booking.guests > 1 ? 's' : '') + ' · ' + rupees(q.total) + ' · confirmed';
   }
 }
 
-/* ================= CLIPBOARD ================= */
-function copyUpiId() {
-  var done = function () {
-    el.copyBtn.textContent = 'Copied ✓';
-    el.copyBtn.classList.add('copied');
-    setTimeout(function () {
-      el.copyBtn.textContent = 'Copy';
-      el.copyBtn.classList.remove('copied');
-    }, 2000);
-    safeTrack('upi_id_copied', {});
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(CONFIG.upiId).then(done).catch(function () { legacyCopy(done); });
-  } else {
-    legacyCopy(done);
+/* ================= RAZORPAY CHECKOUT FLOW =================
+   Reserve → create order (server prices it) → Razorpay modal → verify signature
+   (server) → confirmed. Purchase is reported server-side, never here. */
+function setReserveLabel(txt) { if (el.reserveLabel) el.reserveLabel.textContent = txt; }
+function showPayError(msg) { if (el.payError) { el.payError.textContent = msg; el.payError.hidden = false; } }
+function hidePayError() { if (el.payError) { el.payError.hidden = true; el.payError.textContent = ''; } }
+function resetReserve() { reserving = false; setReserveLabel('Reserve & pay'); }
+
+function startReserve() {
+  if (reserving || !booking.checkin || !booking.checkout) return;
+  if (rangeHasBlockedNight(booking.checkin, booking.checkout)) {
+    showPayError('Those dates are no longer available — please pick different dates.');
+    return;
   }
+  reserving = true; hidePayError(); setReserveLabel('Starting secure checkout…');
+  var q = quote(nightsBetween(booking.checkin, booking.checkout));
+  safeTrack('reserve_clicked', { total: q.total, nights: q.nights, guests: booking.guests });
+  metaTrack('Lead', { content_name: 'Direct Booking', value: q.total, currency: 'INR' });
+
+  fetch('/api/create-order', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ checkin: booking.checkin, checkout: booking.checkout, guests: booking.guests })
+  }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    .then(function (res) {
+      if (!res.ok || !res.d || !res.d.order_id) { orderError(res.d); resetReserve(); return; }
+      openRazorpay(res.d);
+    })
+    .catch(function () { showPayError('Could not start checkout. Please try again.'); resetReserve(); });
 }
-function legacyCopy(done) {
-  try {
-    var ta = document.createElement('textarea');
-    ta.value = CONFIG.upiId;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    done();
-  } catch (e) {}
+
+function orderError(d) {
+  var e = d && d.error;
+  if (e === 'dates_unavailable') showPayError('Those dates were just taken — please choose different dates.');
+  else if (e === 'availability_unverified') showPayError('We can’t confirm availability right now. Please try again shortly, or message us on WhatsApp.');
+  else if (e === 'razorpay_not_configured') showPayError('Online booking isn’t live yet. Please message us on WhatsApp to book.');
+  else showPayError('Could not start checkout. Please try again.');
+}
+
+function openRazorpay(order) {
+  if (typeof Razorpay === 'undefined') { showPayError('Payment is still loading — please try again in a moment.'); resetReserve(); return; }
+  setReserveLabel('Opening payment…');
+  metaTrack('AddPaymentInfo', { value: order.total, currency: 'INR', content_name: 'Direct Booking' });
+  var rzp = new Razorpay({
+    key: order.key_id,
+    order_id: order.order_id,
+    amount: order.amount,
+    currency: order.currency,
+    name: CONFIG.propertyName,
+    description: fmtRange(booking.checkin, booking.checkout) + ' · ' + booking.guests + ' guest' + (booking.guests > 1 ? 's' : ''),
+    theme: { color: '#A9470B' },
+    notes: { ref: order.reservation_ref },
+    handler: function (resp) { verifyPayment(resp, order); },
+    modal: { ondismiss: function () { safeTrack('checkout_dismissed', {}); resetReserve(); } }
+  });
+  rzp.on('payment.failed', function (resp) {
+    showPayError('Payment failed: ' + ((resp.error && resp.error.description) || 'please try again.'));
+    safeTrack('payment_failed', { reason: (resp.error && resp.error.code) || 'unknown' });
+    resetReserve();
+  });
+  rzp.open();
+}
+
+function verifyPayment(resp, order) {
+  setReserveLabel('Confirming payment…');
+  var ud = metaUserData();
+  fetch('/api/verify-payment', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      razorpay_order_id: resp.razorpay_order_id,
+      razorpay_payment_id: resp.razorpay_payment_id,
+      razorpay_signature: resp.razorpay_signature,
+      fbp: ud.fbp, fbc: ud.fbc
+    })
+  }).then(function (r) { return r.json(); }).then(function (d) {
+    resetReserve();
+    if (d && d.verified) {
+      lastRef = d.reservation_ref || order.reservation_ref;
+      safeTrack('booking_confirmed', { ref: lastRef, amount: d.amount });
+      setState('confirmed');
+      var bookEl = $('book'); if (bookEl) bookEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      showPayError('Payment received but we couldn’t auto-confirm. Please message us on WhatsApp with your payment id.');
+    }
+  }).catch(function () {
+    resetReserve();
+    showPayError('Payment received but we couldn’t auto-confirm. Please message us on WhatsApp.');
+  });
 }
 
 /* ================= INIT ================= */
@@ -534,9 +596,7 @@ function initFunnel() {
     'calSheet', 'calBackdrop', 'calMonths', 'calMain', 'calSub', 'calSave', 'calClear', 'calClose',
     'datesField', 'datesValue', 'guestMinus', 'guestPlus', 'guestCount',
     'breakdown', 'bdNights', 'bdGross', 'bdDiscount', 'bdTotal',
-    'waConfirmBtn', 'gotConfirmBtn', 'waAgainBtn', 'editBookingBtn', 'backToAwaitBtn',
-    'payAmount', 'payAmountSub', 'upiIdText', 'upiNameText', 'copyBtn', 'upiPayBtn', 'upiFallback',
-    'waPaidBtn', 'awaitDates', 'awaitGuests', 'awaitTotal', 'payDates', 'payGuests',
+    'reserveBtn', 'reserveLabel', 'payError', 'confRef',
     'doneDates', 'doneGuests', 'doneTotal', 'newBookingBtn', 'msgHostBtn'];
   for (var i = 0; i < ids.length; i++) el[ids[i]] = $(ids[i]);
 
@@ -547,6 +607,7 @@ function initFunnel() {
     booking.checkin = draft.checkin;
     booking.checkout = draft.checkout;
     booking.guests = draft.guests;
+    lastRef = draft.ref || null;
     safeTrack('draft_restored', {
       state: draft.state,
       age_hours: Math.round((Date.now() - draft.savedAt) / 3600000 * 10) / 10
@@ -589,56 +650,15 @@ function initFunnel() {
     render();
   }
 
-  // --- review → awaiting (WhatsApp availability gate) ---
-  el.waConfirmBtn.addEventListener('click', function () {
-    if (!el.waConfirmBtn.getAttribute('href')) return;
-    var q = quote(nightsBetween(booking.checkin, booking.checkout));
-    safeTrack('wa_confirm_clicked', { total: q.total, nights: q.nights, guests: booking.guests });
-    metaTrack('Lead', { content_name: 'Direct Booking', value: q.total, currency: 'INR' });
-    setState('awaiting_confirmation');
-    // anchor href opens WhatsApp; state is already saved before navigation
-  });
+  // --- review → Razorpay checkout ---
+  if (el.reserveBtn) {
+    el.reserveBtn.addEventListener('click', function () {
+      if (el.reserveBtn.classList.contains('is-disabled')) return;
+      startReserve();
+    });
+  }
 
-  // --- awaiting step ---
-  el.gotConfirmBtn.addEventListener('click', function () {
-    safeTrack('confirmation_claimed', {});
-    setState('payment');
-    var q = quote(nightsBetween(booking.checkin, booking.checkout));
-    safeTrack('payment_step_viewed', { total: q.total });
-    metaTrack('AddPaymentInfo', { value: q.total, currency: 'INR' });
-  });
-  el.waAgainBtn.addEventListener('click', function () {
-    safeTrack('wa_confirm_reopened', {});
-  });
-  el.editBookingBtn.addEventListener('click', function () {
-    setState('review');
-    openCalendar('edit-booking');
-  });
-
-  // --- payment step ---
-  el.copyBtn.addEventListener('click', copyUpiId);
-  var upiTimer = null;
-  el.upiPayBtn.addEventListener('click', function () {
-    var q = quote(nightsBetween(booking.checkin, booking.checkout));
-    safeTrack('upi_link_clicked', { total: q.total });
-    clearTimeout(upiTimer);
-    // if no UPI handler takes over (~desktop), reveal the manual-pay hint
-    upiTimer = setTimeout(function () { el.upiFallback.classList.add('show'); }, 1600);
-    var cancel = function () { clearTimeout(upiTimer); };
-    document.addEventListener('visibilitychange', cancel, { once: true });
-    window.addEventListener('pagehide', cancel, { once: true });
-  });
-  el.waPaidBtn.addEventListener('click', function () {
-    var q = quote(nightsBetween(booking.checkin, booking.checkout));
-    safeTrack('payment_claimed', { total: q.total });
-    metaTrack('Purchase', { value: q.total, currency: 'INR' }); // self-reported, unverified
-    setState('payment_claimed');
-  });
-  el.backToAwaitBtn.addEventListener('click', function () {
-    setState('awaiting_confirmation');
-  });
-
-  // --- done step ---
+  // --- confirmed step: start a new booking ---
   el.newBookingBtn.addEventListener('click', function () {
     clearDraft();
     booking.state = 'idle';
@@ -646,6 +666,9 @@ function initFunnel() {
     booking.checkout = null;
     booking.guests = 2;
     lastTrackedTotal = null;
+    lastRef = null;
+    hidePayError();
+    resetReserve();
     render();
     openCalendar('new-booking');
   });
@@ -827,4 +850,6 @@ function initPageUi() {
 document.addEventListener('DOMContentLoaded', function () {
   initFunnel();
   initPageUi();
+  // Mirror the inline browser PageView to CAPI once _fbp/_fbc cookies are set.
+  setTimeout(sendPageViewCapi, 1500);
 });

@@ -13,21 +13,27 @@
 <meta property="og:url" content="https://pyari-kunj.vercel.app/">
 <meta property="og:site_name" content="Pyari Kunj Vrindavan">
 <meta property="og:locale" content="en_IN">
-<meta property="og:image" content="https://pyari-kunj.vercel.app/img/og-image.webp">
+<meta property="og:image" content="https://pyari-kunj.vercel.app/img/herooo.jpeg">
 <meta property="og:image:alt" content="Pyari Kunj Vrindavan homestay near Banke Bihari Temple">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Pyari Kunj Vrindavan | Homestay Near Banke Bihari Temple">
 <meta name="twitter:description" content="Peaceful Vrindavan homestay near Banke Bihari Temple. Book direct with 10% off — AC, kitchen, self check-in, free parking.">
-<meta name="twitter:image" content="https://pyari-kunj.vercel.app/img/og-image.webp">
+<meta name="twitter:image" content="https://pyari-kunj.vercel.app/img/herooo.jpeg">
 <meta name="theme-color" content="#241e14">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23241e14'/%3E%3Cpath d='M50 20c-10 12-22 18-22 34a22 22 0 0044 0c0-16-12-22-22-34z' fill='%23e7cf96'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com" crossorigin>
-<link rel="preload" as="image" href="img/hero-tile-2.webp" media="(max-width:767px)">
-<link rel="preload" as="image" href="img/hero-cine-1600.webp" media="(min-width:768px)">
-<link rel="preload" as="font" href="fonts/marcellus-latin.woff2" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="img/hero-1200.webp" media="(max-width:767px)" fetchpriority="high">
+<link rel="preload" as="image" href="img/hero-2000.webp" media="(min-width:768px)" fetchpriority="high">
+<link rel="preload" as="font" href="fonts/fraunces-latin.woff2" type="font/woff2" crossorigin>
 <link rel="preload" as="font" href="fonts/inter-latin.woff2" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/style.css">
-<script>window.fbq=window.fbq||function(){(window.fbq.q=window.fbq.q||[]).push(arguments)};</script>
+<script>
+/* Meta Pixel — init immediately so PageView fires even for quick bounces.
+   A shared eventID lets the CAPI PageView (sent from app.js) deduplicate. */
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','1506776830794331');
+window.__pkPV=(self.crypto&&crypto.randomUUID)?crypto.randomUUID():'pv-'+Date.now()+'-'+Math.random().toString(36).slice(2);
+fbq('track','PageView',{},{eventID:window.__pkPV});
+</script>
 <meta name="google-site-verification" content="_SIUk714djU8vs06Thk1k74yZNj9W1RJ7XpBRk8j5gw" />
 <script type="application/ld+json">
 {
@@ -47,9 +53,7 @@
       "url": "https://pyari-kunj.vercel.app/",
       "description": "Pyari Kunj Vrindavan is a peaceful 1BHK homestay near Banke Bihari Temple with AC, a kitchen, self check-in, free parking, and space for up to four guests. Book direct with a 10% discount applied automatically.",
       "image": [
-        "https://pyari-kunj.vercel.app/img/hero-cine-1600.webp",
-        "https://pyari-kunj.vercel.app/img/bedroom-front.webp",
-        "https://pyari-kunj.vercel.app/img/lr-wide1.webp"
+        "https://pyari-kunj.vercel.app/img/herooo.jpeg"
       ],
       "priceRange": "₹2,249–₹2,499",
       "checkinTime": "12:00",
@@ -150,7 +154,8 @@
 <!-- ===== HERO ===== -->
 <header class="hero" id="hero">
   <picture class="hero-media">
-    <source media="(min-width:768px)" srcset="img/herooo.jpeg">
+    <source type="image/webp" media="(min-width:768px)" srcset="img/hero-2000.webp">
+    <source type="image/webp" srcset="img/hero-1200.webp">
     <img src="img/herooo.jpeg" alt="Morning light across the hand-painted hall at Pyari Kunj Vrindavan" fetchpriority="high" decoding="async">
   </picture>
   <div class="hero-scrim" aria-hidden="true"></div>
@@ -229,10 +234,10 @@
             </span>
           </div>
         </div>
-        <a class="btn-cta btn-wa is-disabled" id="waConfirmBtn" target="_blank" rel="noopener">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Check availability
-        </a>
+        <button type="button" class="btn-cta is-disabled" id="reserveBtn">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          <span id="reserveLabel">Reserve &amp; pay</span>
+        </button>
       </div>
 
       <div class="breakdown" id="breakdown">
@@ -248,78 +253,41 @@
           <span>Total</span>
           <span class="bd-total-value" id="bdTotal">₹4,498</span>
         </div>
+        <p class="bd-certainty">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          Final all-in price — no taxes, cleaning, or service fees added.
+        </p>
       </div>
 
-      <p class="book-note">You won't pay anything yet. Availability is confirmed on WhatsApp first — pay by UPI only after Saar confirms your dates.</p>
+      <p class="book-note">Instant booking. Pay securely by UPI or card — powered by Razorpay. Full refund if your dates turn out unavailable.</p>
+      <p class="pay-error" id="payError" hidden></p>
       <div class="book-trust-chip">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         5.0 · 14 reviews · 100% five-star
       </div>
     </div>
 
-    <!-- STEP: awaiting WhatsApp confirmation -->
-    <div class="funnel-step" data-step="awaiting_confirmation">
-      <div class="step-col">
-        <p class="step-kicker">Step 2 of 3</p>
-        <h2 class="step-title">Waiting for Saar to confirm your dates</h2>
-        <p class="step-desc">Your request is with Saar on WhatsApp. Once he replies that your dates are available, come back here to pay.</p>
-        <div class="booking-summary">
-          <div class="bs-row"><span class="bs-label">Dates</span><span class="bs-value" id="awaitDates"></span></div>
-          <div class="bs-row"><span class="bs-label">Guests</span><span class="bs-value" id="awaitGuests"></span></div>
-          <div class="bs-row"><span class="bs-label">Total (10% off applied)</span><span class="bs-value" id="awaitTotal"></span></div>
-          <button type="button" class="bs-edit" id="editBookingBtn">Edit dates or guests</button>
-        </div>
-        <div class="status-line"><span class="pulse-dot" aria-hidden="true"></span> Saar usually replies within an hour</div>
-        <button type="button" class="btn-cta" id="gotConfirmBtn">I got confirmation — proceed to pay</button>
-        <a class="btn-quiet" id="waAgainBtn" target="_blank" rel="noopener">Open WhatsApp again</a>
-      </div>
-    </div>
-
-    <!-- STEP: UPI payment -->
-    <div class="funnel-step" data-step="payment">
-      <div class="step-col">
-        <p class="step-kicker">Step 3 of 3</p>
-        <h2 class="step-title">Pay via UPI to confirm your booking</h2>
-        <div class="pay-amount" id="payAmount"></div>
-        <div class="pay-amount-sub" id="payAmountSub"></div>
-        <div class="upi-chip">
-          <span class="upi-meta">
-            <span class="upi-name" id="upiNameText"></span>
-            <span class="upi-id" id="upiIdText"></span>
-          </span>
-          <button type="button" class="copy-btn" id="copyBtn">Copy</button>
-        </div>
-        <a class="btn-cta" id="upiPayBtn">
-          <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
-          Pay in your UPI app
-        </a>
-        <div class="upi-fallback" id="upiFallback">
-          On a computer? Open any UPI app on your phone (GPay, PhonePe, Paytm) and pay the total to the UPI ID above — then send the screenshot below.
-        </div>
-        <a class="btn-quiet" id="waPaidBtn" target="_blank" rel="noopener">I've paid — send screenshot on WhatsApp</a>
-        <button type="button" class="btn-text" id="backToAwaitBtn">Didn't get confirmation yet? Go back</button>
-      </div>
-    </div>
-
-    <!-- STEP: done -->
-    <div class="funnel-step" data-step="payment_claimed">
+    <!-- STEP: confirmed (after verified Razorpay payment) -->
+    <div class="funnel-step" data-step="confirmed">
       <div class="step-col">
         <div class="done-icon" aria-hidden="true">
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
         </div>
-        <h2 class="step-title">Booking request complete</h2>
-        <p class="step-desc">Thank you! Saar will confirm your payment on WhatsApp shortly.</p>
+        <h2 class="step-title">Booking confirmed</h2>
+        <p class="step-desc">Payment received — your reservation <strong id="confRef">—</strong> is in. Saar will send the exact location and check-in details on WhatsApp shortly.</p>
         <div class="booking-summary">
           <div class="bs-row"><span class="bs-label">Dates</span><span class="bs-value" id="doneDates"></span></div>
           <div class="bs-row"><span class="bs-label">Guests</span><span class="bs-value" id="doneGuests"></span></div>
-          <div class="bs-row"><span class="bs-label">Paid via UPI</span><span class="bs-value" id="doneTotal"></span></div>
+          <div class="bs-row"><span class="bs-label">Paid</span><span class="bs-value" id="doneTotal"></span></div>
         </div>
         <ol class="next-steps">
-          <li>Saar confirms your payment was received on WhatsApp.</li>
-          <li>You get the exact location and check-in details (check-in 12–6 pm).</li>
+          <li>You'll get exact location and check-in details on WhatsApp (check-in 12–6 pm).</li>
           <li>Caretaker Dinesh Ji welcomes you at the homestay.</li>
         </ol>
-        <a class="btn-quiet" id="msgHostBtn" href="https://wa.me/918791567123?text=Hi%20Saar!%20About%20my%20Pyari%20Kunj%20booking%3A" target="_blank" rel="noopener">Message Saar on WhatsApp</a>
+        <a class="btn-cta btn-wa" id="msgHostBtn" target="_blank" rel="noopener">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Send booking details to Saar
+        </a>
         <button type="button" class="btn-text" id="newBookingBtn">Start a new booking</button>
       </div>
     </div>
@@ -337,11 +305,11 @@
       </div>
       <div class="ribbon-item">
         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-        <span><strong>Confirmed before you pay</strong> Saar confirms your dates on WhatsApp before any money changes hands.</span>
+        <span><strong>Secure instant booking</strong> Pay by UPI or card through Razorpay — encrypted checkout, with a full refund if your dates turn out unavailable.</span>
       </div>
       <div class="ribbon-item">
         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
-        <span><strong>UPI, in your own app</strong> Pay from GPay, PhonePe, or Paytm — this site never sees card or bank details.</span>
+        <span><strong>UPI or card</strong> Pay with any UPI app, card, or netbanking through Razorpay's secure, encrypted checkout.</span>
       </div>
     </div>
   </div>
@@ -451,6 +419,10 @@
         <img src="img/review-2.webp" alt="Guest review screenshot" loading="lazy" decoding="async">
         <img src="img/review-3.webp" alt="Guest review screenshot" loading="lazy" decoding="async">
       </div>
+      <a class="reviews-airbnb-link js-airbnb-link fade-up" data-source="reviews" href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener">
+        Read all 14 reviews on Airbnb
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+      </a>
     </div>
   </section>
 
@@ -493,11 +465,11 @@
       <ul class="trust-list fade-up">
         <li>
           <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-          <span><strong>Pay only after confirmation.</strong> Your dates are confirmed by Saar on WhatsApp before any money changes hands.</span>
+          <span><strong>Full refund if unavailable.</strong> In the rare case your dates aren't free after booking, you're refunded in full — no questions asked.</span>
         </li>
         <li>
           <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
-          <span><strong>UPI in your own app.</strong> You pay directly from GPay, PhonePe, or Paytm — this site never collects card or bank details.</span>
+          <span><strong>Secure payments by Razorpay.</strong> UPI, cards, and netbanking are processed by Razorpay — this site never stores your payment details.</span>
         </li>
       </ul>
     </div>
@@ -549,7 +521,7 @@
         </details>
         <details class="faq-item">
           <summary>How do I book directly?<span class="faq-mark">+</span></summary>
-          <p class="faq-answer">Pick your dates above to see the total with the 10% discount, confirm availability with Saar on WhatsApp, and then pay via UPI.</p>
+          <p class="faq-answer">Pick your dates above to see the total with the 10% discount applied, then pay securely by UPI, card, or netbanking through Razorpay. Your booking is confirmed instantly.</p>
         </details>
         <details class="faq-item">
           <summary>Is parking available?<span class="faq-mark">+</span></summary>
@@ -630,46 +602,43 @@
     </button>
   </div>
   <div class="lb-track" id="lbTrack">
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Curtains_closed.png" alt="Bedroom with curtains closed" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-almirah.webp" alt="Hand-painted almirah in living room" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide1.webp" alt="Living room wide angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide2.webp" alt="Living room from another angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide3.webp" alt="Living room view" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-wide4.webp" alt="Living room corner" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-flower.webp" alt="Hand-painted floral detail" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-temple.webp" alt="Prayer space at Pyari Kunj" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/lr-insta.webp" alt="Living room detail moment" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-front.webp" alt="Bedroom front view" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-curtains-open.webp" alt="Bedroom with curtains drawn open" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-side.webp" alt="Bedroom side angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bedroom-lamp.webp" alt="Bedside lamp detail" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-wide.webp" alt="Full bathroom wide angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-side.webp" alt="Bathroom side angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/bath-essentials.webp" alt="Bathroom essentials" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-wide.webp" alt="Full kitchen wide angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-1.webp" alt="Kitchenette" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-2.webp" alt="Kitchenette from another angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/kitchen-crockery.webp" alt="Crockery in kitchen" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="https://x3bkqktmdgv4splh.public.blob.vercel-storage.com/Airbnb/exterior.webp" alt="Outside the building" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bedroom-curtains-closed.webp" alt="Bedroom with curtains closed" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-almirah.webp" alt="Hand-painted almirah in living room" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-wide1.webp" alt="Living room wide angle" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-wide2.webp" alt="Living room from another angle" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-wide3.webp" alt="Living room view" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-wide4.webp" alt="Living room corner" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-flower.webp" alt="Hand-painted floral detail" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-temple.webp" alt="Prayer space at Pyari Kunj" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-insta.webp" alt="Living room detail moment" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bedroom-front.webp" alt="Bedroom front view" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bedroom-curtains-open.webp" alt="Bedroom with curtains drawn open" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bedroom-side.webp" alt="Bedroom side angle" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bedroom-lamp.webp" alt="Bedside lamp detail" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bath-wide.webp" alt="Full bathroom wide angle" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bath-side.webp" alt="Bathroom side angle" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bath-essentials.webp" alt="Bathroom essentials" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/kitchen-wide.webp" alt="Full kitchen wide angle" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/kitchen-1.webp" alt="Kitchenette" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/kitchen-2.webp" alt="Kitchenette from another angle" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/kitchen-crockery.webp" alt="Crockery in kitchen" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/exterior.webp" alt="Outside the building" loading="lazy" decoding="async"></div>
   </div>
   <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous photo">&#8249;</button>
   <button class="lb-nav lb-next" id="lbNext" aria-label="Next photo">&#8250;</button>
 </div>
 
+<script defer src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script defer src="js/app.js"></script>
 
-<!-- Analytics deferred until after page is interactive -->
+<!-- PostHog + speed insights deferred until after page is interactive.
+     (Meta Pixel is initialised immediately in <head>.) -->
 <script>
 window.addEventListener('load', function() {
   setTimeout(function() {
-    // Meta Pixel
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init','1506776830794331');
-    fbq('track','PageView');
-
     // PostHog
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog&&window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="Ai Ri init Vi Yi Rr zi Gi Zi capture calculateEventProperties en register register_once register_for_session unregister unregister_for_session sn getFeatureFlag getFeatureFlagPayload getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync an identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException addExceptionStep captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty rn Ki createPersonProfile setInternalOrTestUser nn $i hn opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing Xi debug Mr tn getPageViewId captureTraceFeedback captureTraceMetric Di".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    posthog.init('phc_9ZhWhlT5mwHuusPgzjmNf133RcTa11WqXarKD1FAA4k',{api_host:'https://us.i.posthog.com',defaults:'2026-01-30',person_profiles:'identified_only',session_recording:{maskAllInputs:false}});
+    posthog.init('phc_9ZhWhlT5mwHuusPgzjmNf133RcTa11WqXarKD1FAA4k',{api_host:'https://us.i.posthog.com',defaults:'2026-01-30',person_profiles:'identified_only',session_recording:{maskAllInputs:true}});
     var uid=localStorage.getItem('ph_user_id');if(!uid){uid='anon_'+Math.random().toString(36).slice(2);localStorage.setItem('ph_user_id',uid);}posthog.identify(uid);
     if (window.flushQueuedTracks) window.flushQueuedTracks();
 

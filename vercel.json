@@ -2,6 +2,21 @@
   "outputDirectory": ".",
   "headers": [
     {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://connect.facebook.net https://us-assets.i.posthog.com https://*.posthog.com https://*.i.posthog.com https://esm.sh https://va.vercel-scripts.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://*.razorpay.com https://connect.facebook.net https://www.facebook.com https://*.facebook.com https://graph.facebook.com https://us.i.posthog.com https://us-assets.i.posthog.com https://*.posthog.com https://*.i.posthog.com https://vitals.vercel-insights.com https://*.vercel-insights.com https://esm.sh; frame-src 'self' https://checkout.razorpay.com https://api.razorpay.com https://*.razorpay.com; child-src 'self' blob: https://*.razorpay.com; worker-src 'self' blob: data:; media-src 'self' data: blob: https:; form-action 'self' https://*.razorpay.com; manifest-src 'self'; upgrade-insecure-requests" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    },
+    {
       "source": "/img/(.*).webp",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
