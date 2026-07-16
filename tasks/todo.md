@@ -1,3 +1,81 @@
+# Rewrite 4 (2026-07-17): From-scratch product redesign (prompt.md brief)
+
+Register: brand (conversion). Rule: js/app.js untouched; every DOM/analytics/API hook preserved.
+
+## Plan
+
+- [x] Read repo end-to-end (index.html, css/style.css, js/app.js, api/, lib/, DESIGN.md, fonts, imagery)
+- [x] PRODUCT.md via impeccable init flow
+- [x] Behavior inventory (below)
+- [x] Design direction locked (scene sentence, palette, type, tokens, primary action per viewport)
+- [x] Fonts: Hanken Grotesk latin+latin-ext (body/UI, ₹ covered), Tiro Devanagari subset ("प्यारी कुंज")
+- [x] index.html rewritten (head kept; body markup new; every hook preserved)
+- [x] css/style.css rewritten from scratch (token layer, components, motion, a11y)
+- [x] Browser verification (1440 / 768 / 390): console, flows, keyboard, overflow
+- [x] git diff --check clean
+- [x] DESIGN.md regenerated; review section added here
+
+## Design direction
+
+- Scene: a family on a phone at night, deciding this weekend's Banke Bihari darshan stay — they need the calm of the painted house and a two-minute path to a paid booking.
+- Palette (from the house itself, not the category): cool marble off-white field (the grey-veined floors), deep rani-velvet dark surface (the cushions/rug), rani pink as the single action color, pichwai ultramarine as a quiet secondary accent, brass hairlines. No cream/saffron kit, no navy blocks, nothing Airbnb-coral.
+- Type: Marcellus (inscriptional display — temple-stone calm) + Hanken Grotesk (humanist UI/body). Fraunces/Inter retired.
+- Signature: the toran/mandir scallop edge where dark meets light, plus the Devanagari wordmark accent. One arch-framed photo moment (the mandir), not arch-everything.
+- Booking module: full-width "booking desk" panel overlapping the hero base; horizontal on desktop, stacked on mobile; state-aware sticky bar stays the persistent CTA.
+
+## Behavior inventory (regression checklist)
+
+### Funnel state machine (js/app.js)
+- States: idle → review → confirmed. Steps via `.funnel-step[data-step]` + `.active`; idle renders the `review` step.
+- booking = { state, checkin, checkout, guests:2 }; guests 1..4; minNights 1; horizon 6 months.
+- Draft: localStorage `pk_booking_draft`, v:1, TTL 48h, discarded if past/invalid/blocked (pre-confirm only). Edits after confirm → review (`funnel_downgraded_to_review`).
+- Pricing: ₹2,499/night, −10%; server-authoritative via /api/create-order.
+
+### Required element IDs (unguarded in initFunnel/initPageUi — must exist)
+book, hero, bookBar, barMain, barSub, barCta, resumeBanner, resumeSub, resumeCta,
+calSheet, calBackdrop, calMonths, calMain, calSub, calSave, calClear, calClose,
+datesField, datesValue, guestMinus, guestPlus, guestCount,
+breakdown, bdNights, bdGross, bdDiscount, bdTotal,
+reserveBtn, reserveLabel, payError, confRef, doneDates, doneGuests, doneTotal,
+newBookingBtn, msgHostBtn, mosaicLightbox, lbTrack (21 slides), lbCounter, lbClose, lbPrev, lbNext,
+waFab, shareBtn. Guarded/optional: amenityToggle, amenityMore, readMoreBtn, aboutCopy.
+
+### Class/data hooks
+.js-photo + data-photo-index, .js-airbnb-link + data-source, .funnel-step[data-step],
+state classes .active .open .show .hidden .past-book .is-disabled .collapsed .visible,
+.fade-up (observer adds .visible), body.sheet-open, .cal-day(.empty/.blocked/.anchor/.in-range),
+.placeholder on #datesValue, .bb-was/.bb-unit injected into #barMain via innerHTML.
+
+### Flows to re-verify
+1. Fresh load: no console errors, calendar built, `availability_loaded`.
+2. Dates: open from #datesField and #barCta; blocked/past/horizon disabled; save/clear/backdrop/Escape/browser-back; pushState on open.
+3. Guests: bounds 1–4, disabled states, re-render, `guests_selected`.
+4. Price: breakdown .show, totals, `price_viewed` + InitiateCheckout on total change.
+5. Reserve: `reserve_clicked` + Lead → POST /api/create-order → Razorpay (AddPaymentInfo) → POST /api/verify-payment → confirmed + `booking_confirmed`; errors: dates_unavailable, availability_unverified, razorpay_not_configured, network, dismiss, payment.failed.
+6. Confirmed: summary rows, ref, #msgHostBtn wa.me link, new-booking reset → opens calendar; resume banner after reload; sticky bar hidden.
+7. Lightbox: triggers, n/21 counter, prev/next, scroll sync, Escape + arrows.
+8. Page UI: share, WhatsApp FAB visibility + tracking, airbnb links, attribution capture, .past-book desktop bar.
+
+### Analytics (names + payloads frozen)
+PostHog: airbnb_cta_clicked, availability_loaded, amenities_expanded, booking_confirmed, checkout_dismissed, dates_selected, draft_dates_unavailable, draft_restored, funnel_downgraded_to_review, funnel_opened, guests_selected, lightbox_closed, lightbox_opened, payment_failed, photo_trigger_clicked, price_viewed, reserve_clicked, resume_banner_clicked, share_clicked, sticky_bar_clicked, whatsapp_fab_clicked.
+Meta browser: PageView (inline head), InitiateCheckout, Lead, AddPaymentInfo. Purchase = server-side only.
+
+### Server contracts (unchanged)
+GET /api/availability → { blocked:[{start,end}] }; POST /api/create-order → order payload or error; POST /api/verify-payment → { verified, reservation_ref, amount }.
+
+## Review (Rewrite 4) — done 2026-07-17
+
+**Changed:** index.html (body markup + og:image → img/og-image.webp; head/pixel/JSON-LD otherwise intact), css/style.css (full rewrite, "marble & rani velvet" system), fonts/ (+hanken-grotesk-latin[-ext].woff2, +tiro-devanagari-wordmark.woff2), PRODUCT.md (new), DESIGN.md (regenerated). js/app.js, api/, lib/, vercel.json untouched. herooo.jpeg untouched (kept as hero fallback).
+
+**Verified (Playwright vs python http.server, Chromium 1440/768/390):**
+- 30-check interactive suite all passing: hook IDs present, 21 lightbox slides, calendar open/select/save/clear/Escape/backdrop/browser-back, stepper clamps 1–4, breakdown totals (₹4,998 −₹500 → ₹4,498), reserve → /api/create-order wiring + visible error + label reset, draft restore after reload, confirmed-state simulation (resume banner, ref, wa.me link, bar hidden), new-booking reset reopens calendar, amenities toggle, desktop .past-book bar, FAB visibility, keyboard focus visible, reduced-motion honored, zero unexpected console errors, no horizontal overflow at any width.
+- Analytics with third parties blocked: PostHog capture names verbatim (funnel_opened, sticky_bar_clicked, dates_selected, price_viewed, guests_selected, reserve_clicked, photo_trigger_clicked, lightbox_opened/closed, share_clicked, draft_restored); CAPI POSTs PageView/InitiateCheckout/Lead; Purchase stays server-side.
+- Fixes made during verification: transform-only scroll reveals (no opacity gating), visibility pattern on closed calendar/lightbox/FAB/bar (keyboard + paint safety), desktop FAB above sticky bar, hero alt matches the regenerated bedroom hero, exterior caption corrected, mobile mosaic captions name-only on small tiles.
+
+**Not exercised locally (environment boundary):** real Razorpay modal + /api/verify-payment against live keys, /api/availability blocked-date rendering (function needs Vercel + AIRBNB_ICAL_URL), CSP behavior (Vercel-only headers). Request/response wiring and every error path verified against stubs. Note: Razorpay modal theme in js/app.js is still saffron `#A9470B` — a one-line brand alignment to `#A61E4D` is available if desired (left untouched per "no app.js changes").
+
+---
+
 # Rewrite 3 (2026-07-16): Premium + Razorpay + Meta Pixel/CAPI overhaul
 
 **Goal:** Convert cold Meta ad traffic into real bookings this weekend, with flawless Pixel+CAPI data.
