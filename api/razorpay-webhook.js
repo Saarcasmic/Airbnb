@@ -61,7 +61,8 @@ module.exports = async function handler(req, res) {
     value: Math.round(payment.amount || 0) / 100,
     email: payment.email, phone: payment.contact,
     fbp: notes.fbp, fbc: notes.fbc,   // attribution persisted in order notes at create-order
-    ip: meta.clientIp(req), ua: 'razorpay-webhook',
+    // no ip/ua: this request comes from Razorpay's servers, not the guest —
+    // sending them would poison Meta match quality. fbp/fbc/em/ph carry matching.
     sourceUrl: 'https://pyari-kunj.vercel.app/'
   });
 

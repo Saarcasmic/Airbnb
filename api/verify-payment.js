@@ -44,7 +44,9 @@ module.exports = async function handler(req, res) {
   var notes = (order && order.notes) || {};
   var amountPaise = (payment && payment.amount) || (order && order.amount) || 0;
   var value = Math.round(amountPaise) / 100;
-  var captured = payment && (payment.status === 'captured' || payment.status === 'authorized');
+  // Purchase fires only on CAPTURED money. An authorized-but-uncaptured payment
+  // is fulfilled later by the payment.captured webhook instead.
+  var captured = payment && payment.status === 'captured';
 
   // Fulfil only when the payment is actually captured/authorized.
   if (captured) {
