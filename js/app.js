@@ -489,6 +489,7 @@ function render() {
 
   renderBar();
   renderResume();
+  if (window.__pkSyncFab) window.__pkSyncFab();
 }
 
 function renderBar() {
@@ -846,8 +847,12 @@ function initPageUi() {
   if (waFab && heroSec && bookSec) {
     var heroVisible = true, bookVisible = false;
     var syncFab = function () {
-      waFab.classList.toggle('show', !heroVisible && !bookVisible);
+      // Only invite WhatsApp chats from guests who have committed to dates —
+      // pre-selection questions are handled by the page itself.
+      var hasDates = !!(booking.checkin && booking.checkout);
+      waFab.classList.toggle('show', hasDates && !heroVisible && !bookVisible);
     };
+    window.__pkSyncFab = syncFab; // re-evaluated from render() when dates change
     new IntersectionObserver(function (entries) {
       heroVisible = entries[0].isIntersecting;
       syncFab();
