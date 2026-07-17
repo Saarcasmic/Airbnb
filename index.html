@@ -98,6 +98,12 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
       "occupancy": {
         "@type": "QuantitativeValue",
         "maxValue": 4
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5.0",
+        "reviewCount": "16",
+        "bestRating": "5"
       }
     },
     {
@@ -251,7 +257,7 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
           </button>
           <span class="desk-proof">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            5.0 · 14 reviews · 100% five-star
+            5.0 on Airbnb · 100% five-star reviews
           </span>
         </div>
       </div>
@@ -273,12 +279,12 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
         </div>
         <p class="bd-certainty">
           <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
-          Final all-in price — no taxes, cleaning, or service fees added.
+          Final all-in price. No taxes, cleaning, or service fees added.
         </p>
       </div>
 
       <p class="pay-error" id="payError" hidden></p>
-      <p class="desk-note">Instant booking. Pay securely by UPI or card — powered by Razorpay. Full refund if your dates turn out unavailable.</p>
+      <p class="desk-note">Instant booking. Pay securely by UPI or card through Razorpay. Cancel free until 24 hours before check-in, and full refund if your dates turn out unavailable.</p>
     </div>
 
     <!-- STEP: confirmed (after verified Razorpay payment) -->
@@ -288,7 +294,7 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
         </div>
         <h2 class="step-title">Booking confirmed</h2>
-        <p class="step-desc">Payment received — your reservation <strong id="confRef">—</strong> is in. Saar will send the exact location and check-in details on WhatsApp shortly.</p>
+        <p class="step-desc">Payment received. Your reservation <strong id="confRef">—</strong> is in, and Saar will send the exact location and check-in details on WhatsApp shortly.</p>
         <div class="booking-summary">
           <div class="bs-row"><span class="bs-label">Dates</span><span class="bs-value" id="doneDates"></span></div>
           <div class="bs-row"><span class="bs-label">Guests</span><span class="bs-value" id="doneGuests"></span></div>
@@ -315,7 +321,7 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
     <ul class="assure-row">
       <li>
         <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.41 11.58l-9-9A2 2 0 0011 2H4a2 2 0 00-2 2v7a2 2 0 00.59 1.42l9 9a2 2 0 002.82 0l7-7a2 2 0 000-2.84z"/><circle cx="7" cy="7" r="1.5"/></svg>
-        <span><strong>10% off, always.</strong> The direct-booking discount is applied automatically — no code needed.</span>
+        <span><strong>10% off, always.</strong> The direct-booking discount is applied automatically. No code needed.</span>
       </li>
       <li>
         <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
@@ -337,22 +343,22 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
       <div class="home-copy fade-up">
         <h2 class="h-display">Rooted in generations of Shringaar Seva</h2>
         <p class="lede">Pyari Kunj is a private 1BHK homestay in old Vrindavan, a seven-minute walk from Shri Banke Bihari Ji. The walls are hand-painted, a small mandir presides over the living room, and mornings arrive as raking light across marble floors.</p>
-        <p class="lede">It is a homestay rather than a hotel — a full apartment with air conditioning, a working kitchen, self check-in, and free parking. Families and temple pilgrims who want quiet, privacy, and a home-like atmosphere tend to settle in quickly.</p>
+        <p class="lede">It is a homestay rather than a hotel: a full apartment with air conditioning, a working kitchen, self check-in, and free parking. Families and temple pilgrims who want quiet, privacy, and a home-like atmosphere tend to settle in quickly.</p>
         <div class="laurel">
           <svg width="26" height="40" viewBox="0 0 36 52" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M30 4C18 12 12 24 12 36c0 6 2 10 6 14"/><path d="M23 10c-4 0-8-2-9-6 5-1 8 2 9 6z"/><path d="M17 18c-4 1-8 0-10-4 4-2 8 0 10 4z"/><path d="M13 27c-4 2-8 1-11-2 4-3 8-2 11 2z"/><path d="M12 37c-4 2-9 2-12-1 3-4 8-3 12 1z"/><path d="M14 45c-3 3-8 4-11 2 2-4 7-5 11-2z"/></svg>
           <span class="laurel-score">5.0</span>
           <svg width="26" height="40" viewBox="0 0 36 52" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="transform:scaleX(-1)"><path d="M30 4C18 12 12 24 12 36c0 6 2 10 6 14"/><path d="M23 10c-4 0-8-2-9-6 5-1 8 2 9 6z"/><path d="M17 18c-4 1-8 0-10-4 4-2 8 0 10 4z"/><path d="M13 27c-4 2-8 1-11-2 4-3 8-2 11 2z"/><path d="M12 37c-4 2-9 2-12-1 3-4 8-3 12 1z"/><path d="M14 45c-3 3-8 4-11 2 2-4 7-5 11-2z"/></svg>
           <span class="laurel-text">
             <span class="laurel-label">Guest Favourite</span>
-            <span class="laurel-sub">Top-rated homestay in Vrindavan · 14 reviews, all five stars</span>
+            <span class="laurel-sub">Top-rated homestay in Vrindavan · every review five stars</span>
           </span>
         </div>
       </div>
       <div class="collage fade-up">
-        <button type="button" class="collage-item c-arch js-photo" data-photo-index="7" aria-label="View photo: the hand-painted mandir">
+        <button type="button" class="collage-item c-arch js-photo" data-photo-index="4" aria-label="View photo: the hand-painted mandir">
           <img src="img/mandir-900.webp" alt="Hand-painted mandir in the living room" loading="lazy" decoding="async">
         </button>
-        <button type="button" class="collage-item c-plain js-photo" data-photo-index="2" aria-label="View photo: morning light in the hall">
+        <button type="button" class="collage-item c-plain js-photo" data-photo-index="1" aria-label="View photo: morning light in the hall">
           <img src="img/hero-tile-2.webp" alt="Morning light in the hall" loading="lazy" decoding="async">
         </button>
         <span class="collage-caption">The living-room mandir · morning light in the hall</span>
@@ -368,19 +374,19 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
         <p class="lede">The whole first-floor apartment is yours for the stay — no shared rooms, no other guests.</p>
       </div>
       <div class="mosaic fade-up">
-        <button type="button" class="mosaic-item m-wide js-photo" data-photo-index="2" aria-label="View photos of the living and prayer room">
+        <button type="button" class="mosaic-item m-wide js-photo" data-photo-index="16" aria-label="View photos of the living and prayer room">
           <img src="img/lr-wide1.webp" alt="Living room with floor seating and prayer nook" loading="lazy" decoding="async">
           <span class="m-caption"><span class="m-name">Living &amp; Prayer Room</span><span class="m-desc">Floor seating, a painted mandir, sleeps one more.</span></span>
         </button>
-        <button type="button" class="mosaic-item m-tall js-photo" data-photo-index="9" aria-label="View photos of the bedroom">
+        <button type="button" class="mosaic-item m-tall js-photo" data-photo-index="14" aria-label="View photos of the bedroom">
           <img src="img/bedroom-front.webp" alt="The bedroom with double bed" loading="lazy" decoding="async">
           <span class="m-caption"><span class="m-name">The Bedroom</span><span class="m-desc">Double bed, split AC, hand-blocked florals.</span></span>
         </button>
-        <button type="button" class="mosaic-item js-photo" data-photo-index="16" aria-label="View photos of the kitchen">
+        <button type="button" class="mosaic-item js-photo" data-photo-index="18" aria-label="View photos of the kitchen">
           <img src="img/kitchen-wide.webp" alt="Fully equipped induction kitchen" loading="lazy" decoding="async">
           <span class="m-caption"><span class="m-name">The Kitchen</span><span class="m-desc">Induction kitchen with clay kulhads, fully equipped.</span></span>
         </button>
-        <button type="button" class="mosaic-item js-photo" data-photo-index="13" aria-label="View photos of the bathroom">
+        <button type="button" class="mosaic-item js-photo" data-photo-index="7" aria-label="View photos of the bathroom">
           <img src="img/bath-wide.webp" alt="Full bathroom with hot water" loading="lazy" decoding="async">
           <span class="m-caption"><span class="m-name">The Bath</span><span class="m-desc">Full bathroom, hot water, essentials provided.</span></span>
         </button>
@@ -393,18 +399,30 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
       <div class="amenities fade-up">
         <h3 class="amen-title">What the home provides</h3>
         <ul class="amen-list">
-          <li>Split air conditioning</li>
-          <li>Fully equipped induction kitchen</li>
-          <li>Free parking on premises</li>
-          <li>Self check-in</li>
+          <li>Split &amp; window air conditioning</li>
+          <li>Kitchen with fridge, hob &amp; kettle</li>
           <li>Hot water</li>
-          <li>Bath essentials provided</li>
+          <li>Free parking on premises</li>
+          <li>Essentials: towels, bed sheets, soap &amp; toilet paper</li>
+          <li>Gated community</li>
+          <li>Dedicated workspace</li>
+          <li>Self check-in</li>
         </ul>
         <ul class="amen-list amen-more" id="amenityMore">
-          <li>Double bed + floor-seating bedding</li>
-          <li>Clay kulhads &amp; full crockery</li>
-          <li>Hand-painted mandir in the living room</li>
-          <li>Marble floors throughout</li>
+          <li>Whirlpool fridge &amp; freezer</li>
+          <li>Cooking basics: pots, pans, oil, salt &amp; pepper</li>
+          <li>Full crockery &amp; cutlery</li>
+          <li>Dining table</li>
+          <li>Coffee</li>
+          <li>Shampoo, conditioner, shower gel &amp; body soap</li>
+          <li>Hairdryer</li>
+          <li>Ceiling fans</li>
+          <li>Cleaning products</li>
+          <li>Clothes storage</li>
+          <li>Private patio &amp; outdoor dining area</li>
+          <li>Luggage drop-off allowed</li>
+          <li>Long-term stays allowed (28+ days)</li>
+          <li>Launderette nearby</li>
         </ul>
         <button type="button" class="btn-text amen-toggle" id="amenityToggle">Show all amenities</button>
       </div>
@@ -416,21 +434,26 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
     <div class="toran" aria-hidden="true"></div>
     <div class="shell">
       <div class="section-head fade-up">
-        <h2 class="h-display">Fourteen stays. Fourteen five-star reviews.</h2>
+        <h2 class="h-display">Five stars. Every stay so far.</h2>
+        <p class="reviews-sub">Every guest so far has left five stars on Airbnb. Straight from the listing:</p>
       </div>
-      <div class="quotes-row fade-up">
-        <blockquote class="quote">
-          <p>Extremely clean, hygienic, and matches the listing photos exactly.</p>
-          <cite>Verified guest review</cite>
-        </blockquote>
-        <blockquote class="quote">
-          <p>Exceptional hospitality — a Tulsi mala and Banke Bihari Ji prasad were waiting for us.</p>
-          <cite>Verified guest review</cite>
-        </blockquote>
-        <blockquote class="quote">
-          <p>Dinesh Ji and Rahul Ji made check-in effortless and shared stories we'll keep for years.</p>
-          <cite>Verified guest review</cite>
-        </blockquote>
+      <div class="shot-rail fade-up" role="region" aria-label="Guest review screenshots from Airbnb" tabindex="0">
+        <figure class="shot-card"><img src="img/reviews/abhay.webp" alt="Five-star review by Abhay: felt homely and private, the host is very friendly, will visit again" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/piyush.webp" alt="Five-star review by Piyush Kumar: very comfortable and homely stay close to the heart of Vrindavan" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/shailaja.webp" alt="Five-star review by Shailaja: the property was exactly as shown in the photos, every spot walkable" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/abhinandan.webp" alt="Five-star review by Abhinandan: neat and clean, near the temples, everything top notch" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/shubhangi.webp" alt="Five-star review by Shubhangi: very clean and hygienic, the host gifted an original tulsi mala" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/divya.webp" alt="Five-star review by Joshi Divya Divyang: a wonderful place, would recommend for sure" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/komal.webp" alt="Five-star review by Komal: the best part of my Vrindavan trip, surpassed all expectations" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/vaidehi.webp" alt="Five-star review by Vaidehi: felt like staying in a warm Vrindavan home, Banke Bihari Ji darshan incredibly convenient" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/shivam.webp" alt="Five-star review by Shivam: early check-in accommodated, prasad surprise for the family" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/siddharth.webp" alt="Five-star review by Siddharth: loved the Unexplored Vrindavan guidebook, worth more than the cost" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/ujjwal.webp" alt="Five-star review by Ujjwal: darshan before the crowds, comfortable bed, well-stocked kitchen" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/rupesh.webp" alt="Five-star review by Rupesh: too peaceful, all amenities provided, will surely visit again" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/rishabh-1.webp" alt="Five-star review by Rishabh: hosts arranged a refrigerator within hours of asking" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/rishabh-2.webp" alt="Five-star review by Rishabh: clean and well-maintained, host listened to feedback and took action" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/abhishek.webp" alt="Five-star review by Abhishek: was hesitant about a new listing, amazed on arrival, just like the pictures" loading="lazy" decoding="async"></figure>
+        <figure class="shot-card"><img src="img/reviews/ritwij.webp" alt="Five-star review by Ritwij: beautiful authentic stay, check-in a breeze, 10 out of 10" loading="lazy" decoding="async"></figure>
       </div>
       <dl class="cat-row fade-up">
         <div class="cat-cell"><dt>Cleanliness</dt><dd>5.0</dd></div>
@@ -440,13 +463,8 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
         <div class="cat-cell"><dt>Location</dt><dd>5.0</dd></div>
         <div class="cat-cell"><dt>Value</dt><dd>5.0</dd></div>
       </dl>
-      <div class="shot-strip fade-up" aria-label="Guest review screenshots">
-        <img src="img/review-1.webp" alt="Guest review screenshot" loading="lazy" decoding="async">
-        <img src="img/review-2.webp" alt="Guest review screenshot" loading="lazy" decoding="async">
-        <img src="img/review-3.webp" alt="Guest review screenshot" loading="lazy" decoding="async">
-      </div>
       <a class="reviews-airbnb-link js-airbnb-link fade-up" data-source="reviews" href="https://www.airbnb.co.in/h/pyari-kunj" target="_blank" rel="noopener">
-        Read all 14 reviews on Airbnb
+        Read all the reviews on Airbnb
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
       </a>
     </div>
@@ -468,10 +486,16 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
         </ul>
         <p class="loc-note">Located in Vrindavan, Uttar Pradesh. The exact address is shared after your booking is confirmed.</p>
       </div>
-      <button type="button" class="loc-photo js-photo fade-up" data-photo-index="20" aria-label="View photo: just outside the apartment">
-        <img src="img/exterior.webp" alt="The sunlit terrace just outside the apartment" loading="lazy" decoding="async">
-        <span class="loc-photo-caption">Just outside the apartment</span>
-      </button>
+      <figure class="loc-map fade-up">
+        <div class="loc-map-frame">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3536.5233959123634!2d77.6840303757909!3d27.57729833121482!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39736f47f3b07383%3A0xf6a2751e6731bdfb!2sPyari%20Kunj%20-%20Near%20Bankey%20Bihari%20(Airbnb%20%E2%80%A2%20Vrindavan)!5e0!3m2!1sen!2sin!4v1784275142743!5m2!1sen!2sin" title="Map: Pyari Kunj, near Banke Bihari Temple, Vrindavan" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
+        <figcaption class="loc-map-bar">
+          <svg class="lm-pin" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1116 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="lm-text"><strong>Pyari Kunj</strong> · old Vrindavan, on the temple side of town</span>
+          <a class="lm-open" href="https://www.google.com/maps/search/?api=1&query=Pyari+Kunj+Near+Bankey+Bihari+Vrindavan" target="_blank" rel="noopener">Open in Google Maps</a>
+        </figcaption>
+      </figure>
     </div>
   </section>
 
@@ -481,7 +505,7 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
       <div class="fade-up">
         <h2 class="h-display">Looked after, personally</h2>
         <div class="host-card">
-          <div class="host-avatar" aria-hidden="true">S</div>
+          <img class="host-avatar" src="img/host-saar.webp" alt="Saar, your host" width="64" height="64" loading="lazy" decoding="async">
         <div>
             <div class="host-name">Hosted by Saar</div>
             <div class="host-meta">100% response rate · replies within an hour<br>Caretaker Dinesh Ji welcomes you on site</div>
@@ -495,7 +519,7 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
         </li>
         <li>
           <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
-          <span><strong>Secure payments by Razorpay.</strong> UPI, cards, and netbanking are processed by Razorpay — this site never stores your payment details.</span>
+          <span><strong>Secure payments by Razorpay.</strong> UPI, cards, and netbanking are processed by Razorpay; this site never stores your payment details.</span>
         </li>
       </ul>
     </div>
@@ -632,27 +656,27 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
     </button>
   </div>
   <div class="lb-track" id="lbTrack">
-    <div class="lb-slide"><img src="img/bedroom-curtains-closed.webp" alt="Bedroom with curtains closed" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/lr-almirah.webp" alt="Hand-painted almirah in living room" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/lr-wide1.webp" alt="Living room wide angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/lr-wide2.webp" alt="Living room from another angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/lr-wide3.webp" alt="Living room view" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/lr-wide4.webp" alt="Living room corner" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/lr-flower.webp" alt="Hand-painted floral detail" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/lr-temple.webp" alt="Prayer space at Pyari Kunj" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/lr-insta.webp" alt="Living room detail moment" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/bedroom-front.webp" alt="Bedroom front view" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/bedroom-curtains-open.webp" alt="Bedroom with curtains drawn open" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/bedroom-side.webp" alt="Bedroom side angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/bedroom-lamp.webp" alt="Bedside lamp detail" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/bath-wide.webp" alt="Full bathroom wide angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/bath-side.webp" alt="Bathroom side angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/bath-essentials.webp" alt="Bathroom essentials" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/kitchen-wide.webp" alt="Full kitchen wide angle" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/hero-tile-1.webp" alt="The bedroom through the door, floral bedding and wall art" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/hero-tile-2.webp" alt="Morning light in the hall" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/hero-tile-3.webp" alt="Bedroom with framed miniature paintings above the bed" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/hero-tile-4.webp" alt="Green ceramic breakfast set on the marble sill" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-temple.webp" alt="Hand-painted mandir in the living room" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/induction.webp" alt="Kitchen counter with induction cooktop, kettle, and clay matka" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bath-essentials.webp" alt="Body wash, conditioner, and shampoo dispensers in the bathroom" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bath-wide.webp" alt="Full bathroom with hot water" loading="lazy" decoding="async"></div>
     <div class="lb-slide"><img src="img/kitchen-1.webp" alt="Kitchenette" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/kitchen-2.webp" alt="Kitchenette from another angle" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/kitchen-crockery.webp" alt="Crockery in kitchen" loading="lazy" decoding="async"></div>
-    <div class="lb-slide"><img src="img/exterior.webp" alt="Outside the building" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/exterior.webp" alt="The sunlit terrace just outside the apartment" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bedside.webp" alt="Carved bedside table with brass lamp" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-flower.webp" alt="Hand-painted floral detail" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/kitchen-crockery.webp" alt="Tea, sugar, and masala jars on the kitchen shelf" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/fridge.webp" alt="Whirlpool refrigerator with voltage stabiliser" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bedroom-front.webp" alt="Bedroom front view" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-wide3.webp" alt="Living room view" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-wide1.webp" alt="Living room with floor seating and prayer nook" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/lr-almirah.webp" alt="Built-in almirah clothes storage" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/kitchen-wide.webp" alt="Full kitchen wide angle" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bath-side.webp" alt="Bathroom side angle" loading="lazy" decoding="async"></div>
+    <div class="lb-slide"><img src="img/bedroom-curtains-open.webp" alt="Bedroom with curtains open and window AC" loading="lazy" decoding="async"></div>
   </div>
   <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous photo">&#8249;</button>
   <button class="lb-nav lb-next" id="lbNext" aria-label="Next photo">&#8250;</button>

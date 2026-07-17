@@ -895,35 +895,49 @@ button.field-row:hover{background:var(--rani-tint)}
 .amen-toggle:hover{color:var(--rani)}
 
 /* ===== GUEST WORDS — the velvet interlude ===== */
-.quotes-row{
-  display:grid;
-  gap:clamp(26px,3.5vw,36px);
-  margin-top:clamp(30px,4vw,46px);
-}
-@media(min-width:880px){
-  .quotes-row{grid-template-columns:repeat(3,1fr);gap:0}
-  .quotes-row .quote{padding:0 clamp(20px,2.6vw,34px)}
-  .quotes-row .quote:first-child{padding-left:0}
-  .quotes-row .quote:last-child{padding-right:0}
-  .quotes-row .quote + .quote{border-left:1px solid var(--hairline-ivory)}
-}
-.quote p{
-  font-family:var(--serif);
-  font-size:clamp(17.5px,1.75vw,20px);
-  line-height:1.5;
-  color:var(--on-velvet);
-}
-.quote p::before{content:'\201C';color:var(--rani-glow)}
-.quote p::after{content:'\201D';color:var(--rani-glow)}
-.quote cite{
-  display:block;
-  margin-top:12px;
-  font-style:normal;
-  font-size:12px;
-  font-weight:600;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
+.reviews-sub{
+  margin-top:14px;
+  font-size:15px;
+  line-height:1.65;
   color:var(--on-velvet-mut);
+  max-width:52ch;
+}
+/* screenshot rail — real Airbnb reviews in uniform white cards */
+.shot-rail{
+  display:flex;
+  gap:14px;
+  margin-top:clamp(28px,4vw,42px);
+  overflow-x:auto;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  padding:4px 4px 14px;
+}
+.shot-rail::-webkit-scrollbar{display:none}
+.shot-rail:focus-visible{outline:2px solid var(--rani-glow);outline-offset:4px;border-radius:8px}
+.shot-card{
+  position:relative;
+  flex:0 0 300px;
+  height:380px;
+  scroll-snap-align:start;
+  background:#fff;
+  border-radius:var(--r-m);
+  padding:14px 14px 0;
+  overflow:hidden;
+  box-shadow:0 14px 30px -16px rgba(12,4,9,0.65);
+}
+.shot-card img{width:100%;height:auto}
+/* long screenshots crop at the card edge under a quiet white fade */
+.shot-card::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:36px;
+  background:linear-gradient(180deg,rgba(255,255,255,0) 0%,#fff 85%);
+  pointer-events:none;
+}
+@media(max-width:640px){
+  .shot-card{flex-basis:272px;height:350px}
 }
 .cat-row{
   display:grid;
@@ -947,23 +961,6 @@ button.field-row:hover{background:var(--rani-tint)}
   text-transform:uppercase;
   color:var(--on-velvet-mut);
   margin-bottom:4px;
-}
-.shot-strip{
-  display:flex;
-  gap:14px;
-  margin-top:clamp(30px,4vw,42px);
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-  padding-bottom:8px;
-}
-.shot-strip::-webkit-scrollbar{display:none}
-.shot-strip img{
-  height:210px;
-  width:auto;
-  flex:0 0 auto;
-  border-radius:12px;
-  background:#fff;
 }
 .reviews-airbnb-link{
   display:inline-flex;
@@ -1007,30 +1004,53 @@ button.field-row:hover{background:var(--rani-tint)}
   white-space:nowrap;
 }
 .loc-note{margin-top:16px;font-size:13px;line-height:1.6;color:var(--mut);max-width:48ch}
-.loc-photo{
-  display:block;
+/* the map, framed like a printed plate — calm cartography that wakes on touch */
+.loc-map{
+  background:#fff;
+  border-radius:var(--r-l);
+  padding:10px 10px 0;
+  box-shadow:0 24px 50px -30px rgba(39,24,33,0.45),0 4px 14px -8px rgba(39,24,33,0.12);
+}
+.loc-map-frame{
+  border-radius:12px;
   overflow:hidden;
-  border-radius:var(--r-m);
-  -webkit-tap-highlight-color:transparent;
-  position:relative;
+  background:var(--marble-deep);
 }
-.loc-photo img{
+.loc-map iframe{
+  display:block;
   width:100%;
-  aspect-ratio:4/4.6;
-  object-fit:cover;
-  transition:transform 0.5s cubic-bezier(0.22,1,0.36,1);
+  height:100%;
+  min-height:420px;
+  border:0;
+  filter:grayscale(0.55) sepia(0.12) saturate(0.95);
+  transition:filter 0.45s ease;
 }
-.loc-photo:hover img{transform:scale(1.03)}
-.loc-photo-caption{
-  position:absolute;
-  left:0;right:0;bottom:0;
-  padding:44px 16px 13px;
-  background:linear-gradient(180deg,rgba(28,10,19,0) 0%,rgba(28,10,19,0.68) 76%);
-  color:rgba(253,249,251,0.92);
-  font-size:12.5px;
-  letter-spacing:0.04em;
-  text-align:left;
+.loc-map:hover iframe,
+.loc-map:focus-within iframe{filter:none}
+.loc-map-bar{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:12px 6px 13px;
+  font-size:13px;
+  color:var(--mut);
+  min-width:0;
 }
+.lm-pin{flex-shrink:0;color:var(--rani)}
+.lm-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lm-text strong{color:var(--ink);font-weight:700}
+.lm-open{
+  margin-left:auto;
+  flex-shrink:0;
+  font-weight:600;
+  color:var(--pichwai);
+  text-decoration:underline;
+  text-underline-offset:3px;
+  text-decoration-color:rgba(61,92,168,0.35);
+}
+.lm-open:hover{color:var(--rani);text-decoration-color:currentColor}
+@media(max-width:919px){.loc-map iframe{min-height:320px}}
+@media(max-width:520px){.lm-text{display:none}.loc-map-bar{justify-content:space-between}.lm-open{margin-left:0}}
 
 /* ===== HOSTS ===== */
 .host-grid{display:grid;gap:clamp(28px,4vw,52px)}
@@ -1039,13 +1059,7 @@ button.field-row:hover{background:var(--rani-tint)}
 .host-avatar{
   width:64px;height:64px;
   border-radius:50%;
-  background:var(--velvet);
-  color:var(--rani-glow);
-  font-family:var(--serif);
-  font-size:28px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  object-fit:cover;
   flex-shrink:0;
   box-shadow:0 0 0 2px var(--marble-deep),0 0 0 3.5px var(--brass-line);
 }
@@ -1497,8 +1511,8 @@ body.sheet-open .wa-fab{opacity:0;pointer-events:none}
   transition:transform 0.6s cubic-bezier(0.22,1,0.36,1);
 }
 .fade-up.visible{transform:translateY(0)}
-.collage.fade-up,.loc-photo.fade-up{transform:translateY(26px)}
-.collage.fade-up.visible,.loc-photo.fade-up.visible{transform:translateY(0)}
+.collage.fade-up,.loc-map.fade-up{transform:translateY(26px)}
+.collage.fade-up.visible,.loc-map.fade-up.visible{transform:translateY(0)}
 
 /* ===== REDUCED MOTION ===== */
 @media(prefers-reduced-motion:reduce){
@@ -1508,7 +1522,7 @@ body.sheet-open .wa-fab{opacity:0;pointer-events:none}
   .btn-cta.is-busy::before{content:none}
   .fade-up{opacity:1;transform:none;transition:none}
   .cal-sheet,.book-bar,.wa-fab,.mosaic-lightbox,.cal-backdrop{transition:none}
-  .collage-item img,.mosaic-item img,.loc-photo img{transition:none}
+  .collage-item img,.mosaic-item img{transition:none}
   .btn-cta,.book-bar-cta,.ghost-btn,.step-btn,.m-more{transition:none}
-  .collage-item:hover img,.mosaic-item:hover img,.loc-photo:hover img{transform:none}
+  .collage-item:hover img,.mosaic-item:hover img{transform:none}
 }
