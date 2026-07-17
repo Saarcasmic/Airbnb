@@ -193,6 +193,27 @@ function downgradeIfNeeded() {
 function waUrl(message) {
   return 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(message);
 }
+/* Recovery/assistance WhatsApp link, prefilled with the guest's selection and
+   attribution so the host can pick the thread up with full context. */
+function lastAttribution() {
+  try { return JSON.parse(localStorage.getItem('attribution_last')) || {}; } catch (e) { return {}; }
+}
+function waFallbackUrl(reason) {
+  var lines = ["Hi Saar! I was booking Pyari Kunj on the website but " + reason + '.'];
+  if (booking.checkin && booking.checkout) {
+    var q = quote(nightsBetween(booking.checkin, booking.checkout));
+    lines.push('Check-in: ' + fmtLong(booking.checkin));
+    lines.push('Check-out: ' + fmtLong(booking.checkout) + ' (' + q.nights + ' night' + (q.nights > 1 ? 's' : '') + ')');
+    lines.push('Guests: ' + booking.guests);
+    lines.push('Estimated total: ' + rupees(q.total));
+  }
+  var a = lastAttribution();
+  if (a.utm_source || a.utm_campaign) {
+    lines.push('Source: ' + [a.utm_source, a.utm_medium, a.utm_campaign].filter(Boolean).join(' / '));
+  }
+  lines.push('Can you help me complete the booking?');
+  return waUrl(lines.join('\n'));
+}
 function hostBookingUrl(ref) {
   var q = quote(nightsBetween(booking.checkin, booking.checkout));
   return waUrl(
@@ -213,6 +234,7 @@ var el = {}; // populated in init()
 
 /* ================= AVAILABILITY (Airbnb iCal via /api/availability) ================= */
 var blockedNights = {}; // 'YYYY-MM-DD' -> true (nights that are booked/blocked on Airbnb)
+var availabilityDegraded = false; // true when the live calendar couldn't be loaded
 
 function nextDay(iso) {
   var d = new Date(isoUTC(iso) + 86400000);
@@ -231,6 +253,10 @@ function fetchAvailability() {
   fetch('/api/availability').then(function (r) {
     return r.ok ? r.json() : null;
   }).then(function (data) {
+    // Be honest when the live calendar couldn't load: don't present every date
+    // as apparently free without saying so (the server still fails closed).
+    availabilityDegraded = !data || !!data.degraded;
+    if (availabilityDegraded && calOpen) paintCalendar();
     if (!data || !Array.isArray(data.blocked) || !data.blocked.length) return;
     blockedNights = {};
     data.blocked.forEach(function (range) {
@@ -253,7 +279,10 @@ function fetchAvailability() {
       safeTrack('draft_dates_unavailable', {});
     }
     safeTrack('availability_loaded', { blocked_nights: Object.keys(blockedNights).length });
-  }).catch(function () {});
+  }).catch(function () {
+    availabilityDegraded = true;
+    if (calOpen) paintCalendar();
+  });
 }
 
 /* ================= CALENDAR ================= */
@@ -360,7 +389,9 @@ function paintCalendar() {
     el.calMain.textContent = 'Select check-in';
     el.calSub.textContent = Object.keys(blockedNights).length
       ? 'Struck-out dates are already booked'
-      : 'Minimum stay: 1 night';
+      : (availabilityDegraded
+        ? 'Live availability is briefly unavailable; dates are re-verified before payment'
+        : 'Minimum stay: 1 night');
     el.calSave.disabled = true;
   }
 }
@@ -509,8 +540,35 @@ function setReserveLabel(txt) {
   // visual-only busy state (spinner) while checkout/verification is in flight
   if (el.reserveBtn) el.reserveBtn.classList.toggle('is-busy', txt !== 'Reserve & pay');
 }
-function showPayError(msg) { if (el.payError) { el.payError.textContent = msg; el.payError.hidden = false; } }
-function hidePayError() { if (el.payError) { el.payError.hidden = true; el.payError.textContent = ''; } }
+/* msg: visible text · waReason: when set, appends a prefilled WhatsApp recovery
+   link · asNote: neutral (non-error) styling for recoverable states. */
+function showPayError(msg, waReason, asNote) {
+  if (!el.payError) return;
+  el.payError.textContent = msg;
+  el.payError.classList.toggle('is-note', !!asNote);
+  if (waReason) {
+    el.payError.appendChild(document.createTextNode(' '));
+    var a = document.createElement('a');
+    a.href = waFallbackUrl(waReason);
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.className = 'pay-error-wa';
+    a.textContent = 'Message Saar on WhatsApp';
+    a.addEventListener('click', function () {
+      safeTrack('whatsapp_fallback_clicked', { context: waReason });
+      metaTrack('Contact', { content_name: 'WhatsApp Fallback' });
+    });
+    el.payError.appendChild(a);
+  }
+  el.payError.hidden = false;
+}
+function hidePayError() {
+  if (el.payError) {
+    el.payError.hidden = true;
+    el.payError.textContent = '';
+    el.payError.classList.remove('is-note');
+  }
+}
 function resetReserve() { reserving = false; setReserveLabel('Reserve & pay'); }
 
 function startReserve() {
@@ -524,23 +582,26 @@ function startReserve() {
   safeTrack('reserve_clicked', { total: q.total, nights: q.nights, guests: booking.guests });
   metaTrack('Lead', { content_name: 'Direct Booking', value: q.total, currency: 'INR' });
 
+  // fbp/fbc ride along so the server can pin attribution into the Razorpay
+  // order notes — the webhook Purchase keeps it even if the tab closes.
+  var ud = metaUserData();
   fetch('/api/create-order', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ checkin: booking.checkin, checkout: booking.checkout, guests: booking.guests })
+    body: JSON.stringify({ checkin: booking.checkin, checkout: booking.checkout, guests: booking.guests, fbp: ud.fbp, fbc: ud.fbc })
   }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
     .then(function (res) {
       if (!res.ok || !res.d || !res.d.order_id) { orderError(res.d); resetReserve(); return; }
       openRazorpay(res.d);
     })
-    .catch(function () { showPayError('Could not start checkout. Please try again.'); resetReserve(); });
+    .catch(function () { showPayError('Could not start checkout. Please try again.', 'checkout would not start'); resetReserve(); });
 }
 
 function orderError(d) {
   var e = d && d.error;
   if (e === 'dates_unavailable') showPayError('Those dates were just taken — please choose different dates.');
-  else if (e === 'availability_unverified') showPayError('We can’t confirm availability right now. Please try again shortly, or message us on WhatsApp.');
-  else if (e === 'razorpay_not_configured') showPayError('Online booking isn’t live yet. Please message us on WhatsApp to book.');
-  else showPayError('Could not start checkout. Please try again.');
+  else if (e === 'availability_unverified') showPayError('We can’t confirm availability right now. Please try again shortly, or message us on WhatsApp.', 'the site could not verify availability for my dates');
+  else if (e === 'razorpay_not_configured') showPayError('Online booking isn’t live yet. Please message us on WhatsApp to book.', 'online booking is not live yet');
+  else showPayError('Could not start checkout. Please try again.', 'checkout would not start');
 }
 
 function openRazorpay(order) {
@@ -557,10 +618,15 @@ function openRazorpay(order) {
     theme: { color: '#A61E4D' },
     notes: { ref: order.reservation_ref },
     handler: function (resp) { verifyPayment(resp, order); },
-    modal: { ondismiss: function () { safeTrack('checkout_dismissed', {}); resetReserve(); } }
+    modal: { ondismiss: function () {
+      safeTrack('checkout_dismissed', {});
+      resetReserve();
+      // abandoned-booking recovery: dates stay selected; retry or hand off to WhatsApp
+      showPayError('Payment not completed. Your dates are saved, so you can retry whenever you’re ready.', 'I did not finish the payment', true);
+    } }
   });
   rzp.on('payment.failed', function (resp) {
-    showPayError('Payment failed: ' + ((resp.error && resp.error.description) || 'please try again.'));
+    showPayError('Payment failed: ' + ((resp.error && resp.error.description) || 'please try again.'), 'my payment failed');
     safeTrack('payment_failed', { reason: (resp.error && resp.error.code) || 'unknown' });
     resetReserve();
   });
@@ -586,11 +652,11 @@ function verifyPayment(resp, order) {
       setState('confirmed');
       var bookEl = $('book'); if (bookEl) bookEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
-      showPayError('Payment received but we couldn’t auto-confirm. Please message us on WhatsApp with your payment id.');
+      showPayError('Payment received but we couldn’t auto-confirm. Please message us on WhatsApp with your payment id.', 'my payment went through but was not auto-confirmed (payment id: ' + resp.razorpay_payment_id + ')');
     }
   }).catch(function () {
     resetReserve();
-    showPayError('Payment received but we couldn’t auto-confirm. Please message us on WhatsApp.');
+    showPayError('Payment received but we couldn’t auto-confirm. Please message us on WhatsApp.', 'my payment went through but was not auto-confirmed (payment id: ' + resp.razorpay_payment_id + ')');
   });
 }
 
@@ -801,6 +867,8 @@ function initPageUi() {
     }
     waFab.addEventListener('click', function () {
       safeTrack('whatsapp_fab_clicked', {});
+      // Meta Contact = assistance intent; Lead stays reserved for Reserve clicks.
+      metaTrack('Contact', { content_name: 'WhatsApp FAB' });
     });
   }
 

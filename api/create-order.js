@@ -33,11 +33,17 @@ module.exports = async function handler(req, res) {
 
     var ref = 'PK-' + checkin.replace(/-/g, '').slice(2) + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
 
+    var notes = { checkin: checkin, checkout: checkout, guests: String(guests), nights: String(n), ref: ref };
+    // Persist Meta attribution into the order so the webhook Purchase keeps
+    // fbp/fbc even when the browser closes right after payment.
+    if (typeof body.fbp === 'string' && body.fbp) notes.fbp = body.fbp.slice(0, 250);
+    if (typeof body.fbc === 'string' && body.fbc) notes.fbc = body.fbc.slice(0, 250);
+
     var order = {
       amount: q.amountPaise,
       currency: 'INR',
       receipt: ref.slice(0, 40),
-      notes: { checkin: checkin, checkout: checkout, guests: String(guests), nights: String(n), ref: ref }
+      notes: notes
     };
 
     var auth = Buffer.from(KEY_ID + ':' + KEY_SECRET).toString('base64');

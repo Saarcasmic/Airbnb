@@ -60,6 +60,7 @@ module.exports = async function handler(req, res) {
     orderId: orderId, paymentId: payment.id, notes: notes,
     value: Math.round(payment.amount || 0) / 100,
     email: payment.email, phone: payment.contact,
+    fbp: notes.fbp, fbc: notes.fbc,   // attribution persisted in order notes at create-order
     ip: meta.clientIp(req), ua: 'razorpay-webhook',
     sourceUrl: 'https://pyari-kunj.vercel.app/'
   });

@@ -51,7 +51,7 @@ module.exports = async function handler(req, res) {
     await fulfill.fulfill({
       orderId: orderId, paymentId: paymentId, notes: notes, value: value,
       email: payment && payment.email, phone: payment && payment.contact,
-      fbp: body.fbp, fbc: body.fbc,
+      fbp: body.fbp || notes.fbp, fbc: body.fbc || notes.fbc,
       ip: meta.clientIp(req), ua: req.headers['user-agent'],
       sourceUrl: (req.headers.origin || 'https://pyari-kunj.vercel.app') + '/'
     });

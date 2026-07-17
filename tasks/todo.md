@@ -1,5 +1,41 @@
 # Rewrite 4 (2026-07-17): From-scratch product redesign (prompt.md brief)
 
+## Meta weekend campaign — implemented 2026-07-17 (code side)
+
+### Funnel and messaging
+
+- [x] Keep the primary booking flow simple: choose dates → review all-in price → Razorpay → verified booking confirmation. (Already the flow; unchanged.)
+- [x] Remove conflicting copy about WhatsApp price/availability confirmation — fixed meta description, JSON-LD FAQ ("confirmed instantly"), terms Pricing ("total you pay at checkout applies") and Contact sections. Visible FAQ was already aligned.
+- [x] Contextual WhatsApp fallback links: availability_unverified, razorpay_not_configured, network/create-order failure, payment.failed, verify-payment failure (includes payment id), and checkout dismiss. `.pay-error-wa` link inside #payError.
+- [x] Prefilled fallback messages: check-in/out, nights, guests, estimated total, and utm_source/medium/campaign from `attribution_last`. New PostHog event `whatsapp_fallback_clicked` {context} on click (addition; existing names untouched).
+- [x] Abandoned-booking recovery: on Razorpay dismiss a neutral note (`.pay-error.is-note`) says dates are saved → retry or WhatsApp. Dates/draft already persisted.
+- [x] WhatsApp stays recovery/assistance only.
+
+### Booking reliability
+
+- [x] Airbnb iCal live in production — verified 2026-07-17: `/api/availability` returns real blocked ranges (synced same-day). ⚠️ Razorpay webhook events (`payment.captured`, `order.paid`) can only be confirmed in the Razorpay Dashboard — Saar to verify.
+- [x] Host notification on paid booking exists (Telegram/webhook via lib/fulfill, both verify + webhook paths). ⚠️ Airbnb calendar block remains MANUAL — the notify message instructs it; needs Saar each booking.
+- [ ] ⚠️ DECISION NEEDED: reservation lock/datastore (double-booking guard). Options: (a) MongoDB Atlas + `mongodb` driver — adds package.json dependency + `MONGODB_URI` env; (b) Upstash Redis REST (fetch-only, no dependency) — needs Upstash account + env vars. Say the word and I'll build either.
+- [x] Degraded availability now honest: calendar sub-line says "Live availability is briefly unavailable; dates are re-verified before payment" when the feed is down (server still fails closed at order time).
+
+### Meta Pixel + CAPI
+
+- [x] `_fbp`/`_fbc` persist into Razorpay order notes (client → create-order → notes, ≤250 chars); webhook Purchase now sends them; verify-payment falls back to notes.
+- [x] Dedup unchanged: browser+CAPI share event_id; Purchase stays `Purchase:{order_id}`.
+- [x] Meta `Contact` on WhatsApp FAB + fallback-link clicks (fbq + CAPI, allowlisted in api/meta-event.js). `Lead` remains Reserve-only.
+- [ ] Saar: in Meta Events Manager verify dedup, Purchase value/INR, Event Match Quality, webhook Purchase recovery (pay → close tab → wait for webhook).
+- [x] Graph API bumped v20.0 → v23.0 (v20 past EOL; v23 probed live 2026-07-17).
+- [ ] Saar: production envs — ⚠️ `/api/config` shows `rzp_test_…` keys in prod (live keys required before spend); confirm `META_CAPI_TOKEN`, `RAZORPAY_WEBHOOK_SECRET`. `AIRBNB_ICAL_URL` confirmed working.
+
+### Campaign setup (Saar, in Meta Ads Manager)
+
+- [ ] Sales objective, Website conversion location, optimize for verified `Purchase`.
+- [ ] One focused campaign, Advantage+ placements, broad-enough audience to learn.
+- [ ] All ads → direct booking page (never Airbnb) with UTMs on every ad (the site captures utm_* into attribution and now threads it into WhatsApp fallbacks).
+- [ ] Creatives: 650 m from Banke Bihari Ji, family convenience, ₹2,249/night direct, 5.0-rated trust.
+- [ ] Vertical Reels/Stories + one 4:5 feed creative from real property/temple-route/bedroom/kitchen/price visuals.
+- [ ] Retargeting: 1–3 day and 7-day audiences for visitors, checkout starters, Reserve clickers, non-purchasers.
+
 Register: brand (conversion). Rule: js/app.js untouched; every DOM/analytics/API hook preserved.
 
 ## Plan

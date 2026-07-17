@@ -580,6 +580,19 @@ button.field-row:hover{background:var(--rani-tint)}
   text-align:center;
 }
 .pay-error[hidden]{display:none}
+.pay-error .pay-error-wa{
+  color:inherit;
+  font-weight:700;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  white-space:nowrap;
+}
+/* recoverable, non-error notice (e.g. checkout dismissed — dates kept) */
+.pay-error.is-note{
+  background:var(--marble-deep);
+  border-color:var(--hairline);
+  color:var(--ink-soft);
+}
 .desk-note{
   margin-top:14px;
   font-size:12.5px;

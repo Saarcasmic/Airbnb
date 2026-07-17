@@ -5,7 +5,7 @@
 // captured payment (verify-payment / webhook).
 var meta = require('../lib/meta.js');
 
-var ALLOWED = { PageView: 1, ViewContent: 1, InitiateCheckout: 1, Lead: 1, AddPaymentInfo: 1, Search: 1 };
+var ALLOWED = { PageView: 1, ViewContent: 1, InitiateCheckout: 1, Lead: 1, AddPaymentInfo: 1, Search: 1, Contact: 1 };
 
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
