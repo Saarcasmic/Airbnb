@@ -1190,9 +1190,15 @@ button.field-row:hover{background:var(--rani-tint)}
   align-items:center;
   justify-content:space-between;
   gap:14px;
-  transition:transform 0.25s ease,visibility 0s linear 0s;
+  /* hidden until the booking desk scrolls out of view (.past-book from app.js) —
+     while the desk is on screen it IS the booking UI; the bar would overlap it */
+  transform:translateY(110%);
+  visibility:hidden;
+  transition:transform 0.25s ease,visibility 0s linear 0.25s;
 }
-.book-bar.hidden{transform:translateY(110%);visibility:hidden;transition:transform 0.25s ease,visibility 0s linear 0.25s}
+.book-bar.past-book{transform:translateY(0);visibility:visible;transition-delay:0s,0s}
+.book-bar.hidden,
+.book-bar.past-book.hidden{transform:translateY(110%);visibility:hidden;transition:transform 0.25s ease,visibility 0s linear 0.25s}
 .book-bar-left{min-width:0}
 .book-bar-main{
   font-size:15px;
@@ -1236,9 +1242,6 @@ button.field-row:hover{background:var(--rani-tint)}
 /* desktop: bar appears only after scrolling past the booking desk */
 @media(min-width:1024px){
   body{padding-bottom:0}
-  .book-bar{transform:translateY(110%);visibility:hidden;transition:transform 0.25s ease,visibility 0s linear 0.25s}
-  .book-bar.past-book{transform:translateY(0);visibility:visible;transition-delay:0s,0s}
-  .book-bar.hidden,.book-bar.past-book.hidden{transform:translateY(110%);visibility:hidden;transition:transform 0.25s ease,visibility 0s linear 0.25s}
   .footer{padding-bottom:28px}
 }
 body.sheet-open .book-bar,
