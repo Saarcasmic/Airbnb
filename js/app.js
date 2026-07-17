@@ -550,7 +550,7 @@ function openRazorpay(order) {
     currency: order.currency,
     name: CONFIG.propertyName,
     description: fmtRange(booking.checkin, booking.checkout) + ' · ' + booking.guests + ' guest' + (booking.guests > 1 ? 's' : ''),
-    theme: { color: '#A9470B' },
+    theme: { color: '#A61E4D' },
     notes: { ref: order.reservation_ref },
     handler: function (resp) { verifyPayment(resp, order); },
     modal: { ondismiss: function () { safeTrack('checkout_dismissed', {}); resetReserve(); } }
