@@ -504,7 +504,11 @@ function renderResume() {
 /* ================= RAZORPAY CHECKOUT FLOW =================
    Reserve → create order (server prices it) → Razorpay modal → verify signature
    (server) → confirmed. Purchase is reported server-side, never here. */
-function setReserveLabel(txt) { if (el.reserveLabel) el.reserveLabel.textContent = txt; }
+function setReserveLabel(txt) {
+  if (el.reserveLabel) el.reserveLabel.textContent = txt;
+  // visual-only busy state (spinner) while checkout/verification is in flight
+  if (el.reserveBtn) el.reserveBtn.classList.toggle('is-busy', txt !== 'Reserve & pay');
+}
 function showPayError(msg) { if (el.payError) { el.payError.textContent = msg; el.payError.hidden = false; } }
 function hidePayError() { if (el.payError) { el.payError.hidden = true; el.payError.textContent = ''; } }
 function resetReserve() { reserving = false; setReserveLabel('Reserve & pay'); }
