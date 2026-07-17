@@ -198,8 +198,8 @@ function waUrl(message) {
 function lastAttribution() {
   try { return JSON.parse(localStorage.getItem('attribution_last')) || {}; } catch (e) { return {}; }
 }
-function waFallbackUrl(reason) {
-  var lines = ["Hi Saar! I was booking Pyari Kunj on the website but " + reason + '.'];
+function waContextLines() {
+  var lines = [];
   if (booking.checkin && booking.checkout) {
     var q = quote(nightsBetween(booking.checkin, booking.checkout));
     lines.push('Check-in: ' + fmtLong(booking.checkin));
@@ -211,7 +211,19 @@ function waFallbackUrl(reason) {
   if (a.utm_source || a.utm_campaign) {
     lines.push('Source: ' + [a.utm_source, a.utm_medium, a.utm_campaign].filter(Boolean).join(' / '));
   }
+  return lines;
+}
+function waFallbackUrl(reason) {
+  var lines = ["Hi Saar! I was booking Pyari Kunj on the website but " + reason + '.']
+    .concat(waContextLines());
   lines.push('Can you help me complete the booking?');
+  return waUrl(lines.join('\n'));
+}
+/* FAB message — the guest has picked dates but hasn't paid yet */
+function waInterestUrl() {
+  var lines = ["Hi Saar! I'm interested in booking Pyari Kunj for these dates:"]
+    .concat(waContextLines());
+  lines.push('I have a few questions before I book.');
   return waUrl(lines.join('\n'));
 }
 function hostBookingUrl(ref) {
@@ -850,6 +862,7 @@ function initPageUi() {
       // Only invite WhatsApp chats from guests who have committed to dates —
       // pre-selection questions are handled by the page itself.
       var hasDates = !!(booking.checkin && booking.checkout);
+      if (hasDates) waFab.setAttribute('href', waInterestUrl()); // prefill the selection
       waFab.classList.toggle('show', hasDates && !heroVisible && !bookVisible);
     };
     window.__pkSyncFab = syncFab; // re-evaluated from render() when dates change
