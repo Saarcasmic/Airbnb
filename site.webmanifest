@@ -1,0 +1,13 @@
+{
+  "name": "Pyari Kunj Vrindavan",
+  "short_name": "Pyari Kunj",
+  "description": "A heritage homestay near Banke Bihari Temple, Vrindavan.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#341320",
+  "theme_color": "#341320",
+  "icons": [
+    { "src": "/img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/img/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

@@ -602,6 +602,14 @@ button.field-row:hover{background:var(--rani-tint)}
   color:var(--mut);
   text-align:center;
 }
+.desk-urgency{
+  margin-top:12px;
+  font-size:12.5px;
+  font-weight:600;
+  line-height:1.5;
+  color:var(--rani-deep);
+  text-align:center;
+}
 
 /* desktop: one confident horizontal desk */
 @media(min-width:1024px){
@@ -917,7 +925,7 @@ button.field-row:hover{background:var(--rani-tint)}
   color:var(--on-velvet-mut);
   max-width:52ch;
 }
-/* screenshot rail — real Airbnb reviews in uniform white cards */
+/* screenshot rail — real guest reviews in uniform white cards */
 .shot-rail{
   display:flex;
   gap:14px;
@@ -977,22 +985,6 @@ button.field-row:hover{background:var(--rani-tint)}
   color:var(--on-velvet-mut);
   margin-bottom:4px;
 }
-.reviews-airbnb-link{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  margin-top:24px;
-  font-size:14.5px;
-  font-weight:600;
-  color:var(--rani-glow);
-  text-decoration:underline;
-  text-underline-offset:4px;
-  text-decoration-color:rgba(233,169,195,0.4);
-  transition:color 0.16s ease,gap 0.16s ease;
-}
-.reviews-airbnb-link:hover{color:#fff;gap:11px}
-.reviews-airbnb-link svg{flex-shrink:0}
-
 /* ===== LOCATION ===== */
 .loc-grid{display:grid;gap:clamp(32px,5vw,60px);align-items:center}
 @media(min-width:920px){.loc-grid{grid-template-columns:1.05fr 0.95fr}}

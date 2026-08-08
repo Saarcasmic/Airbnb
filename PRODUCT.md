@@ -24,7 +24,7 @@ The temple side of Vrindavan, privately yours — booked direct with the host in
 
 - Primary CTA: pick dates → Reserve & pay (Razorpay, server-verified).
 - Secondary fallback: WhatsApp the host (FAB + confirmation flow); tertiary: view the Airbnb listing for external validation.
-- The line a visitor remembers: "A quiet painted home, seven minutes' walk from Banke Bihari Ji."
+- The line a visitor remembers: "A quiet painted home, five minutes' walk from Banke Bihari Ji."
 - Belief ladder: (1) this is a real, beautiful, clean home — real photos; (2) the location genuinely works for darshan — distances; (3) other guests loved it — 14/14 five-star reviews, verifiable on Airbnb; (4) paying is safe — Razorpay, full refund if dates unavailable, server-side pricing; (5) I know what happens next — WhatsApp check-in details.
 - Proof on hand: 21 real photos (img/), three review screenshots (img/review-1..3.webp), 5.0 rating across all six Airbnb categories, live availability from the Airbnb calendar.
 

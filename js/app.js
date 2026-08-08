@@ -15,7 +15,6 @@ var CONFIG = {
   upiId: 'vrand0939@okicici',
   payeeName: 'Pyari Kunj Vrindavan',
   whatsapp: '918791567123',
-  airbnbUrl: 'https://www.airbnb.co.in/h/pyari-kunj',
   propertyName: 'Pyari Kunj Vrindavan',
   draftTtlHours: 48,
   storageKey: 'pk_booking_draft'
@@ -889,13 +888,6 @@ function initPageUi() {
       metaTrack('Contact', { content_name: 'WhatsApp FAB' });
     });
   }
-
-  // Airbnb secondary links
-  document.querySelectorAll('.js-airbnb-link').forEach(function (link) {
-    link.addEventListener('click', function () {
-      safeTrack('airbnb_cta_clicked', { source: link.dataset.source || 'airbnb' });
-    });
-  });
 
   // Share
   $('shareBtn').addEventListener('click', function () {
