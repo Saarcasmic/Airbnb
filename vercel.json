@@ -1,6 +1,22 @@
 {
   "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/block", "destination": "/block.html" }
+  ],
   "headers": [
+    {
+      "source": "/block(.html)?",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [

@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /block
 
 Sitemap: https://pyari-kunj.vercel.app/sitemap.xml
