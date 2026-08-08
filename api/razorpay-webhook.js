@@ -63,7 +63,7 @@ module.exports = async function handler(req, res) {
     fbp: notes.fbp, fbc: notes.fbc,   // attribution persisted in order notes at create-order
     // no ip/ua: this request comes from Razorpay's servers, not the guest —
     // sending them would poison Meta match quality. fbp/fbc/em/ph carry matching.
-    sourceUrl: 'https://pyari-kunj.vercel.app/'
+    sourceUrl: 'https://www.pyari-kunj.in/'
   });
 
   res.status(200).json({ ok: true });

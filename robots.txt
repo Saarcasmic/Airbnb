@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /block
 
-Sitemap: https://pyari-kunj.vercel.app/sitemap.xml
+Sitemap: https://www.pyari-kunj.in/sitemap.xml

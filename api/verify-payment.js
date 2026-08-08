@@ -55,7 +55,7 @@ module.exports = async function handler(req, res) {
       email: payment && payment.email, phone: payment && payment.contact,
       fbp: body.fbp || notes.fbp, fbc: body.fbc || notes.fbc,
       ip: meta.clientIp(req), ua: req.headers['user-agent'],
-      sourceUrl: (req.headers.origin || 'https://pyari-kunj.vercel.app') + '/'
+      sourceUrl: (req.headers.origin || 'https://www.pyari-kunj.in') + '/'
     });
   }
 

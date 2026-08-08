@@ -3,6 +3,14 @@
   "rewrites": [
     { "source": "/block", "destination": "/block.html" }
   ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "pyari-kunj.vercel.app" }],
+      "destination": "https://www.pyari-kunj.in/$1",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/block(.html)?",
