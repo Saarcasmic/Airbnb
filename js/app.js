@@ -17,7 +17,10 @@ var CONFIG = {
   whatsapp: '918791567123',
   propertyName: 'Pyari Kunj Vrindavan',
   draftTtlHours: 48,
-  storageKey: 'pk_booking_draft'
+  storageKey: 'pk_booking_draft',
+  // Supabase anon key — not a secret, safe in client code (see lib/supabase.js).
+  supabaseUrl: 'https://uljcbbzmvqzrtonjantn.supabase.co',
+  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsamNiYnptdnF6cnRvbmphbnRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxNzAyODgsImV4cCI6MjEwMTc0NjI4OH0.MAOHcosqYdljuG5UIXNlxBU_4TIUR3hqp7UO9bAjBt8'
 };
 
 /* ================= TRACKING ================= */
@@ -243,8 +246,12 @@ function $(id) { return document.getElementById(id); }
 
 var el = {}; // populated in init()
 
-/* ================= AVAILABILITY (Airbnb iCal via /api/availability) ================= */
-var blockedNights = {}; // 'YYYY-MM-DD' -> true (nights that are booked/blocked on Airbnb)
+/* ================= AVAILABILITY =================
+   Reads directly from the Supabase blocked_dates table (no backend hop —
+   the anon key is safe client-side, see lib/supabase.js for why). This is
+   the cosmetic calendar view only; api/create-order.js re-checks the same
+   table server-side as the real fail-closed gate before taking payment. */
+var blockedNights = {}; // 'YYYY-MM-DD' -> true (nights known to be booked)
 var availabilityDegraded = false; // true when the live calendar couldn't be loaded
 
 function nextDay(iso) {
@@ -261,39 +268,41 @@ function rangeHasBlockedNight(ci, co) {
 
 function fetchAvailability() {
   if (typeof fetch !== 'function') return;
-  fetch('/api/availability').then(function (r) {
-    return r.ok ? r.json() : null;
-  }).then(function (data) {
-    // Be honest when the live calendar couldn't load: don't present every date
-    // as apparently free without saying so (the server still fails closed).
-    availabilityDegraded = !data || !!data.degraded;
-    if (availabilityDegraded && calOpen) paintCalendar();
-    if (!data || !Array.isArray(data.blocked) || !data.blocked.length) return;
-    blockedNights = {};
-    data.blocked.forEach(function (range) {
-      if (!range || !range.start || !range.end) return;
-      for (var d = range.start; d < range.end; d = nextDay(d)) blockedNights[d] = true;
+  var url = CONFIG.supabaseUrl + '/rest/v1/blocked_dates?select=start_date,end_date';
+  fetch(url, { headers: { apikey: CONFIG.supabaseAnonKey, Authorization: 'Bearer ' + CONFIG.supabaseAnonKey } })
+    .then(function (r) {
+      return r.ok ? r.json() : null;
+    }).then(function (data) {
+      // Be honest when the live calendar couldn't load: don't present every date
+      // as apparently free without saying so (the server still fails closed).
+      availabilityDegraded = !Array.isArray(data);
+      if (availabilityDegraded && calOpen) paintCalendar();
+      if (!Array.isArray(data)) return;
+      blockedNights = {};
+      data.forEach(function (range) {
+        if (!range || !range.start_date || !range.end_date) return;
+        for (var d = range.start_date; d < range.end_date; d = nextDay(d)) blockedNights[d] = true;
+      });
+      buildCalendar();
+      if (calOpen) paintCalendar();
+      // If a pre-confirmation draft now collides with a just-confirmed booking,
+      // reset it. Never touch awaiting/payment states — that block may be the
+      // host holding these very dates for this guest.
+      if (booking.checkin && booking.checkout &&
+          stateRank(booking.state) <= stateRank('review') &&
+          rangeHasBlockedNight(booking.checkin, booking.checkout)) {
+        booking.checkin = null;
+        booking.checkout = null;
+        booking.state = 'idle';
+        clearDraft();
+        render();
+        safeTrack('draft_dates_unavailable', {});
+      }
+      safeTrack('availability_loaded', { blocked_nights: Object.keys(blockedNights).length });
+    }).catch(function () {
+      availabilityDegraded = true;
+      if (calOpen) paintCalendar();
     });
-    buildCalendar();
-    if (calOpen) paintCalendar();
-    // If a pre-confirmation draft now collides with an Airbnb booking, reset it.
-    // Never touch awaiting/payment states — that block may be the host holding
-    // these very dates for this guest.
-    if (booking.checkin && booking.checkout &&
-        stateRank(booking.state) <= stateRank('review') &&
-        rangeHasBlockedNight(booking.checkin, booking.checkout)) {
-      booking.checkin = null;
-      booking.checkout = null;
-      booking.state = 'idle';
-      clearDraft();
-      render();
-      safeTrack('draft_dates_unavailable', {});
-    }
-    safeTrack('availability_loaded', { blocked_nights: Object.keys(blockedNights).length });
-  }).catch(function () {
-    availabilityDegraded = true;
-    if (calOpen) paintCalendar();
-  });
 }
 
 /* ================= CALENDAR ================= */
