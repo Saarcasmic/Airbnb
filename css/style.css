@@ -235,74 +235,73 @@ s{text-decoration-thickness:1px}
     linear-gradient(180deg,rgba(28,10,19,0.5) 0%,rgba(28,10,19,0.12) 26%,rgba(28,10,19,0.1) 52%,rgba(30,10,20,0.88) 100%),
     linear-gradient(90deg,rgba(28,10,19,0.46) 0%,rgba(28,10,19,0.12) 46%,rgba(28,10,19,0.02) 72%);
 }
-/* ---- festive offer seal ----
-   A sticker on the hero, tucked under the top bar so it clears the share and
-   Instagram buttons, and outside .hero-content so it never crowds the title or
-   the booking desk's price. Tapping it applies the featured code.
+/* ---- festive offer ----
+   Sits at the top of .hero-content, directly above the overline. Glassy to
+   match the hero's other floating controls, and sized fluidly: a comfortable
+   single line where there is room, and a compact two-line pill on phones,
+   where the copy wraps inside the same shape rather than overflowing.
    Hidden entirely when no offer is running — [hidden] stays authoritative. */
-.offer-seal{
-  position:absolute;
-  z-index:3;
-  top:calc(86px + env(safe-area-inset-top,0px));
-  right:clamp(20px,4.5vw,48px);
-  width:86px;
-  height:86px;
-  display:flex;
-  flex-direction:column;
+.offer-strip{
+  display:inline-flex;
   align-items:center;
-  justify-content:center;
-  border-radius:50%;
-  background:radial-gradient(circle at 32% 28%,#C42A5D,var(--rani) 55%,var(--rani-deep));
+  gap:clamp(8px,1.3vw,13px);
+  max-width:100%;
+  margin-bottom:clamp(14px,2.2vh,20px);
+  padding:7px 7px 7px 13px;
+  border-radius:var(--r-l);
+  background:rgba(30,12,21,0.42);
+  border:1px solid rgba(233,169,195,0.55);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  color:#FDF9FB;
+  animation:riseIn 0.65s cubic-bezier(0.22,1,0.36,1) both;
+}
+.offer-strip[hidden]{display:none}
+.os-flame{display:flex;color:var(--rani-glow);flex-shrink:0}
+.os-copy{
+  display:flex;
+  align-items:baseline;
+  flex-wrap:wrap;
+  gap:0 clamp(6px,0.9vw,9px);
+  min-width:0;
+  font-size:clamp(12px,1.15vw,14px);
+  line-height:1.4;
+  color:rgba(253,249,251,0.94);
+}
+.os-copy strong{
   color:#fff;
-  box-shadow:0 14px 30px -12px rgba(28,10,19,0.85),inset 0 0 0 1px rgba(255,255,255,0.28);
-  transform:rotate(-8deg);
-  /* no fill-mode: once it lands, the base transform governs again so :hover works */
-  animation:sealIn 0.5s cubic-bezier(0.22,1,0.36,1);
-  transition:transform 0.2s cubic-bezier(0.22,1,0.36,1),box-shadow 0.2s ease;
-  -webkit-tap-highlight-color:transparent;
-}
-.offer-seal[hidden]{display:none}
-.offer-seal:hover{transform:rotate(0deg) scale(1.06)}
-.offer-seal:active{transform:rotate(0deg) scale(0.98)}
-.seal-pct{font-family:var(--serif);font-size:25px;line-height:1}
-.seal-off{
-  margin-top:1px;
-  font-size:9.5px;
-  font-weight:700;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-  opacity:0.88;
-}
-.seal-code{
-  max-width:78px;
-  margin-top:5px;
-  padding:2px 7px;
-  border-radius:999px;
-  background:rgba(255,255,255,0.95);
-  color:var(--rani-deep);
-  font-size:8.5px;
+  font-size:0.86em;
   font-weight:700;
   letter-spacing:0.08em;
   text-transform:uppercase;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
-.offer-seal.is-applied{
-  background:radial-gradient(circle at 32% 28%,#159A54,var(--leaf) 55%,#0A5C31);
-  cursor:default;
+.os-text b{font-weight:700;letter-spacing:0.06em;color:var(--rani-glow)}
+.os-apply{
+  flex-shrink:0;
+  padding:clamp(7px,0.85vw,9px) clamp(14px,1.5vw,19px);
+  border-radius:999px;
+  background:#FDF9FB;
+  color:var(--rani-deep);
+  font-size:clamp(11.5px,1vw,13px);
+  font-weight:700;
+  letter-spacing:0.02em;
+  transition:background 0.16s ease,transform 0.16s ease;
+  -webkit-tap-highlight-color:transparent;
 }
-.offer-seal.is-applied .seal-code{color:#0A5C31}
-@keyframes sealIn{from{opacity:0;transform:rotate(-8deg) scale(0.7)}to{opacity:1;transform:rotate(-8deg) scale(1)}}
-@media(min-width:768px){
-  .offer-seal{width:104px;height:104px;top:calc(100px + env(safe-area-inset-top,0px))}
-  .seal-pct{font-size:30px}
-  .seal-off{font-size:10px}
-  .seal-code{max-width:94px;font-size:9.5px}
+.os-apply:hover{background:#fff;transform:translateY(-1px)}
+.os-apply:active{transform:translateY(0) scale(0.97)}
+.offer-strip.is-applied{border-color:rgba(126,222,173,0.6)}
+.offer-strip.is-applied .os-apply{background:var(--leaf-tint);color:#0A5C31}
+/* Phones: span the content column and let the copy break onto two lines, so a
+   long code never pushes Apply off the edge. */
+@media(max-width:560px){
+  .offer-strip{display:flex;width:100%;justify-content:space-between;padding:7px 7px 7px 12px}
+  .os-copy{flex:1}
 }
 @media(prefers-reduced-motion:reduce){
-  .offer-seal{animation:none;transition:none}
-  .offer-seal:hover,.offer-seal:active{transform:rotate(-8deg)}
+  .offer-strip{animation:none}
+  .os-apply{transition:none}
+  .os-apply:hover,.os-apply:active{transform:none}
 }
 
 .hero-content{
