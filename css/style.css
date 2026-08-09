@@ -1429,6 +1429,28 @@ button.field-row:hover{background:var(--rani-tint)}
   margin-left:10px;
 }
 .f-tag{font-size:13px;line-height:1.6;max-width:44ch;margin-top:6px}
+/* Real address + a reachable number — the two things a guest checks before
+   trusting a direct booking. <address> is italic by default; reset it. */
+.f-contact{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  margin-top:14px;
+  font-style:normal;
+  font-size:13px;
+  line-height:1.55;
+}
+.f-contact-row{display:flex;align-items:flex-start;gap:9px;color:var(--on-velvet)}
+.f-contact-row svg{flex-shrink:0;margin-top:2px;color:var(--rani-glow)}
+.f-phone{
+  width:fit-content;
+  font-weight:600;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  text-decoration-color:rgba(247,238,241,0.4);
+  font-variant-numeric:tabular-nums;
+}
+.f-phone:hover{text-decoration-color:var(--rani-glow)}
 .f-links{display:flex;flex-wrap:wrap;gap:10px 24px;font-size:13px}
 .f-links a{
   color:var(--on-velvet);
