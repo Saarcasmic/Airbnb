@@ -314,6 +314,15 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
   </picture>
   <div class="hero-scrim" aria-hidden="true"></div>
 
+  <!-- Festive offer seal — filled from /api/coupon with whichever code the host
+       has featured on /coupon, and hidden entirely when nothing is running.
+       Tapping it applies the code; the booking desk price updates in place. -->
+  <button type="button" class="offer-seal" id="offerSeal" hidden>
+    <span class="seal-pct"><span id="offerPct">0</span>%</span>
+    <span class="seal-off">off</span>
+    <span class="seal-code" id="offerCode">—</span>
+  </button>
+
   <div class="top-bar">
     <div class="wordmark">
       <span class="wm-name">Pyari Kunj</span>
@@ -366,19 +375,6 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
 
     <!-- STEP: pick dates + review price -->
     <div class="funnel-step active" data-step="review">
-      <!-- Festive offer strip — filled from /api/coupon with whichever code the
-           host has featured on /coupon. Stays hidden when nothing is running. -->
-      <div class="offer-strip" id="offerStrip" hidden>
-        <span class="os-flame" aria-hidden="true">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s1.5 3.2 1.5 5.2c0 1.3-.9 2.3-2 2.3s-2-1-2-2.3c0-.6.1-1.1.2-1.6C8 7.1 6 9.9 6 13a6 6 0 0012 0c0-4.4-3.4-8-6-11z"/></svg>
-        </span>
-        <span class="os-copy">
-          <strong id="offerLabel">Festive offer</strong>
-          <span class="os-text">Use code <b id="offerCode">—</b> for <span id="offerPct">0</span>% off</span>
-        </span>
-        <button type="button" class="os-apply" id="offerApply">Apply</button>
-      </div>
-
       <div class="desk-grid">
         <div class="desk-price">
           <span class="dp-label">Direct rate · per night</span>

@@ -354,20 +354,27 @@ function renderCouponUi() {
     el.couponAppliedCode.textContent = booking.coupon.code;
     el.couponAppliedPct.textContent = booking.coupon.percent_off;
   }
-  renderOfferStrip();
+  renderOfferSeal();
 }
 
-function renderOfferStrip() {
-  if (!el.offerStrip) return;
-  if (!featuredOffer) { el.offerStrip.hidden = true; return; }
+/* The hero sticker. Shows the live percentage and code, flips to an applied
+   state once the guest taps it, and stays hidden when no offer is running. */
+function renderOfferSeal() {
+  if (!el.offerSeal) return;
+  // No offer running, or the guest has already paid — nothing to advertise.
+  // (It used to sit inside the review step, which hid it for free; in the hero
+  // that has to be explicit.)
+  if (!featuredOffer || booking.state === 'confirmed') { el.offerSeal.hidden = true; return; }
   var isOn = !!booking.coupon && booking.coupon.code === featuredOffer.code;
-  el.offerLabel.textContent = featuredOffer.label || 'Festive offer';
-  el.offerCode.textContent = featuredOffer.code;
   el.offerPct.textContent = featuredOffer.percent_off;
-  el.offerApply.textContent = isOn ? 'Applied' : 'Apply';
-  el.offerApply.disabled = isOn;
-  el.offerStrip.classList.toggle('is-applied', isOn);
-  el.offerStrip.hidden = false;
+  el.offerCode.textContent = isOn ? 'Applied' : featuredOffer.code;
+  el.offerSeal.classList.toggle('is-applied', isOn);
+  el.offerSeal.disabled = isOn;
+  el.offerSeal.setAttribute('aria-label', isOn
+    ? featuredOffer.percent_off + '% off applied with code ' + featuredOffer.code
+    : (featuredOffer.label || 'Festive offer') + ': tap to apply code ' +
+      featuredOffer.code + ' for ' + featuredOffer.percent_off + '% off');
+  el.offerSeal.hidden = false;
 }
 
 function setCouponBusy(busy) {
@@ -436,7 +443,7 @@ function fetchFeaturedOffer() {
     .then(function (d) {
       if (!d || !d.code || !(d.percent_off > 0)) return;
       featuredOffer = { code: d.code, percent_off: d.percent_off, label: d.label || 'Festive offer' };
-      renderOfferStrip();
+      renderOfferSeal();
       renderBar();
       safeTrack('offer_banner_shown', { code: featuredOffer.code, percent_off: featuredOffer.percent_off });
     }).catch(function () {});
@@ -905,7 +912,7 @@ function initFunnel() {
     'breakdown', 'bdNights', 'bdGross', 'bdDiscount', 'bdTotal', 'bdCouponRow', 'bdCouponLabel',
     'reserveBtn', 'reserveLabel', 'reserveWrap', 'reserveTip', 'payError', 'confRef',
     'dpWas', 'dpNow', 'dpTag',
-    'offerStrip', 'offerLabel', 'offerCode', 'offerPct', 'offerApply',
+    'offerSeal', 'offerCode', 'offerPct',
     'couponBox', 'couponToggle', 'couponEntry', 'couponInput', 'couponApply',
     'couponApplied', 'couponAppliedCode', 'couponAppliedPct', 'couponRemove', 'couponMsg',
     'doneDates', 'doneGuests', 'doneTotal', 'newBookingBtn', 'msgHostBtn'];
@@ -1003,9 +1010,9 @@ function initFunnel() {
   if (el.couponRemove) {
     el.couponRemove.addEventListener('click', function () { removeCoupon('guest'); });
   }
-  if (el.offerApply) {
-    el.offerApply.addEventListener('click', function () {
-      if (featuredOffer) applyCoupon(featuredOffer.code, 'banner');
+  if (el.offerSeal) {
+    el.offerSeal.addEventListener('click', function () {
+      if (featuredOffer) applyCoupon(featuredOffer.code, 'seal');
     });
   }
 

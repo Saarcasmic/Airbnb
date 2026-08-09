@@ -235,6 +235,76 @@ s{text-decoration-thickness:1px}
     linear-gradient(180deg,rgba(28,10,19,0.5) 0%,rgba(28,10,19,0.12) 26%,rgba(28,10,19,0.1) 52%,rgba(30,10,20,0.88) 100%),
     linear-gradient(90deg,rgba(28,10,19,0.46) 0%,rgba(28,10,19,0.12) 46%,rgba(28,10,19,0.02) 72%);
 }
+/* ---- festive offer seal ----
+   A sticker on the hero, tucked under the top bar so it clears the share and
+   Instagram buttons, and outside .hero-content so it never crowds the title or
+   the booking desk's price. Tapping it applies the featured code.
+   Hidden entirely when no offer is running — [hidden] stays authoritative. */
+.offer-seal{
+  position:absolute;
+  z-index:3;
+  top:calc(86px + env(safe-area-inset-top,0px));
+  right:clamp(20px,4.5vw,48px);
+  width:86px;
+  height:86px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:radial-gradient(circle at 32% 28%,#C42A5D,var(--rani) 55%,var(--rani-deep));
+  color:#fff;
+  box-shadow:0 14px 30px -12px rgba(28,10,19,0.85),inset 0 0 0 1px rgba(255,255,255,0.28);
+  transform:rotate(-8deg);
+  /* no fill-mode: once it lands, the base transform governs again so :hover works */
+  animation:sealIn 0.5s cubic-bezier(0.22,1,0.36,1);
+  transition:transform 0.2s cubic-bezier(0.22,1,0.36,1),box-shadow 0.2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.offer-seal[hidden]{display:none}
+.offer-seal:hover{transform:rotate(0deg) scale(1.06)}
+.offer-seal:active{transform:rotate(0deg) scale(0.98)}
+.seal-pct{font-family:var(--serif);font-size:25px;line-height:1}
+.seal-off{
+  margin-top:1px;
+  font-size:9.5px;
+  font-weight:700;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  opacity:0.88;
+}
+.seal-code{
+  max-width:78px;
+  margin-top:5px;
+  padding:2px 7px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.95);
+  color:var(--rani-deep);
+  font-size:8.5px;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.offer-seal.is-applied{
+  background:radial-gradient(circle at 32% 28%,#159A54,var(--leaf) 55%,#0A5C31);
+  cursor:default;
+}
+.offer-seal.is-applied .seal-code{color:#0A5C31}
+@keyframes sealIn{from{opacity:0;transform:rotate(-8deg) scale(0.7)}to{opacity:1;transform:rotate(-8deg) scale(1)}}
+@media(min-width:768px){
+  .offer-seal{width:104px;height:104px;top:calc(100px + env(safe-area-inset-top,0px))}
+  .seal-pct{font-size:30px}
+  .seal-off{font-size:10px}
+  .seal-code{max-width:94px;font-size:9.5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .offer-seal{animation:none;transition:none}
+  .offer-seal:hover,.offer-seal:active{transform:rotate(-8deg)}
+}
+
 .hero-content{
   position:relative;
   z-index:2;
@@ -618,60 +688,6 @@ button.field-row:hover{background:var(--rani-tint)}
 }
 .bd-certainty svg{color:var(--leaf);flex-shrink:0}
 .bd-row[hidden]{display:none}
-
-/* ---- festive offer strip ----
-   Deliberately narrow: a single line that sits above the booking desk and
-   carries whichever code the host has featured on /coupon. Hidden entirely
-   when no offer is running (the [hidden] attribute stays authoritative). */
-.offer-strip{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  width:fit-content;
-  max-width:100%;
-  margin:0 auto 18px;
-  padding:8px 8px 8px 14px;
-  border-radius:999px;
-  background:linear-gradient(100deg,var(--rani-tint),#FBF1DC);
-  border:1px solid rgba(166,30,77,0.22);
-}
-.offer-strip[hidden]{display:none}
-.os-flame{display:flex;color:var(--rani);flex-shrink:0}
-.os-copy{
-  display:flex;
-  align-items:baseline;
-  flex-wrap:wrap;
-  gap:2px 8px;
-  min-width:0;
-  font-size:13.5px;
-  line-height:1.35;
-  color:var(--ink-soft);
-}
-.os-copy strong{color:var(--rani-deep);font-weight:700}
-.os-text b{
-  font-weight:700;
-  letter-spacing:0.06em;
-  color:var(--ink);
-  font-variant-numeric:tabular-nums;
-}
-.os-apply{
-  flex-shrink:0;
-  padding:7px 15px;
-  border-radius:999px;
-  background:var(--rani);
-  color:#fff;
-  font-size:12.5px;
-  font-weight:700;
-  letter-spacing:0.02em;
-  transition:background 0.15s ease;
-}
-.os-apply:hover{background:var(--rani-deep)}
-.os-apply:active{transform:scale(0.97)}
-.offer-strip.is-applied .os-apply{background:var(--leaf)}
-@media(max-width:420px){
-  .offer-strip{width:100%;justify-content:space-between}
-  .os-copy{font-size:12.5px}
-}
 
 /* ---- coupon entry (inside the breakdown) ---- */
 .coupon{margin-top:14px;padding-top:12px;border-top:1px dashed var(--hairline)}
