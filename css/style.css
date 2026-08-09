@@ -226,8 +226,37 @@ s{text-decoration-thickness:1px}
   background:var(--velvet);
   overflow:hidden;
 }
-.hero-media,.hero-media img{position:absolute;inset:0;width:100%;height:100%}
-.hero-media img{object-fit:cover;object-position:center 60%}
+.hero-media{position:absolute;inset:0}
+/* Crossfade rather than a horizontal slide: the hero copy is fixed on top, so
+   translating the imagery under it reads as jitter, and wrapping 3 → 1 would
+   need cloned slides to avoid a visible rewind. Only .is-active is opaque. */
+.hero-slide{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transition:opacity 1.1s ease;
+}
+.hero-slide.is-active{opacity:1}
+.hero-slide img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 60%;
+}
+/* Sits above the imagery and the scrim, below .hero-content (2) and the top
+   bar (--z-nav), so only clicks on exposed photo reach it. */
+.hero-tap{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  cursor:zoom-in;
+  -webkit-tap-highlight-color:transparent;
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-slide{transition:none}
+}
 .hero-scrim{
   position:absolute;
   inset:0;
@@ -1633,9 +1662,11 @@ body.sheet-open .wa-fab{opacity:0;pointer-events:none}
   display:grid;
   grid-template-columns:repeat(7,1fr);
   row-gap:2px;
+  column-gap:0;   /* explicit: the range band relies on cells touching */
 }
 .cal-day{
   position:relative;
+  isolation:isolate;
   aspect-ratio:1;
   max-height:48px;
   display:flex;
@@ -1644,16 +1675,70 @@ body.sheet-open .wa-fab{opacity:0;pointer-events:none}
   font-size:14px;
   font-weight:500;
   color:var(--ink);
-  border-radius:50%;
   -webkit-tap-highlight-color:transparent;
-  transition:background 0.1s ease;
 }
 .cal-day.empty{visibility:hidden;pointer-events:none}
 .cal-day:disabled{color:#B4A5AC;cursor:default;font-weight:400}
 .cal-day.blocked{text-decoration:line-through;text-decoration-color:#B4899C}
-.cal-day:not(:disabled):not(.anchor):hover{box-shadow:inset 0 0 0 1.5px var(--rani)}
-.cal-day.in-range{background:var(--rani-tint);border-radius:0}
-.cal-day.anchor{background:var(--velvet);color:var(--on-velvet);font-weight:600}
+
+/* --- selected range ---
+   The band and the anchor disc are pseudo-elements; the numeral is a .cd-n
+   span that sits above both. `isolation:isolate` on the cell keeps all of that
+   ordering local, so it cannot be disturbed by anything painted elsewhere in
+   the sheet. Within a cell: band (::before, 0) → disc (::after, 0, later in
+   DOM order so it wins) → numeral (1).
+   The band is a fixed height rather than the full cell, so a run of dates
+   reads as ONE continuous strip instead of a row of separate squares — the
+   grid has no column gap, so the segments meet exactly. */
+.cd-n{position:relative;z-index:1}
+.cal-day.in-range::before,
+.cal-day.anchor-start::before,
+.cal-day.anchor-end::before{
+  content:'';
+  position:absolute;
+  top:50%;
+  height:min(100%,44px);
+  transform:translateY(-50%);
+  background:var(--rani-tint);
+  z-index:0;
+}
+/* The half-pixel bleed matters: with repeat(7,1fr) the column edges land on
+   fractional pixels on most widths, so segments that stop exactly at 0 leave
+   hairline white seams between them. Overlapping neighbours by 0.5px closes
+   the seam invisibly — the fill is one flat colour, so overlap cannot show. */
+.cal-day.in-range::before{left:-0.5px;right:-0.5px}
+/* Half-bands start at the cell's centre, under the disc, so the strip appears
+   to run between the two anchors and nowhere further. */
+.cal-day.anchor-start::before{left:50%;right:-0.5px}
+.cal-day.anchor-end::before{left:-0.5px;right:50%}
+
+.cal-day.anchor{color:var(--on-velvet);font-weight:600}
+.cal-day.anchor::after{
+  content:'';
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:min(100%,44px);
+  height:min(100%,44px);
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:var(--velvet);
+  z-index:0;
+}
+/* Hover ring matches the disc's geometry rather than the whole cell box,
+   which is wider than it is tall on roomy screens. */
+.cal-day:not(:disabled):not(.anchor):hover::after{
+  content:'';
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:min(100%,44px);
+  height:min(100%,44px);
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  box-shadow:inset 0 0 0 1.5px var(--rani);
+  z-index:0;
+}
 .cal-footer{
   display:flex;
   align-items:center;

@@ -310,12 +310,25 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
 
 <!-- ===== HERO ===== -->
 <header class="hero" id="hero">
-  <picture class="hero-media">
-    <source type="image/webp" media="(min-width:768px)" srcset="img/hero-2000.webp">
-    <source type="image/webp" srcset="img/hero-1200.webp">
-    <img src="img/herooo.jpeg" width="2400" height="1792" alt="Through the rosewood door — the bedroom at Pyari Kunj Vrindavan, velvet cushions on a floral-print bed" fetchpriority="high" decoding="async">
-  </picture>
+  <!-- Auto-advancing hero: the first two gallery photos, in gallery order, so
+       tapping through to the lightbox at index 0 lands on the same image the
+       carousel started from. Slide 1 keeps the responsive sources and the LCP
+       priority; slide 2 loads lazily at low priority so it never competes. -->
+  <div class="hero-media" id="heroMedia">
+    <picture class="hero-slide is-active">
+      <source type="image/webp" media="(min-width:768px)" srcset="img/hero-2000.webp">
+      <source type="image/webp" srcset="img/hero-1200.webp">
+      <img src="img/herooo.jpeg" width="2400" height="1792" alt="Through the rosewood door — the bedroom at Pyari Kunj Vrindavan, velvet cushions on a floral-print bed" fetchpriority="high" decoding="async">
+    </picture>
+    <picture class="hero-slide">
+      <img src="img/hero-tile-2.webp" width="1792" height="2400" alt="Morning light in the hall at Pyari Kunj Vrindavan" loading="lazy" fetchpriority="low" decoding="async">
+    </picture>
+  </div>
   <div class="hero-scrim" aria-hidden="true"></div>
+  <!-- Catches taps on the exposed photo only: the top bar and .hero-content sit
+       above it, so their buttons and copy keep their own clicks. aria-hidden +
+       no tab stop because "View all 21 photos" is the accessible route in. -->
+  <div class="hero-tap" id="heroTap" aria-hidden="true"></div>
 
   <div class="top-bar">
     <div class="wordmark">

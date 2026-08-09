@@ -509,7 +509,12 @@ function buildCalendar() {
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'cal-day';
-      btn.textContent = d;
+      // The numeral lives in its own span so it can be stacked above the range
+      // band and the anchor disc, both of which are pseudo-elements.
+      var num = document.createElement('span');
+      num.className = 'cd-n';
+      num.textContent = d;
+      btn.appendChild(num);
       btn.dataset.date = iso;
       if (iso < today || iso > horizon) btn.disabled = true;
       else if (blockedNights[iso]) {
@@ -555,9 +560,20 @@ function paintCalendar() {
   for (var i = 0; i < days.length; i++) {
     var b = days[i];
     var iso = b.dataset.date;
-    b.classList.remove('anchor', 'in-range');
-    if (iso === calSel.checkin || iso === calSel.checkout) b.classList.add('anchor');
-    else if (calSel.checkin && calSel.checkout && iso > calSel.checkin && iso < calSel.checkout) b.classList.add('in-range');
+    b.classList.remove('anchor', 'anchor-start', 'anchor-end', 'in-range');
+    // anchor-start/-end drive the half-bands that join the two discs into one
+    // continuous strip. They are only added once BOTH ends exist — a lone
+    // check-in has nothing to connect to and must stay a bare disc.
+    var spans = !!(calSel.checkin && calSel.checkout);
+    if (iso === calSel.checkin) {
+      b.classList.add('anchor');
+      if (spans) b.classList.add('anchor-start');
+    } else if (iso === calSel.checkout) {
+      b.classList.add('anchor');
+      if (spans) b.classList.add('anchor-end');
+    } else if (spans && iso > calSel.checkin && iso < calSel.checkout) {
+      b.classList.add('in-range');
+    }
   }
   // footer summary
   if (calSel.checkin && calSel.checkout) {
@@ -1113,6 +1129,42 @@ function initPageUi() {
       openLightbox(photoIndex);
     });
   });
+  // --- hero: auto-advancing photos + tap-through to the gallery ---
+  // Slides are the first three gallery images, so opening at index 0 lands on
+  // the same photo the carousel leads with.
+  var heroMedia = $('heroMedia');
+  if (heroMedia) {
+    var slides = heroMedia.querySelectorAll('.hero-slide');
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (slides.length > 1 && !reduceMotion) {
+      var slideIndex = 0, slideTimer = null;
+      var advance = function () {
+        slides[slideIndex].classList.remove('is-active');
+        slideIndex = (slideIndex + 1) % slides.length;   // last wraps back to 1st
+        slides[slideIndex].classList.add('is-active');
+      };
+      var startSlides = function () { if (!slideTimer) slideTimer = setInterval(advance, 3000); };
+      var stopSlides = function () { clearInterval(slideTimer); slideTimer = null; };
+      // Don't burn cycles crossfading a hero nobody is looking at.
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) stopSlides(); else startSlides();
+      });
+      if (window.IntersectionObserver) {
+        new IntersectionObserver(function (entries) {
+          if (entries[0].isIntersecting) startSlides(); else stopSlides();
+        }, { threshold: 0 }).observe(heroMedia);
+      }
+      startSlides();
+    }
+  }
+  var heroTap = $('heroTap');
+  if (heroTap) {
+    heroTap.addEventListener('click', function () {
+      safeTrack('hero_image_clicked', {});
+      openLightbox(0);
+    });
+  }
+
   $('lbClose').addEventListener('click', closeLightbox);
   $('lbPrev').addEventListener('click', function () { if (lbCurrentIndex > 0) scrollLbTo(lbCurrentIndex - 1); });
   $('lbNext').addEventListener('click', function () { if (lbCurrentIndex < LB_TOTAL - 1) scrollLbTo(lbCurrentIndex + 1); });
