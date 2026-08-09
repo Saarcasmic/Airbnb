@@ -7,8 +7,9 @@
    ===================================================================== */
 var CONFIG = {
   currency: 'INR',
-  basePrice: 2499,          // ₹ per night before discount
-  discountPct: 0.10,        // flat direct-booking discount, always applied
+  basePrice: 2499,          // ₹ per night — the only rate. There is no
+                            // automatic discount: every reduction now comes
+                            // from a coupon the guest applies (see /coupon).
   minNights: 1,
   maxGuests: 4,
   maxAdvanceMonths: 6,      // booking horizon for the calendar
@@ -124,12 +125,22 @@ function fmtRange(ci, co) { // "18–20 Jul" or "31 Jul – 2 Aug"
 /* ================= PRICE ================= */
 var inrFmt = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
 function rupees(n) { return '₹' + inrFmt.format(n); }
-function quote(nights) {
+/* Whole-percentage discount of the coupon currently applied (0 when none).
+   Only ever one coupon at a time — applying a new code replaces the old. */
+function appliedPct() { return booking.coupon ? booking.coupon.percent_off : 0; }
+
+/* MUST stay arithmetically identical to quote() in lib/booking.js — that one
+   is authoritative and prices the Razorpay order. Omit couponPct to price with
+   whatever coupon is currently applied. */
+function quote(nights, couponPct) {
+  var raw = couponPct === undefined ? appliedPct() : couponPct;
+  var pct = (typeof raw === 'number' && raw > 0 && raw <= 100) ? Math.floor(raw) : 0;
   var gross = CONFIG.basePrice * nights;
-  var total = Math.round(gross * (1 - CONFIG.discountPct));
-  return { nights: nights, gross: gross, discount: gross - total, total: total };
+  var discount = Math.round(gross * pct / 100);
+  var total = gross - discount;
+  return { nights: nights, gross: gross, discount: discount, couponPct: pct, total: total };
 }
-var NIGHTLY_OFF = Math.round(CONFIG.basePrice * (1 - CONFIG.discountPct));
+function nightlyWithCoupon() { return Math.round(CONFIG.basePrice * (1 - appliedPct() / 100)); }
 
 /* ================= DRAFT STORE (localStorage + TTL) ================= */
 var FUNNEL_STATES = ['idle', 'review', 'confirmed'];
@@ -147,6 +158,10 @@ function loadDraft() {
     if (!d.checkin || !d.checkout || nightsBetween(d.checkin, d.checkout) < CONFIG.minNights) return null;
     if (d.checkin < todayISO()) return null; // stay already started/past — discard
     d.guests = Math.min(Math.max(1, d.guests | 0), CONFIG.maxGuests);
+    // A restored coupon is only a hint: it is re-checked against the server on
+    // load (revalidateCoupon) and again at order time, which is what decides.
+    d.coupon = (d.coupon && typeof d.coupon.code === 'string' &&
+      d.coupon.percent_off > 0 && d.coupon.percent_off <= 100) ? d.coupon : null;
     return d;
   } catch (e) { return null; }
 }
@@ -160,6 +175,7 @@ function saveDraft() {
       checkin: booking.checkin,
       checkout: booking.checkout,
       guests: booking.guests,
+      coupon: booking.coupon,
       ref: lastRef,
       savedAt: Date.now()
     }));
@@ -171,7 +187,10 @@ function clearDraft() {
 }
 
 /* ================= BOOKING STATE ================= */
-var booking = { state: 'idle', checkin: null, checkout: null, guests: 2 };
+var booking = { state: 'idle', checkin: null, checkout: null, guests: 2, coupon: null };
+var featuredOffer = null;   // the code advertised in the offer strip, if any
+var couponBusy = false;     // a validation request is in flight
+var couponEntryOpen = false;
 var lastTrackedTotal = null;
 var lastRef = null;      // reservation ref of the confirmed booking
 var reserving = false;   // guards against double checkout starts
@@ -303,6 +322,146 @@ function fetchAvailability() {
       availabilityDegraded = true;
       if (calOpen) paintCalendar();
     });
+}
+
+/* ================= COUPONS =================
+   One coupon at a time. The percentage shown here is cosmetic: the code (never
+   the percentage, never the total) is what travels to /api/create-order, which
+   re-reads it from Supabase and prices the Razorpay order server-side. */
+function normalizeCouponCode(raw) {
+  return typeof raw === 'string' ? raw.replace(/\s+/g, '').toUpperCase() : '';
+}
+
+function showCouponMsg(text, ok) {
+  if (!el.couponMsg) return;
+  el.couponMsg.textContent = text;
+  el.couponMsg.classList.toggle('is-ok', !!ok);
+  el.couponMsg.hidden = false;
+}
+function hideCouponMsg() {
+  if (!el.couponMsg) return;
+  el.couponMsg.hidden = true;
+  el.couponMsg.textContent = '';
+  el.couponMsg.classList.remove('is-ok');
+}
+
+function renderCouponUi() {
+  var has = !!booking.coupon;
+  if (el.couponApplied) el.couponApplied.hidden = !has;
+  if (el.couponToggle) el.couponToggle.hidden = has || couponEntryOpen;
+  if (el.couponEntry) el.couponEntry.hidden = has || !couponEntryOpen;
+  if (has) {
+    el.couponAppliedCode.textContent = booking.coupon.code;
+    el.couponAppliedPct.textContent = booking.coupon.percent_off;
+  }
+  renderOfferStrip();
+}
+
+function renderOfferStrip() {
+  if (!el.offerStrip) return;
+  if (!featuredOffer) { el.offerStrip.hidden = true; return; }
+  var isOn = !!booking.coupon && booking.coupon.code === featuredOffer.code;
+  el.offerLabel.textContent = featuredOffer.label || 'Festive offer';
+  el.offerCode.textContent = featuredOffer.code;
+  el.offerPct.textContent = featuredOffer.percent_off;
+  el.offerApply.textContent = isOn ? 'Applied' : 'Apply';
+  el.offerApply.disabled = isOn;
+  el.offerStrip.classList.toggle('is-applied', isOn);
+  el.offerStrip.hidden = false;
+}
+
+function setCouponBusy(busy) {
+  couponBusy = busy;
+  if (el.couponApply) {
+    el.couponApply.disabled = busy;
+    el.couponApply.textContent = busy ? 'Checking…' : 'Apply';
+  }
+}
+
+/* source: 'input' | 'banner' | 'restore' */
+function applyCoupon(rawCode, source) {
+  var code = normalizeCouponCode(rawCode);
+  if (!code) { showCouponMsg('Enter a coupon code first.'); return; }
+  if (couponBusy) return;
+  if (booking.coupon && booking.coupon.code === code) { hideCouponMsg(); return; }
+  hideCouponMsg();
+  setCouponBusy(true);
+
+  fetch('/api/coupon', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code: code })
+  }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    .then(function (res) {
+      setCouponBusy(false);
+      if (!res.ok || !res.d) {
+        showCouponMsg('We couldn’t check that code just now — please try again in a moment.');
+        return;
+      }
+      if (!res.d.valid) {
+        showCouponMsg('That code isn’t valid. Check the spelling — or the offer may have ended.');
+        safeTrack('coupon_rejected', { code: code, source: source });
+        return;
+      }
+      // Replaces any previously applied coupon — they never stack.
+      booking.coupon = { code: res.d.code, percent_off: res.d.percent_off, label: res.d.label || '' };
+      couponEntryOpen = false;
+      if (el.couponInput) el.couponInput.value = '';
+      downgradeIfNeeded();
+      saveDraft();
+      render();
+      safeTrack('coupon_applied', { code: res.d.code, percent_off: res.d.percent_off, source: source });
+    })
+    .catch(function () {
+      setCouponBusy(false);
+      showCouponMsg('We couldn’t check that code just now — please try again in a moment.');
+    });
+}
+
+function removeCoupon(reason) {
+  if (!booking.coupon) return;
+  var was = booking.coupon.code;
+  booking.coupon = null;
+  couponEntryOpen = false;
+  hideCouponMsg();
+  saveDraft();
+  render();
+  safeTrack('coupon_removed', { code: was, reason: reason || 'guest' });
+}
+
+/* The advertised code, if the host has featured one on /coupon. A missing
+   banner is cosmetic only, so failures here are silent. */
+function fetchFeaturedOffer() {
+  if (typeof fetch !== 'function') return;
+  fetch('/api/coupon').then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (!d || !d.code || !(d.percent_off > 0)) return;
+      featuredOffer = { code: d.code, percent_off: d.percent_off, label: d.label || 'Festive offer' };
+      renderOfferStrip();
+      renderBar();
+      safeTrack('offer_banner_shown', { code: featuredOffer.code, percent_off: featuredOffer.percent_off });
+    }).catch(function () {});
+}
+
+/* A coupon restored from a 48h-old draft may have been paused or deleted since.
+   Re-check it once on load so the guest never stares at a price we won't honour
+   (create-order would reject it at the worst possible moment otherwise). */
+function revalidateCoupon() {
+  if (!booking.coupon || typeof fetch !== 'function') return;
+  var code = booking.coupon.code;
+  fetch('/api/coupon', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code: code })
+  }).then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (!d) return;                       // couldn't check — leave it, order time decides
+      if (!booking.coupon || booking.coupon.code !== code) return; // changed meanwhile
+      if (!d.valid) { removeCoupon('expired'); return; }
+      if (d.percent_off !== booking.coupon.percent_off) {
+        booking.coupon.percent_off = d.percent_off;
+        saveDraft();
+        render();
+      }
+    }).catch(function () {});
 }
 
 /* ================= CALENDAR ================= */
@@ -475,6 +634,17 @@ function fillSummaries() {
 
 function render() {
   var hasDates = !!(booking.checkin && booking.checkout);
+  var pct = appliedPct();
+
+  // --- nightly headline (strike-through only once a coupon is applied) ---
+  if (el.dpNow) el.dpNow.textContent = rupees(nightlyWithCoupon());
+  if (el.dpWas) { el.dpWas.textContent = rupees(CONFIG.basePrice); el.dpWas.hidden = !pct; }
+  if (el.dpTag) {
+    el.dpTag.textContent = pct
+      ? booking.coupon.code + ' · ' + pct + '% off applied'
+      : 'All-inclusive · no extra fees';
+  }
+  renderCouponUi();
 
   // --- review step widgets ---
   if (hasDates) {
@@ -483,7 +653,15 @@ function render() {
     var q = quote(nightsBetween(booking.checkin, booking.checkout));
     el.bdNights.textContent = rupees(CONFIG.basePrice) + ' × ' + q.nights + ' night' + (q.nights > 1 ? 's' : '');
     el.bdGross.textContent = rupees(q.gross);
-    el.bdDiscount.textContent = '−' + rupees(q.discount);
+    if (el.bdCouponRow) {
+      if (q.couponPct > 0) {
+        el.bdCouponLabel.textContent = 'Coupon ' + booking.coupon.code + ' (' + q.couponPct + '%)';
+        el.bdDiscount.textContent = '−' + rupees(q.discount);
+        el.bdCouponRow.hidden = false;
+      } else {
+        el.bdCouponRow.hidden = true;
+      }
+    }
     el.bdTotal.textContent = rupees(q.total);
     el.breakdown.classList.add('show');
     if (el.reserveBtn) el.reserveBtn.classList.remove('is-disabled');
@@ -498,6 +676,17 @@ function render() {
     el.breakdown.classList.remove('show');
     if (el.reserveBtn) el.reserveBtn.classList.add('is-disabled');
   }
+
+  // --- locked CTA: .is-locked both shows the standing "choose your dates"
+  //     tooltip and makes the wrapper clickable (the disabled button inside
+  //     is pointer-events:none, so it cannot hear the tap itself) ---
+  if (el.reserveWrap) el.reserveWrap.classList.toggle('is-locked', !hasDates);
+  if (el.reserveTip) el.reserveTip.setAttribute('aria-hidden', hasDates ? 'true' : 'false');
+  if (el.reserveBtn) {
+    if (hasDates) el.reserveBtn.removeAttribute('aria-describedby');
+    else el.reserveBtn.setAttribute('aria-describedby', 'reserveTip');
+  }
+
   el.guestCount.textContent = booking.guests;
   el.guestMinus.disabled = booking.guests <= 1;
   el.guestPlus.disabled = booking.guests >= CONFIG.maxGuests;
@@ -512,24 +701,40 @@ function render() {
   if (window.__pkSyncFab) window.__pkSyncFab();
 }
 
+/* Nightly headline for the sticky bar: struck-through base price only once a
+   coupon is actually applied, otherwise the plain rate. */
+function barNightlyMain() {
+  var pct = appliedPct();
+  return (pct ? '<span class="bb-was">' + rupees(CONFIG.basePrice) + '</span>' : '') +
+    rupees(nightlyWithCoupon()) + ' <span class="bb-unit">/ night</span>';
+}
+/* Sub-line does double duty: confirms an applied coupon, or advertises the
+   featured one — the sticky bar is the most-seen surface on the page. */
+function barNightlySub() {
+  if (booking.coupon) return booking.coupon.code + ' · ' + booking.coupon.percent_off + '% off applied';
+  if (featuredOffer) return 'Use code ' + featuredOffer.code + ' for ' + featuredOffer.percent_off + '% off';
+  return 'Final all-in price · no extra fees';
+}
+
 function renderBar() {
   var main = '', sub = '', cta = '', hidden = false;
   var hasDates = !!(booking.checkin && booking.checkout);
   var q = hasDates ? quote(nightsBetween(booking.checkin, booking.checkout)) : null;
   switch (booking.state) {
     case 'idle':
-      main = '<span class="bb-was">' + rupees(CONFIG.basePrice) + '</span>' + rupees(NIGHTLY_OFF) + ' <span class="bb-unit">/ night</span>';
-      sub = '10% off · applied automatically';
+      main = barNightlyMain();
+      sub = barNightlySub();
       cta = 'Check dates';
       break;
     case 'review':
       if (hasDates) {
         main = rupees(q.total) + ' <span class="bb-unit">total</span>';
-        sub = q.nights + ' night' + (q.nights > 1 ? 's' : '') + ' · ' + fmtRange(booking.checkin, booking.checkout) + ' · 10% off applied';
+        sub = q.nights + ' night' + (q.nights > 1 ? 's' : '') + ' · ' + fmtRange(booking.checkin, booking.checkout) +
+          (q.couponPct ? ' · ' + booking.coupon.code + ' ' + q.couponPct + '% off' : ' · all-in');
         cta = 'Reserve';
       } else {
-        main = '<span class="bb-was">' + rupees(CONFIG.basePrice) + '</span>' + rupees(NIGHTLY_OFF) + ' <span class="bb-unit">/ night</span>';
-        sub = '10% off · applied automatically';
+        main = barNightlyMain();
+        sub = barNightlySub();
         cta = 'Check dates';
       }
       break;
@@ -608,7 +813,12 @@ function startReserve() {
   var ud = metaUserData();
   fetch('/api/create-order', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ checkin: booking.checkin, checkout: booking.checkout, guests: booking.guests, fbp: ud.fbp, fbc: ud.fbc })
+    // Only the code goes over the wire — the server decides what it's worth.
+    body: JSON.stringify({
+      checkin: booking.checkin, checkout: booking.checkout, guests: booking.guests,
+      coupon: booking.coupon ? booking.coupon.code : null,
+      fbp: ud.fbp, fbc: ud.fbc
+    })
   }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
     .then(function (res) {
       if (!res.ok || !res.d || !res.d.order_id) { orderError(res.d); resetReserve(); return; }
@@ -621,6 +831,12 @@ function orderError(d) {
   var e = d && d.error;
   if (e === 'dates_unavailable') showPayError('Those dates were just taken — please choose different dates.');
   else if (e === 'availability_unverified') showPayError('We can’t confirm availability right now. Please try again shortly, or message us on WhatsApp.', 'the site could not verify availability for my dates');
+  else if (e === 'coupon_invalid') {
+    // The code died between being applied and being used (paused/deleted).
+    // Drop it and re-render so the guest sees the real total before retrying.
+    removeCoupon('rejected_at_checkout');
+    showPayError('That coupon is no longer available, so we’ve removed it. Please check the updated total and try again.');
+  } else if (e === 'coupon_unverified') showPayError('We couldn’t check your coupon just now. Please try again in a moment, or remove it to continue.', 'the site could not verify my coupon code');
   else if (e === 'razorpay_not_configured') showPayError('Online booking isn’t live yet. Please message us on WhatsApp to book.', 'online booking is not live yet');
   else showPayError('Could not start checkout. Please try again.', 'checkout would not start');
 }
@@ -686,8 +902,12 @@ function initFunnel() {
   var ids = ['bookBar', 'barMain', 'barSub', 'barCta', 'resumeBanner', 'resumeSub', 'resumeCta',
     'calSheet', 'calBackdrop', 'calMonths', 'calMain', 'calSub', 'calSave', 'calClear', 'calClose',
     'datesField', 'datesValue', 'guestMinus', 'guestPlus', 'guestCount',
-    'breakdown', 'bdNights', 'bdGross', 'bdDiscount', 'bdTotal',
-    'reserveBtn', 'reserveLabel', 'payError', 'confRef',
+    'breakdown', 'bdNights', 'bdGross', 'bdDiscount', 'bdTotal', 'bdCouponRow', 'bdCouponLabel',
+    'reserveBtn', 'reserveLabel', 'reserveWrap', 'reserveTip', 'payError', 'confRef',
+    'dpWas', 'dpNow', 'dpTag',
+    'offerStrip', 'offerLabel', 'offerCode', 'offerPct', 'offerApply',
+    'couponBox', 'couponToggle', 'couponEntry', 'couponInput', 'couponApply',
+    'couponApplied', 'couponAppliedCode', 'couponAppliedPct', 'couponRemove', 'couponMsg',
     'doneDates', 'doneGuests', 'doneTotal', 'newBookingBtn', 'msgHostBtn'];
   for (var i = 0; i < ids.length; i++) el[ids[i]] = $(ids[i]);
 
@@ -698,6 +918,7 @@ function initFunnel() {
     booking.checkin = draft.checkin;
     booking.checkout = draft.checkout;
     booking.guests = draft.guests;
+    booking.coupon = draft.coupon || null;
     lastRef = draft.ref || null;
     safeTrack('draft_restored', {
       state: draft.state,
@@ -749,6 +970,45 @@ function initFunnel() {
     });
   }
 
+  // --- locked CTA ---
+  // The tooltip itself is pure CSS (visible for as long as .is-locked is set).
+  // A tap on the locked area still opens the calendar — the thing it asks for.
+  if (el.reserveWrap) {
+    el.reserveWrap.addEventListener('click', function () {
+      if (!el.reserveWrap.classList.contains('is-locked')) return; // button handles its own clicks
+      safeTrack('reserve_locked_tapped', {});
+      openCalendar('locked-cta');
+    });
+  }
+
+  // --- coupons ---
+  if (el.couponToggle) {
+    el.couponToggle.addEventListener('click', function () {
+      couponEntryOpen = true;
+      el.couponToggle.setAttribute('aria-expanded', 'true');
+      renderCouponUi();
+      if (el.couponInput) el.couponInput.focus();
+      safeTrack('coupon_field_opened', {});
+    });
+  }
+  if (el.couponApply) {
+    el.couponApply.addEventListener('click', function () { applyCoupon(el.couponInput.value, 'input'); });
+  }
+  if (el.couponInput) {
+    el.couponInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); applyCoupon(el.couponInput.value, 'input'); }
+    });
+    el.couponInput.addEventListener('input', hideCouponMsg);
+  }
+  if (el.couponRemove) {
+    el.couponRemove.addEventListener('click', function () { removeCoupon('guest'); });
+  }
+  if (el.offerApply) {
+    el.offerApply.addEventListener('click', function () {
+      if (featuredOffer) applyCoupon(featuredOffer.code, 'banner');
+    });
+  }
+
   // --- confirmed step: start a new booking ---
   el.newBookingBtn.addEventListener('click', function () {
     clearDraft();
@@ -756,8 +1016,11 @@ function initFunnel() {
     booking.checkin = null;
     booking.checkout = null;
     booking.guests = 2;
+    booking.coupon = null;
+    couponEntryOpen = false;
     lastTrackedTotal = null;
     lastRef = null;
+    hideCouponMsg();
     hidePayError();
     resetReserve();
     render();
@@ -789,6 +1052,9 @@ function initFunnel() {
 
   // --- live availability from the Airbnb calendar (non-blocking) ---
   fetchAvailability();
+  // --- the advertised offer code, and a re-check of any restored coupon ---
+  fetchFeaturedOffer();
+  revalidateCoupon();
 }
 
 /* ================= KEPT PAGE UI ================= */

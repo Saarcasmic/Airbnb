@@ -1,7 +1,8 @@
 {
   "outputDirectory": ".",
   "rewrites": [
-    { "source": "/block", "destination": "/block.html" }
+    { "source": "/block", "destination": "/block.html" },
+    { "source": "/coupon", "destination": "/coupon.html" }
   ],
   "redirects": [
     {
@@ -13,7 +14,7 @@
   ],
   "headers": [
     {
-      "source": "/block(.html)?",
+      "source": "/(block|coupon)(.html)?",
       "headers": [
         {
           "key": "X-Robots-Tag",

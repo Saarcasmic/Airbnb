@@ -2,7 +2,11 @@
 // No SDK: plain REST + Basic auth. Secret stays server-side (env).
 // PRICE IS COMPUTED HERE from the dates — the client total is never trusted.
 // Availability FAILS CLOSED: an unverifiable calendar rejects the order.
+// The coupon FAILS CLOSED too: the client sends only a code, the percentage is
+// re-read from Supabase here, and an unverifiable coupon rejects the order
+// rather than charging the guest the undiscounted price they never agreed to.
 var booking = require('../lib/booking.js');
+var coupons = require('../lib/coupons.js');
 
 var KEY_ID = process.env.RAZORPAY_KEY_ID;
 var KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
@@ -27,13 +31,28 @@ module.exports = async function handler(req, res) {
     if (avail === 'blocked') { res.status(409).json({ error: 'dates_unavailable' }); return; }
     if (avail !== 'ok') { res.status(503).json({ error: 'availability_unverified' }); return; }
 
+    // Exactly one coupon per booking — they never stack. An empty/absent code
+    // is simply "no discount"; a non-empty one must resolve or the order dies.
+    var couponCode = null, couponPct = 0;
+    var rawCoupon = coupons.normalizeCode(body.coupon);
+    if (rawCoupon) {
+      var hit = await coupons.lookup(rawCoupon);
+      if (hit === 'unverified') { res.status(503).json({ error: 'coupon_unverified' }); return; }
+      if (!hit) { res.status(400).json({ error: 'coupon_invalid' }); return; }
+      couponCode = hit.code;
+      couponPct = hit.percent_off;
+    }
+
     var n = booking.nights(checkin, checkout);
-    var q = booking.quote(n);
+    var q = booking.quote(n, couponPct);
     if (q.amountPaise < 100) { res.status(400).json({ error: 'amount_too_low' }); return; }
 
     var ref = 'PK-' + checkin.replace(/-/g, '').slice(2) + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
 
     var notes = { checkin: checkin, checkout: checkout, guests: String(guests), nights: String(n), ref: ref };
+    // Record which coupon bought this price, so the host notification and any
+    // later reconciliation can explain why the amount differs from base rate.
+    if (couponCode) { notes.coupon = couponCode; notes.coupon_pct = String(couponPct); }
     // Persist Meta attribution into the order so the webhook Purchase keeps
     // fbp/fbc even when the browser closes right after payment.
     if (typeof body.fbp === 'string' && body.fbp) notes.fbp = body.fbp.slice(0, 250);
@@ -68,7 +87,9 @@ module.exports = async function handler(req, res) {
       guests: guests,
       checkin: checkin,
       checkout: checkout,
-      total: q.total
+      total: q.total,
+      coupon: couponCode,
+      coupon_pct: couponPct
     });
   } catch (err) {
     res.status(500).json({ error: 'server_error' });

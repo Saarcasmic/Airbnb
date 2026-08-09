@@ -228,3 +228,32 @@ Plan approved 2026-07-14. Full plan: `~/.claude/plans/rippling-launching-newell.
 - Verified: 37 Node unit tests + 32 headless-Chrome walkthrough checks — all passing.
 - Known env-only 404s locally: `/_vercel/insights` + `/_vercel/speed-insights` (exist only on Vercel).
 - **Before launch:** (1) swap `upiId`/`payeeName` in `js/app.js` CONFIG; (2) fill cancellation-policy placeholder in `terms-and-booking.html`; (3) test wa.me + upi:// hops on a real Android phone.
+
+## Coupons + locked-CTA tooltip — implemented 2026-08-09
+
+### Pricing model changed
+- [x] **Automatic 10% direct discount removed.** `CONFIG.discountPct` deleted from both `js/app.js` and `lib/booking.js`; the rate is now a flat ₹2,499/night and 100% of any reduction comes from a coupon the guest applies. `/api/config` still returns `discount_pct` (now `0`) for compatibility — nothing consumes it.
+- [x] `quote(nights, couponPct)` in `js/app.js` and `lib/booking.js` verified identical across 3030 (nights × percent) combinations by an extraction-based parity test — the client cannot show a price the server won't charge.
+- [x] Every "10% off, applied automatically" claim rewritten: meta description, og:/twitter: descriptions, JSON-LD `description` + `priceRange` + `makesOffer` (price 2249 → 2499), both FAQPage answers, both visible FAQ answers, the assurance-strip bullet, and terms-and-booking.html Pricing.
+
+### Coupon feature
+- [x] Supabase `coupons` table — `sql/coupons.sql`. RLS on, **no policies**: the anon key cannot enumerate codes. Partial unique index enforces one featured coupon.
+- [x] `lib/coupons.js` — normalise/validate/lookup/featured, all via service_role.
+- [x] `api/coupon.js` (public): `GET` → featured code for the banner, `POST {code}` → validate one code. Never lists.
+- [x] `api/admin/coupons.js` — GET/POST/PATCH/DELETE behind the existing `X-Admin-Password` gate. Percent capped 1–99 (a 100% coupon would make a ₹0 Razorpay order that fails with a generic error at the payment step).
+- [x] `coupon.html` at `/coupon` — same lock screen and session key as `/block`, so one password unlocks both. Create, copy, pause/resume, feature on site, delete.
+- [x] `api/create-order.js` **fails closed on coupons**: only the code is sent from the browser, the percentage is re-read from Supabase, an unknown/paused code → `coupon_invalid`, an unreachable Supabase → `503 coupon_unverified`. A tampered client cannot buy a cheaper stay.
+- [x] Guest UI: festive offer strip above the booking desk (one tap to apply), "Have a coupon code?" entry inside the breakdown, applied-state row with Remove, coupon line in the ledger, sticky bar advertises the featured code and confirms an applied one.
+- [x] One coupon at a time — applying a new code replaces the old one everywhere.
+- [x] Coupon persists in the 48h draft and is re-validated on load (`revalidateCoupon`), so a paused code is dropped before the guest reaches payment rather than at it.
+- [x] `lib/fulfill.js` host notification now names the coupon and percentage.
+- [x] `vercel.json` rewrite + noindex/no-store for `/coupon`; `robots.txt` disallows it.
+- [x] New PostHog events: `coupon_applied`, `coupon_rejected`, `coupon_removed`, `coupon_field_opened`, `offer_banner_shown`, `reserve_locked_tapped`.
+
+### Tooltip
+- [x] Disabled "Reserve & pay" now explains itself: "Please choose your dates first". The tooltip is **permanently visible for every guest** while the button is locked — no hover or tap needed — and disappears the moment dates are chosen. `.cta-wrap.is-locked` reserves 42px so the bubble never covers the Guests row. `.btn-cta.is-disabled` is `pointer-events:none`, so the wrapper carries the tap, which opens the calendar. `aria-describedby` is attached only while locked.
+
+### Saar — still to do
+- [ ] Run `sql/coupons.sql` in the Supabase SQL editor (nothing works until the table exists).
+- [ ] Create the festive coupon at `/coupon` and tick "Show on site".
+- [ ] ⚠️ Ad creatives and any external copy still say "₹2,249/night direct" — that price now requires a coupon code. Update them, or keep a permanent code featured.

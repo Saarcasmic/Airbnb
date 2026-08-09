@@ -516,6 +516,54 @@ button.field-row:hover{background:var(--rani-tint)}
 @keyframes ctaSpin{to{transform:rotate(360deg)}}
 .btn-cta.btn-wa:not(.is-disabled){background:var(--leaf);box-shadow:0 10px 22px -14px rgba(10,99,53,0.9)}
 .btn-cta.btn-wa:not(.is-disabled):hover{background:var(--leaf-deep)}
+
+/* "choose your dates" tooltip on the locked CTA.
+   It stays visible the whole time the button is locked — for everyone, no
+   hover or tap required — so the reason the CTA is greyed out is never a
+   mystery. .is-locked is set from render() in js/app.js, and it reserves the
+   space the bubble occupies so it never covers the Guests row above it. */
+.cta-wrap{position:relative;display:block}
+.cta-wrap.is-locked{cursor:pointer;padding-top:42px}
+.cta-tip{
+  position:absolute;
+  left:50%;
+  top:0;
+  transform:translate(-50%,4px);
+  z-index:5;
+  padding:8px 13px;
+  border-radius:var(--r-s);
+  background:var(--velvet);
+  color:#fff;
+  font-size:12.5px;
+  font-weight:600;
+  line-height:1.35;
+  white-space:nowrap;
+  box-shadow:0 10px 24px -12px rgba(39,24,33,0.7);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity 0.16s ease,transform 0.16s ease,visibility 0s linear 0.16s;
+}
+.cta-tip::after{
+  content:'';
+  position:absolute;
+  top:100%;
+  left:50%;
+  margin-left:-5px;
+  border:5px solid transparent;
+  border-top-color:var(--velvet);
+}
+/* Locked → the hint is simply on. It turns off only when dates are chosen. */
+.cta-wrap.is-locked .cta-tip{
+  opacity:1;
+  visibility:visible;
+  transform:translate(-50%,0);
+  transition:opacity 0.16s ease,transform 0.16s ease;
+}
+@media(prefers-reduced-motion:reduce){
+  .cta-tip{transition:none;transform:translate(-50%,0)}
+  .cta-wrap.is-locked .cta-tip{transition:none;transform:translate(-50%,0)}
+}
 .btn-text{
   display:block;
   width:100%;
@@ -569,6 +617,127 @@ button.field-row:hover{background:var(--rani-tint)}
   color:var(--mut);
 }
 .bd-certainty svg{color:var(--leaf);flex-shrink:0}
+.bd-row[hidden]{display:none}
+
+/* ---- festive offer strip ----
+   Deliberately narrow: a single line that sits above the booking desk and
+   carries whichever code the host has featured on /coupon. Hidden entirely
+   when no offer is running (the [hidden] attribute stays authoritative). */
+.offer-strip{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:fit-content;
+  max-width:100%;
+  margin:0 auto 18px;
+  padding:8px 8px 8px 14px;
+  border-radius:999px;
+  background:linear-gradient(100deg,var(--rani-tint),#FBF1DC);
+  border:1px solid rgba(166,30,77,0.22);
+}
+.offer-strip[hidden]{display:none}
+.os-flame{display:flex;color:var(--rani);flex-shrink:0}
+.os-copy{
+  display:flex;
+  align-items:baseline;
+  flex-wrap:wrap;
+  gap:2px 8px;
+  min-width:0;
+  font-size:13.5px;
+  line-height:1.35;
+  color:var(--ink-soft);
+}
+.os-copy strong{color:var(--rani-deep);font-weight:700}
+.os-text b{
+  font-weight:700;
+  letter-spacing:0.06em;
+  color:var(--ink);
+  font-variant-numeric:tabular-nums;
+}
+.os-apply{
+  flex-shrink:0;
+  padding:7px 15px;
+  border-radius:999px;
+  background:var(--rani);
+  color:#fff;
+  font-size:12.5px;
+  font-weight:700;
+  letter-spacing:0.02em;
+  transition:background 0.15s ease;
+}
+.os-apply:hover{background:var(--rani-deep)}
+.os-apply:active{transform:scale(0.97)}
+.offer-strip.is-applied .os-apply{background:var(--leaf)}
+@media(max-width:420px){
+  .offer-strip{width:100%;justify-content:space-between}
+  .os-copy{font-size:12.5px}
+}
+
+/* ---- coupon entry (inside the breakdown) ---- */
+.coupon{margin-top:14px;padding-top:12px;border-top:1px dashed var(--hairline)}
+.coupon-toggle{
+  font-size:13.5px;
+  font-weight:600;
+  color:var(--rani);
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.coupon-toggle[hidden]{display:none}
+.coupon-entry{display:flex;gap:8px;align-items:stretch}
+.coupon-entry[hidden]{display:none}
+.coupon-entry input{
+  flex:1;
+  min-width:0;
+  font:inherit;
+  font-size:14.5px;
+  font-weight:700;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  padding:11px 14px;
+  border-radius:var(--r-s);
+  border:1px solid var(--hairline);
+  background:var(--card);
+  color:var(--ink);
+}
+.coupon-entry input::placeholder{font-weight:500;letter-spacing:normal;text-transform:none;color:var(--mut)}
+.coupon-apply{
+  flex-shrink:0;
+  padding:0 20px;
+  border-radius:var(--r-s);
+  background:var(--velvet);
+  color:#fff;
+  font-size:14px;
+  font-weight:700;
+}
+.coupon-apply:hover{background:#48202F}
+.coupon-apply:disabled{opacity:0.55;cursor:progress}
+.coupon-applied{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:10px 14px;
+  border-radius:var(--r-s);
+  background:var(--leaf-tint);
+  border:1px solid rgba(14,124,67,0.25);
+  font-size:13.5px;
+  color:#0B5C32;
+}
+.coupon-applied[hidden]{display:none}
+.coupon-applied svg{color:var(--leaf);flex-shrink:0}
+.coupon-applied .ca-text{min-width:0}
+.coupon-applied b{letter-spacing:0.06em}
+.coupon-remove{
+  margin-left:auto;
+  flex-shrink:0;
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--ink-soft);
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.coupon-msg{margin:8px 0 0;font-size:12.5px;line-height:1.5;color:var(--error)}
+.coupon-msg[hidden]{display:none}
+.coupon-msg.is-ok{color:var(--leaf)}
 
 .pay-error{
   margin-top:12px;
