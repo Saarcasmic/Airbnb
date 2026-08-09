@@ -1632,10 +1632,17 @@ body.sheet-open .wa-fab{opacity:0;pointer-events:none}
   transition:background 0.15s ease;
 }
 .cal-close:hover{background:var(--rani-tint)}
+/* The weekday header and the day grid share one padding formula so their seven
+   columns line up exactly. It also caps the usable width at 350px (50px per
+   column): without a cap, the full-screen sheet on a tablet would stretch
+   cells to ~120px. Capping HERE rather than on .cal-day is deliberate — a
+   max-height on a cell with aspect-ratio:1 makes the browser shrink its WIDTH
+   to keep the ratio, leaving unpainted column either side of the range band.
+   The border stays full-bleed because the element is still full width. */
 .cal-weekdays{
   display:grid;
   grid-template-columns:repeat(7,1fr);
-  padding:6px 22px 10px;
+  padding:6px max(22px,calc((100% - 350px) / 2)) 10px;
   border-bottom:1px solid var(--hairline);
   font-size:11px;
   font-weight:700;
@@ -1648,7 +1655,7 @@ body.sheet-open .wa-fab{opacity:0;pointer-events:none}
   flex:1;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
-  padding:4px 22px 28px;
+  padding:4px max(22px,calc((100% - 350px) / 2)) 28px;
 }
 .cal-month{margin-top:22px}
 .cal-month-name{
@@ -1667,8 +1674,9 @@ body.sheet-open .wa-fab{opacity:0;pointer-events:none}
 .cal-day{
   position:relative;
   isolation:isolate;
+  /* Square, and always the FULL width of its column — the range band depends
+     on neighbouring cells touching. No max-height here: see .cal-weekdays. */
   aspect-ratio:1;
-  max-height:48px;
   display:flex;
   align-items:center;
   justify-content:center;
