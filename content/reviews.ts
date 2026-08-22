@@ -1,0 +1,146 @@
+import type { Review } from '@/content/types';
+
+/* All 16 stays, five stars each. `alt` is the screenshot's alt text and `body`
+   is the schema.org reviewBody — they read alike but are deliberately separate
+   strings, so keep both when editing. Two different guests are named Rishabh
+   (rishabh-1 / rishabh-2); that is not a duplicate. */
+export const REVIEWS: Review[] = [
+  {
+    author: 'Abhay',
+    screenshot: '/img/reviews/abhay.webp',
+    width: 680,
+    height: 488,
+    alt: 'Five-star review by Abhay: felt homely and private, the host is very friendly, will visit again',
+    body: 'Felt homely and private, the host is very friendly, will visit again.',
+  },
+  {
+    author: 'Piyush Kumar',
+    screenshot: '/img/reviews/piyush.webp',
+    width: 680,
+    height: 507,
+    alt: 'Five-star review by Piyush Kumar: very comfortable and homely stay close to the heart of Vrindavan',
+    body: 'Very comfortable and homely stay close to the heart of Vrindavan.',
+  },
+  {
+    author: 'Shailaja',
+    screenshot: '/img/reviews/shailaja.webp',
+    width: 680,
+    height: 601,
+    alt: 'Five-star review by Shailaja: the property was exactly as shown in the photos, every spot walkable',
+    body: 'The property was exactly as shown in the photos, every spot walkable.',
+  },
+  {
+    author: 'Abhinandan',
+    screenshot: '/img/reviews/abhinandan.webp',
+    width: 680,
+    height: 801,
+    alt: 'Five-star review by Abhinandan: neat and clean, near the temples, everything top notch',
+    body: 'Neat and clean, near the temples, everything top notch.',
+  },
+  {
+    author: 'Shubhangi',
+    screenshot: '/img/reviews/shubhangi.webp',
+    width: 680,
+    height: 702,
+    alt: 'Five-star review by Shubhangi: very clean and hygienic, the host gifted an original tulsi mala',
+    body: 'Very clean and hygienic, the host gifted an original tulsi mala.',
+  },
+  {
+    author: 'Joshi Divya Divyang',
+    screenshot: '/img/reviews/divya.webp',
+    width: 680,
+    height: 364,
+    alt: 'Five-star review by Joshi Divya Divyang: a wonderful place, would recommend for sure',
+    body: 'A wonderful place, would recommend for sure.',
+  },
+  {
+    author: 'Komal',
+    screenshot: '/img/reviews/komal.webp',
+    width: 680,
+    height: 925,
+    alt: 'Five-star review by Komal: the best part of my Vrindavan trip, surpassed all expectations',
+    body: 'The best part of my Vrindavan trip, surpassed all expectations.',
+  },
+  {
+    author: 'Vaidehi',
+    screenshot: '/img/reviews/vaidehi.webp',
+    width: 680,
+    height: 882,
+    alt: 'Five-star review by Vaidehi: felt like staying in a warm Vrindavan home, Banke Bihari Ji darshan incredibly convenient',
+    body: 'Felt like staying in a warm Vrindavan home, Banke Bihari Ji darshan incredibly convenient.',
+  },
+  {
+    author: 'Shivam',
+    screenshot: '/img/reviews/shivam.webp',
+    width: 680,
+    height: 860,
+    alt: 'Five-star review by Shivam: early check-in accommodated, prasad surprise for the family',
+    body: 'Early check-in accommodated, prasad surprise for the family.',
+  },
+  {
+    author: 'Siddharth',
+    screenshot: '/img/reviews/siddharth.webp',
+    width: 680,
+    height: 873,
+    alt: 'Five-star review by Siddharth: loved the Unexplored Vrindavan guidebook, worth more than the cost',
+    body: 'Loved the Unexplored Vrindavan guidebook, worth more than the cost.',
+  },
+  {
+    author: 'Ujjwal',
+    screenshot: '/img/reviews/ujjwal.webp',
+    width: 680,
+    height: 930,
+    alt: 'Five-star review by Ujjwal: darshan before the crowds, comfortable bed, well-stocked kitchen',
+    body: 'Darshan before the crowds, comfortable bed, well-stocked kitchen.',
+  },
+  {
+    author: 'Rupesh',
+    screenshot: '/img/reviews/rupesh.webp',
+    width: 680,
+    height: 514,
+    alt: 'Five-star review by Rupesh: too peaceful, all amenities provided, will surely visit again',
+    body: 'Too peaceful, all amenities provided, will surely visit again.',
+  },
+  {
+    author: 'Rishabh',
+    screenshot: '/img/reviews/rishabh-1.webp',
+    width: 680,
+    height: 773,
+    alt: 'Five-star review by Rishabh: hosts arranged a refrigerator within hours of asking',
+    body: 'Hosts arranged a refrigerator within hours of asking.',
+  },
+  {
+    author: 'Rishabh',
+    screenshot: '/img/reviews/rishabh-2.webp',
+    width: 680,
+    height: 682,
+    alt: 'Five-star review by Rishabh: clean and well-maintained, host listened to feedback and took action',
+    body: 'Clean and well-maintained, host listened to feedback and took action.',
+  },
+  {
+    author: 'Abhishek',
+    screenshot: '/img/reviews/abhishek.webp',
+    width: 680,
+    height: 927,
+    alt: 'Five-star review by Abhishek: was hesitant about a new listing, amazed on arrival, just like the pictures',
+    body: 'Was hesitant about a new listing, amazed on arrival, just like the pictures.',
+  },
+  {
+    author: 'Ritwij',
+    screenshot: '/img/reviews/ritwij.webp',
+    width: 680,
+    height: 680,
+    alt: 'Five-star review by Ritwij: beautiful authentic stay, check-in a breeze, 10 out of 10',
+    body: 'Beautiful authentic stay, check-in a breeze, 10 out of 10.',
+  },
+];
+
+/* The six Airbnb category scores under the review rail. */
+export const REVIEW_CATEGORIES: { label: string; score: string }[] = [
+  { label: 'Cleanliness', score: '5.0' },
+  { label: 'Accuracy', score: '5.0' },
+  { label: 'Check-in', score: '5.0' },
+  { label: 'Communication', score: '5.0' },
+  { label: 'Location', score: '5.0' },
+  { label: 'Value', score: '5.0' },
+];

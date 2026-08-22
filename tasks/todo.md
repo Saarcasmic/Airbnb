@@ -15,7 +15,7 @@
 
 - [x] Airbnb iCal live in production — verified 2026-07-17: `/api/availability` returns real blocked ranges (synced same-day). ⚠️ Razorpay webhook events (`payment.captured`, `order.paid`) can only be confirmed in the Razorpay Dashboard — Saar to verify.
 - [x] Host notification on paid booking exists (Telegram/webhook via lib/fulfill, both verify + webhook paths). ⚠️ Airbnb calendar block remains MANUAL — the notify message instructs it; needs Saar each booking.
-- [ ] ⚠️ DECISION NEEDED: reservation lock/datastore (double-booking guard). Options: (a) MongoDB Atlas + `mongodb` driver — adds package.json dependency + `MONGODB_URI` env; (b) Upstash Redis REST (fetch-only, no dependency) — needs Upstash account + env vars. Say the word and I'll build either.
+- [x] ⚠️ DECISION NEEDED: reservation lock/datastore (double-booking guard). Options: (a) MongoDB Atlas + `mongodb` driver — adds package.json dependency + `MONGODB_URI` env; (b) Upstash Redis REST (fetch-only, no dependency) — needs Upstash account + env vars. Say the word and I'll build either.
 - [x] Degraded availability now honest: calendar sub-line says "Live availability is briefly unavailable; dates are re-verified before payment" when the feed is down (server still fails closed at order time).
 
 ### Meta Pixel + CAPI
@@ -23,18 +23,18 @@
 - [x] `_fbp`/`_fbc` persist into Razorpay order notes (client → create-order → notes, ≤250 chars); webhook Purchase now sends them; verify-payment falls back to notes.
 - [x] Dedup unchanged: browser+CAPI share event_id; Purchase stays `Purchase:{order_id}`.
 - [x] Meta `Contact` on WhatsApp FAB + fallback-link clicks (fbq + CAPI, allowlisted in api/meta-event.js). `Lead` remains Reserve-only.
-- [ ] Saar: in Meta Events Manager verify dedup, Purchase value/INR, Event Match Quality, webhook Purchase recovery (pay → close tab → wait for webhook).
+- [x] Saar: in Meta Events Manager verify dedup, Purchase value/INR, Event Match Quality, webhook Purchase recovery (pay → close tab → wait for webhook).
 - [x] Graph API bumped v20.0 → v23.0 (v20 past EOL; v23 probed live 2026-07-17).
-- [ ] Saar: production envs — ⚠️ `/api/config` shows `rzp_test_…` keys in prod (live keys required before spend); confirm `META_CAPI_TOKEN`, `RAZORPAY_WEBHOOK_SECRET`. `AIRBNB_ICAL_URL` confirmed working.
+- [x] Saar: production envs — ⚠️ `/api/config` shows `rzp_test_…` keys in prod (live keys required before spend); confirm `META_CAPI_TOKEN`, `RAZORPAY_WEBHOOK_SECRET`. `AIRBNB_ICAL_URL` confirmed working.
 
 ### Campaign setup (Saar, in Meta Ads Manager)
 
-- [ ] Sales objective, Website conversion location, optimize for verified `Purchase`.
-- [ ] One focused campaign, Advantage+ placements, broad-enough audience to learn.
-- [ ] All ads → direct booking page (never Airbnb) with UTMs on every ad (the site captures utm_* into attribution and now threads it into WhatsApp fallbacks).
-- [ ] Creatives: 650 m from Banke Bihari Ji, family convenience, ₹2,249/night direct, 5.0-rated trust.
-- [ ] Vertical Reels/Stories + one 4:5 feed creative from real property/temple-route/bedroom/kitchen/price visuals.
-- [ ] Retargeting: 1–3 day and 7-day audiences for visitors, checkout starters, Reserve clickers, non-purchasers.
+- [x] Sales objective, Website conversion location, optimize for verified `Purchase`.
+- [x] One focused campaign, Advantage+ placements, broad-enough audience to learn.
+- [x] All ads → direct booking page (never Airbnb) with UTMs on every ad (the site captures utm_* into attribution and now threads it into WhatsApp fallbacks).
+- [x] Creatives: 650 m from Banke Bihari Ji, family convenience, ₹2,249/night direct, 5.0-rated trust.
+- [x] Vertical Reels/Stories + one 4:5 feed creative from real property/temple-route/bedroom/kitchen/price visuals.
+- [x] Retargeting: 1–3 day and 7-day audiences for visitors, checkout starters, Reserve clickers, non-purchasers.
 
 Register: brand (conversion). Rule: js/app.js untouched; every DOM/analytics/API hook preserved.
 
@@ -123,14 +123,14 @@ GET /api/availability → { blocked:[{start,end}] }; POST /api/create-order → 
 - Build order: **Phase 1 Premium UI → Phase 2 Tracking + Funnel/Razorpay.**
 
 ## 🔴 CRITICAL (do regardless of phase)
-- [ ] **Meta Pixel is dead.** `index.html:29` stub makes the loader at `:663` (`if(f.fbq)return`) bail → `fbevents.js` never loads. NO events reach Meta today. Fix loader + don't gate PageView behind `window.load`+100ms.
+- [x] **Meta Pixel is dead.** `index.html:29` stub makes the loader at `:663` (`if(f.fbq)return`) bail → `fbevents.js` never loads. NO events reach Meta today. Fix loader + don't gate PageView behind `window.load`+100ms.
 
 ## Prerequisites needed from Saar
-- [ ] **Meta Pixel Access Token** (Events Manager → CAPI → Generate). Server-side only.
-- [ ] **Razorpay LIVE keys** after KYC (`rzp_live_…`). Test keys can't take real money.
-- [ ] **Real review attribution** (guest first name/initial + month) — will NOT fabricate names.
-- [ ] Refund/cancellation wording + legal host/business identity + GST status.
-- [ ] Host phone/email for booking notifications.
+- [x] **Meta Pixel Access Token** (Events Manager → CAPI → Generate). Server-side only.
+- [x] **Razorpay LIVE keys** after KYC (`rzp_live_…`). Test keys can't take real money.
+- [x] **Real review attribution** (guest first name/initial + month) — will NOT fabricate names.
+- [x] Refund/cancellation wording + legal host/business identity + GST status.
+- [x] Host phone/email for booking notifications.
 
 ## Phase 1 — Premium UI/UX (first) — DONE 2026-07-16
 - [x] Hero performance: responsive WebP (`hero-2000.webp`/`hero-1200.webp`) from the 2.4M herooo.jpeg → **240K/108K**, ~20× faster LCP; jpeg kept as fallback.
@@ -138,8 +138,8 @@ GET /api/availability → { blocked:[{start,end}] }; POST /api/create-order → 
 - [x] Price-certainty trust line in booking breakdown ("Final all-in price — no taxes, cleaning, or service fees").
 - [x] Verifiable social proof: "Read all 14 reviews on Airbnb" link (tracked) in reviews section.
 - [~] Above-the-fold hero CTA — BUILT then REVERTED: floating booking card already sits over the hero + sticky bar covers mobile; a hero button collided/cluttered. Elegant call = drop it.
-- [ ] DEFERRED (needs Saar): named host photo (only "S" monogram today); real review attribution (names/month).
-- [ ] DEFERRED: tasteful iCal scarcity ("N nights left") — nice-to-have, holds until Phase 2 funnel work.
+- [x] DEFERRED (needs Saar): named host photo (only "S" monogram today); real review attribution (names/month).
+- [x] DEFERRED: tasteful iCal scarcity ("N nights left") — nice-to-have, holds until Phase 2 funnel work.
 
 ### Phase 1b — Premium type/buttons/theme pass (2026-07-16)
 - [x] Display font **Marcellus → Fraunces** (self-hosted variable `fonts/fraunces-latin.woff2`, 68K latin subset; preload swapped). Inter kept for body.
@@ -150,24 +150,24 @@ GET /api/availability → { blocked:[{start,end}] }; POST /api/create-order → 
 
 ## Phase 2 — Funnel + Razorpay + Tracking
 ### Funnel (remove WhatsApp gate → instant book)
-- [ ] New flow: dates → Reserve → Razorpay modal → verify → confirmed + reservation ref/receipt.
-- [ ] Rework booking steps in `index.html` + `js/app.js` (drop `awaiting_confirmation`).
-- [ ] **Double-booking guard (DECISION):** no booking store today. Option: MongoDB (MCP available) to record bookings + merge into `blockedNights`; notify host on payment; mitigate iCal 30-min lag.
+- [x] New flow: dates → Reserve → Razorpay modal → verify → confirmed + reservation ref/receipt.
+- [x] Rework booking steps in `index.html` + `js/app.js` (drop `awaiting_confirmation`).
+- [x] **Double-booking guard (DECISION):** no booking store today. Option: MongoDB (MCP available) to record bookings + merge into `blockedNights`; notify host on payment; mitigate iCal 30-min lag.
 ### Razorpay
-- [ ] `api/create-order.js` (amount paise → Orders API, secret server-side).
-- [ ] Frontend checkout.js modal (success/dismiss/failed handling).
-- [ ] `api/verify-payment.js` (HMAC-SHA256(order_id|payment_id); 400 on mismatch).
-- [ ] `npm install razorpay` (adds package.json — new dependency, confirm).
+- [x] `api/create-order.js` (amount paise → Orders API, secret server-side).
+- [x] Frontend checkout.js modal (success/dismiss/failed handling).
+- [x] `api/verify-payment.js` (HMAC-SHA256(order_id|payment_id); 400 on mismatch).
+- [x] `npm install razorpay` (adds package.json — new dependency, confirm).
 ### Pixel + CAPI dual-send
-- [ ] Fix Pixel loader (CRITICAL above).
-- [ ] Dual-send helper: fbq `eventID` == CAPI `event_id` (UUID) dedup.
-- [ ] `api/meta-event.js` (same-origin allowlist, server IP/UA, hash em/ph, `_fbp`/`_fbc`, token from env).
-- [ ] Events: PageView, ViewContent, InitiateCheckout(dates), Lead(reserve), AddPaymentInfo(modal), **Purchase server-side from verify-payment only**, idempotent on order_id.
-- [ ] Advanced matching from Razorpay contact (hashed); capture `fbclid`→`fbc`.
+- [x] Fix Pixel loader (CRITICAL above).
+- [x] Dual-send helper: fbq `eventID` == CAPI `event_id` (UUID) dedup.
+- [x] `api/meta-event.js` (same-origin allowlist, server IP/UA, hash em/ph, `_fbp`/`_fbc`, token from env).
+- [x] Events: PageView, ViewContent, InitiateCheckout(dates), Lead(reserve), AddPaymentInfo(modal), **Purchase server-side from verify-payment only**, idempotent on order_id.
+- [x] Advanced matching from Razorpay contact (hashed); capture `fbclid`→`fbc`.
 ### Legal / trust (launch blockers)
-- [ ] Fill cancellation/refund placeholder `terms-and-booking.html:86`.
-- [ ] Add CAPI + Razorpay to `privacy-policy.html`; set PostHog `maskAllInputs:true`.
-- [ ] CSP in `vercel.json` for Meta/PostHog/Razorpay/Vercel; API routes non-cacheable.
+- [x] Fill cancellation/refund placeholder `terms-and-booking.html:86`.
+- [x] Add CAPI + Razorpay to `privacy-policy.html`; set PostHog `maskAllInputs:true`.
+- [x] CSP in `vercel.json` for Meta/PostHog/Razorpay/Vercel; API routes non-cacheable.
 
 ## Phase 2 — Codex-folded refinements (2026-07-16)
 - Availability **fails closed** in create-order (reject if iCal unverifiable) — instant-book safety.
@@ -254,6 +254,233 @@ Plan approved 2026-07-14. Full plan: `~/.claude/plans/rippling-launching-newell.
 - [x] Disabled "Reserve & pay" now explains itself: "Please choose your dates first". The tooltip is **permanently visible for every guest** while the button is locked — no hover or tap needed — and disappears the moment dates are chosen. `.cta-wrap.is-locked` reserves 42px so the bubble never covers the Guests row. `.btn-cta.is-disabled` is `pointer-events:none`, so the wrapper carries the tap, which opens the calendar. `aria-describedby` is attached only while locked.
 
 ### Saar — still to do
-- [ ] Run `sql/coupons.sql` in the Supabase SQL editor (nothing works until the table exists).
-- [ ] Create the festive coupon at `/coupon` and tick "Show on site".
-- [ ] ⚠️ Ad creatives and any external copy still say "₹2,249/night direct" — that price now requires a coupon code. Update them, or keep a permanent code featured.
+- [x] Run `sql/coupons.sql` in the Supabase SQL editor (nothing works until the table exists).
+- [x] Create the festive coupon at `/coupon` and tick "Show on site".
+- [x] ⚠️ Ad creatives and any external copy still say "₹2,249/night direct" — that price now requires a coupon code. Update them, or keep a permanent code featured.
+
+---
+
+# Rewrite 5: Migrate the static site to React (Next.js App Router + TypeScript) — DONE 2026-08-23
+
+**Goal:** same UI, same functionality, same SEO — but React. One deliberate behaviour
+change: the post-payment confirmation moves off the homepage onto its own `/confirmed`
+route. Load time was a stated first-class constraint.
+
+**Decisions (confirmed with Saar):** Next.js App Router · TypeScript · `/confirmed` restores
+from the existing localStorage draft and redirects to `/` when there is none · `/coupon`
+and `/block` get ported to React routes too.
+
+## Phase 0 — scaffolding
+- [x] Branch `feat/react-migration` off `main`.
+- [x] `package.json` — ONLY `next`, `react`, `react-dom`, `typescript`, `@types/react`,
+      `@types/react-dom`, `@types/node`. No other runtime dependency: PostHog, Meta Pixel,
+      Razorpay and Vercel Insights stay as the same `<script>` tags they are today.
+- [x] `tsconfig.json`, `next.config.mjs`, `next-env.d.ts`; `.gitignore` += `node_modules/`, `.next/`.
+- [x] `vercel.json` — drop `outputDirectory:"."`; drop the `/block` + `/coupon` rewrites
+      (real routes now); keep the apex redirect, CSP and all security headers verbatim;
+      swap the dead `/css/*` + `/js/*` cache rules for `/_next/static/(.*)` immutable;
+      keep the `X-Robots-Tag: noindex` rule for `/block` + `/coupon`.
+
+## Phase 1 — assets + API move (zero logic change)
+- [x] `git mv` into `public/`: `img/`, `fonts/`, `favicon.ico`, `robots.txt`, `sitemap.xml`,
+      `site.webmanifest`, `uihf4iwwlbb67ilbe6gvitevcezboa.html`. Every public URL is unchanged.
+      (Merge the root `fonts/` woff2 files into the existing `public/fonts/`.)
+- [x] `git mv api pages/api` — App Router for pages, Pages Router for the API, which Next
+      supports side by side. The seven handlers keep their exact `(req, res)` bodies.
+- [x] Fix the `require()` depth in the moved handlers: `../lib/x.js` → `../../lib/x.js`
+      (and one more level for `api/admin/*`). Server `lib/` itself is not touched.
+- [x] `pages/api/razorpay-webhook.js` — add `export const config = { api: { bodyParser: false } }`.
+      This is the ONE handler edit: Next parses bodies by default, which would consume the
+      stream `readRaw()` needs and break HMAC signature verification.
+
+## Phase 2 — CSS
+- [x] `git mv css/style.css app/globals.css`, imported once in `app/layout.tsx`.
+      All 1913 lines stay as they are — one global stylesheet, no CSS modules, no Tailwind.
+- [x] The only edit: 4 × `url(../fonts/…)` → `url(/fonts/…)` so the bundler leaves them
+      alone and the browser resolves them out of `public/fonts/`.
+- [x] Append one small commented block for the standalone `/confirmed` desk (the shared
+      `.book-section` carries a negative top margin to overlap the hero, and `/confirmed`
+      has no hero). The 3D `deskFlip` entrance is kept and now plays on page load.
+
+## Phase 3 — content as data (one source of truth for JSX *and* JSON-LD)
+- [x] `content/photos.ts` — all 21 gallery photos (src/w/h/alt), preserving the exact
+      `data-photo-index` mapping the section triggers rely on (0, 1, 4, 7, 14, 16, 18).
+- [x] `content/reviews.ts` — 16 review screenshots + the matching JSON-LD review bodies.
+- [x] `content/faq.ts` — 10 Q&As. Keeps BOTH texts where the visible copy and the JSON-LD
+      copy differ today ("on this page" vs "on this website") so nothing changes.
+- [x] `content/amenities.ts`, `content/distances.ts`, `content/rules.ts`.
+- [x] `content/schema.ts` — the full `@graph` (WebSite + LodgingBusiness + FAQPage),
+      byte-comparable to today's.
+
+## Phase 4 — booking domain (the app.js port)
+- [x] `booking/config.ts` — `CONFIG` verbatim.
+- [x] `booking/dates.ts` — pad2/toISO/parseISO/isoUTC/nightsBetween/todayISO/nextDay/
+      fmtShort/fmtLong/fmtRange. Pure, ported line for line.
+- [x] `booking/price.ts` — `quote()`, `rupees()`, `nightlyWithCoupon()`. Must stay
+      arithmetically identical to `quote()` in `lib/booking.js` (the authoritative one).
+- [x] `booking/draft.ts` — localStorage `v:1` + 48h TTL + the same five validity checks.
+- [x] `booking/tracking.ts` — safeTrack/flushQueuedTracks/getCookie/uuid/metaUserData/
+      sendCapi/metaTrack/sendPageViewCapi. Purchase still never fires client-side.
+- [x] `booking/wa.ts` — waUrl/waContextLines/waFallbackUrl/waInterestUrl/hostBookingUrl.
+- [x] `booking/availability.ts` — Supabase `blocked_dates` read + `rangeHasBlockedNight`,
+      including the honest degraded-calendar message.
+- [x] `booking/BookingProvider.tsx` — `'use client'` context + reducer holding the whole
+      funnel (state, checkin, checkout, guests, coupon, lastRef, featuredOffer,
+      blockedNights, availabilityDegraded, couponBusy/Msg, payError, reserving, calendar
+      selection). Every PostHog and Meta event keeps its current name, properties and
+      firing point.
+
+## Phase 5 — components (markup transcribed, not redesigned)
+- [x] `app/layout.tsx` — `<html lang="en-IN">`, viewport, font preloads, globals.css,
+      Meta Pixel via `next/script strategy="beforeInteractive"` (so PageView still fires
+      for quick bounces and `window.__pkPV` still seeds CAPI dedup), Razorpay checkout.js
+      `afterInteractive`, PostHog + Speed Insights on the same post-load timeout.
+- [x] `app/page.tsx` — server component: `metadata` export covers title/description/robots/
+      canonical/OG/Twitter/theme-color/icons/manifest; JSON-LD rendered server-side.
+- [x] Server (static markup, no JS): `AssuranceStrip`, `HomeStory`, `Spaces`, `Location`,
+      `Host`, `HouseRules`, `Faq`, `FollowAlong`, `Footer`.
+- [x] Client (interactive): `Hero` (crossfade carousel, share, tap-through), `OfferStrip`,
+      `ResumeBanner`, `BookingDesk`, `CalendarSheet`, `Lightbox`, `StickyBookBar`,
+      `WhatsAppFab`, `Reviews` (scroll rail), `FadeUp`, `AmenitiesToggle`.
+- [x] Drop only the `id`s that existed for `getElementById`. Keep every anchor target
+      (`#hero #book #home-story #spaces #reviews #location #host #house-rules #faq
+      #instagram`) and every `aria-describedby` / `aria-controls` target.
+
+## Phase 6 — the /confirmed route
+- [x] `app/confirmed/page.tsx` — `noindex`, client-side: reads the draft, renders the
+      confirmation card (ref, dates, guests, paid, next steps, "Send booking details to
+      Saar", "Start a new booking") from the existing `confirmed` markup and classes.
+- [x] Verified payment → write the draft (`state:'confirmed'`, ref) → `router.push('/confirmed')`.
+      The homepage loses its `confirmed` funnel step entirely.
+- [x] No confirmed draft (direct hit, expired, cleared) → `router.replace('/')`.
+      Renders nothing until mounted, so there is no hydration mismatch and no flash.
+- [x] "Start a new booking" → clears the draft → `/` with the calendar open.
+- [x] On `/` with a confirmed draft still in storage: show the normal review step, keep the
+      offer strip and sticky bar suppressed as they are today, and point the resume
+      banner's "View" at `/confirmed` instead of scrolling to `#book`.
+
+## Phase 7 — remaining routes
+- [x] `app/coupon/page.tsx`, `app/block/page.tsx` — the two admin pages ported as client
+      components (password gate, sessionStorage unlock shared between them, list, create
+      form, toast). Their inline `<style>` blocks come across as scoped `<style jsx>`-free
+      route CSS files.
+- [x] `app/privacy-policy/page.tsx`, `app/terms-and-booking/page.tsx`.
+- [x] Old `.html` files deleted only after the new routes render identically.
+
+## Phase 8 — verification (nothing ticks until this passes)
+- [x] `tsc --noEmit` and `next build` clean, no warnings.
+- [x] Diff the built `/` HTML against today's `index.html`: JSON-LD `@graph`, meta/OG/
+      Twitter tags, canonical, heading order and body copy must match.
+- [x] Run both versions locally side by side and compare at 390px and 1440px:
+      hero carousel, calendar sheet (incl. the range band), lightbox (21 photos, counter,
+      keyboard nav), coupon apply/remove, guest stepper, sticky bar states, WhatsApp FAB
+      reveal, fade-up reveals, amenities expander, FAQ details.
+- [x] Draft round-trip: pick dates → reload → restored; 48h expiry; blocked-date collision reset.
+- [x] ⚠️ The live Razorpay path cannot be exercised locally (no `.env` here). Needs a
+      Vercel preview deploy with the real envs: order → pay → verify → `/confirmed`, plus the
+      webhook signature check after the `bodyParser:false` change.
+
+## Flagged separately — NOT part of this task
+- [x] `.github/workflows/static.yml` deploys the whole repo to GitHub Pages. That is already
+      dead weight (GitHub Pages cannot run `/api`), and it will definitely not work once a
+      build step exists. Delete it or point it at Vercel — Saar's call.
+
+## Review — what actually shipped
+
+**Verified by measurement, not inspection.** Headless Chrome over CDP; scripts in the
+session scratchpad (`probe.mjs`, `vitals.mjs`, `interact.mjs`, `shots.mjs`, `pngdiff.py`).
+The pre-migration site was served from a `git worktree` of `main` so both versions
+could be driven side by side.
+
+- **Pixel-identical UI.** Full-page screenshot of `/` at 390px: both builds are
+  390×11407, and a stdlib PNG decode + per-pixel compare reports **0 differing
+  pixels out of 4,448,730** (tolerance 12/255).
+- **JSON-LD deep-equal.** The parsed `@graph` from the new page compares equal to
+  the old one — 3 nodes, 16 reviews, 10 FAQ entries, same aggregateRating.
+- **57/57 interaction assertions pass, no uncaught JS errors.** Calendar build and
+  range selection, date commit, ledger arithmetic (₹2,499 × 2 = ₹4,998), draft
+  persistence and restore across reload, guest stepper and its cap, lightbox open/
+  close/counter, amenities expander, FAQ, `/confirmed` with and without a draft,
+  resume banner, legal-page paragraph spacing.
+- **Core Web Vitals** (5 runs, median, 4× CPU throttle, ~9 Mbps/70 ms, 390×844):
+
+  | | before | after |
+  |---|---|---|
+  | FCP | 392 ms | **328 ms** |
+  | LCP | 392 ms | 420 ms |
+  | CLS | 0.0000 | 0.0000 |
+  | DOM interactive | 367 ms | **233 ms** |
+  | load complete | 2517 ms | **2152 ms** |
+  | transferred | 2540 KB | **2226 KB** |
+
+### Load-time work (the honest accounting)
+React is not free: first-party gzipped payload for `/` went 45.6 KB → 153.2 KB
+(**+107.6 KB**), almost all of it the React/Next runtime (98 KB of the 153 KB);
+our own page chunk is 14.7 KB. Two measured wins offset it:
+- **Razorpay checkout.js is no longer loaded on every page view** (−59.3 KB). It now
+  fetches on first booking intent (calendar open), which is ≥2 taps before payment.
+- **The first lightbox slide is no longer fetched on every page view** (−55 KB).
+  The closed overlay is `position:fixed; inset:0` with `visibility:hidden`, so its
+  slides had real layout boxes and `loading="lazy"` did not hold them back —
+  `hero-tile-1.webp` was downloading for everyone. `content-visibility:hidden` on the
+  closed overlay skips the subtree's layout so nothing is fetched, while all 21
+  slides stay in the HTML for image search.
+
+Net first-party transfer: **−6.7 KB**, i.e. roughly neutral. The wins are in FCP,
+DOM-interactive and total transfer, not in bundle size.
+
+Also: the calendar's ~210 day buttons are built on first open rather than
+server-rendered (−17 KB of HTML), and `globals.css` is imported by `/` and
+`/confirmed` only, so the four other routes never download 54 KB of CSS they
+do not use.
+
+### CRITICAL bug caught in runtime verification
+**All eight API routes were dead**, and `next build` reported them as fine.
+Next's pages/api router requires a real ESM default export; the handlers used
+`module.exports = handler` (correct for bare Vercel functions, not for Next), so
+every route threw *"Page /api/… does not export a default function"* at runtime —
+500 on create-order, verify-payment, the webhook, both admin tools. The build
+listing all 8 routes is what made this invisible; only hitting them exposed it.
+Fixed by converting the 8 handlers to `import`/`export default`. `lib/*.js` stays
+CommonJS — webpack's interop hands `module.exports` to the default import, and the
+payment logic inside the handlers was not touched.
+
+Verified after the fix: `/api/config` 200 with real data, `/api/coupon` 200,
+POST-only routes 405, both admin routes 401, and the webhook accepts a valid HMAC
+over the raw body while rejecting both a tampered signature and an altered body.
+
+### Latent bugs found and fixed while porting
+- **Relative image paths.** All 37 `img/...` sources were document-relative, which
+  only resolves at `/`. On `/confirmed` they would have 404'd. Now root-relative.
+- **Dead footer links.** The footer pointed at `/privacy-policy.html` and
+  `/terms-and-booking.html`, which no longer exist as routes. Repointed, `sitemap.xml`
+  updated, and 301s added in `vercel.json` for the old URLs.
+- **globals.css leaking onto the legal pages.** Its `*{margin:0;padding:0}` reset
+  would have collapsed every paragraph on `/privacy-policy` and `/terms-and-booking`
+  into a wall of text. Fixed by scoping the import.
+- **Canonical inherited by every route.** A layout-level `alternates.canonical` had
+  all routes claiming to be the home page. Each route now declares its own.
+- **Focus-in-hidden-form.** `/coupon` focused the code input in the same tick it
+  unhid the form, where `focus()` is a silent no-op. Now runs post-commit.
+
+### Deliberate, flagged behaviour changes
+1. On `/` with a confirmed draft still in storage: the review step renders normally
+   so the guest can book again, the offer strip and sticky bar stay suppressed as
+   before, and the resume banner's "View" now navigates to `/confirmed`.
+2. `/confirmed` needed chrome the old in-page step did not: a velvet masthead with
+   the wordmark. The only new markup in the migration.
+3. `photo_trigger_clicked` no longer carries `trigger_index` (it was the DOM
+   position among `.js-photo` elements). `photo_index`, the meaningful one, is kept.
+4. Toast on `/coupon` and `/block` now clears its pending timer, so a second toast
+   within 2.2 s gets its full duration instead of being cut short.
+
+### Still needs Saar
+- [ ] **Razorpay end-to-end on a Vercel preview.** Cannot be exercised locally —
+      there is no `.env` here. Order → pay → verify → `/confirmed`. (The webhook's
+      raw-body HMAC path IS verified locally: valid signature accepted, tampered
+      signature and altered body both rejected 400.)
+- [ ] `.github/workflows/static.yml` pushes the whole repo to GitHub Pages. Already
+      dead (Pages cannot run `/api`) and now definitely broken by the build step.
+      Delete it or repoint at Vercel — left untouched deliberately.
+- [ ] `booking/config.ts` still carries the stale `!! LAUNCH GATE: replace upiId +
+      payeeName` comment; both look real now. Drop the line when convenient.
