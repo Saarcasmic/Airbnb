@@ -42,3 +42,9 @@ temp_interactive_push.bat
 .env*
 branch_structure.json
 .gitignore
+
+# Next.js build
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo

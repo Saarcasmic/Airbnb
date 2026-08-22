@@ -1,20 +1,25 @@
 {
-  "outputDirectory": ".",
-  "rewrites": [
-    { "source": "/block", "destination": "/block.html" },
-    { "source": "/coupon", "destination": "/coupon.html" }
-  ],
   "redirects": [
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "pyari-kunj.vercel.app" }],
       "destination": "https://www.pyari-kunj.in/$1",
       "permanent": true
+    },
+    {
+      "source": "/privacy-policy.html",
+      "destination": "/privacy-policy",
+      "permanent": true
+    },
+    {
+      "source": "/terms-and-booking.html",
+      "destination": "/terms-and-booking",
+      "permanent": true
     }
   ],
   "headers": [
     {
-      "source": "/(block|coupon)(.html)?",
+      "source": "/(block|coupon|confirmed)",
       "headers": [
         {
           "key": "X-Robots-Tag",
@@ -57,6 +62,15 @@
       ]
     },
     {
+      "source": "/_next/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
       "source": "/img/(.*).webp",
       "headers": [
         {
@@ -93,33 +107,6 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/css/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/js/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/(.*).html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
         }
       ]
     },
