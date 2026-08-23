@@ -18,6 +18,8 @@ export default function Footer() {
           </address>
         </div>
         <nav className="f-links" aria-label="Footer">
+          <a href="/temples-near-pyari-kunj">Temples nearby</a>
+          <a href="/getting-to-vrindavan">Getting here</a>
           <a href="/privacy-policy">Privacy policy</a>
           <a href="/terms-and-booking">Terms and booking</a>
           <a href="https://www.instagram.com/pyari_kunj" target="_blank" rel="noopener">Instagram</a>
