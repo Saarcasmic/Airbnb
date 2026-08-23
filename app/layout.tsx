@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 
+import GoogleTag from '@/components/GoogleTag';
+
 /* globals.css is deliberately NOT imported here. It is the marketing site's
    stylesheet, and its universal `*{margin:0;padding:0}` reset would leak onto
    /privacy-policy, /terms-and-booking, /coupon and /block — collapsing the legal
@@ -141,6 +143,9 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
         </noscript>
 
         {children}
+
+        {/* GA4 base tag. The booking conversion is reported from /confirmed. */}
+        <GoogleTag />
 
         {/* PostHog + Vercel Speed Insights, held until the page is interactive. */}
         <Script id="analytics-deferred" strategy="lazyOnload">{`
