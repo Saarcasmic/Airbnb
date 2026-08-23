@@ -20,6 +20,7 @@ import { fmtShort } from '@/booking/dates';
 import { appliedPct, quote, rupees } from '@/booking/price';
 import { nightsBetween } from '@/booking/dates';
 import { hostBookingUrl } from '@/booking/wa';
+import { trackPurchaseOnce } from '@/booking/gtag';
 import { REQUEST_CALENDAR_KEY } from '@/booking/session';
 import type { Draft } from '@/booking/types';
 
@@ -35,6 +36,17 @@ export default function ConfirmedBooking() {
     }
     router.replace('/');
   }, [router]);
+
+  /* Report the booking to Google exactly once per reservation ref. This page is
+     only reachable after /api/verify-payment confirmed a real payment, but the
+     48h draft keeps it reachable afterwards too — a refresh, the back button, or
+     the resume banner would otherwise each count as another sale and quietly
+     corrupt Smart Bidding. trackPurchaseOnce guards on the ref. */
+  useEffect(() => {
+    if (!draft?.ref || !draft.checkin || !draft.checkout) return;
+    const n = nightsBetween(draft.checkin, draft.checkout);
+    trackPurchaseOnce(draft.ref, quote(n, appliedPct(draft.coupon)).total, n);
+  }, [draft]);
 
   // Nothing is rendered until the draft has been read: localStorage does not
   // exist during SSR, so anything else would be a hydration mismatch and a flash
