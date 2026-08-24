@@ -10,6 +10,10 @@ import Link from 'next/link';
 import type { Festival } from '@/content/festivals';
 import { MON_LONG, toISO } from '@/booking/dates';
 
+/* This component only ever renders festivals that already have a date — the
+   page filters first. Narrowing here removes null-guards from every use site. */
+type DatedFestival = Festival & { date: string };
+
 const WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 type Month = { y: number; m: number; label: string; lead: number; days: string[] };
@@ -31,8 +35,7 @@ function buildMonths(startISO: string, months: number): Month[] {
 }
 
 /** Every date a festival covers, so multi-day observances mark their whole span. */
-function spanDates(f: Festival): string[] {
-  if (!f.date) return [];
+function spanDates(f: DatedFestival): string[] {
   if (!f.endDate) return [f.date];
   const out: string[] = [];
   const d = new Date(f.date + 'T00:00:00Z');
@@ -50,8 +53,7 @@ function fmtDay(iso: string): string {
 }
 
 /** Check-out defaults to the night after the festival. */
-function stayLink(f: Festival): string {
-  if (!f.date) return '/#book';
+function stayLink(f: DatedFestival): string {
   const out = new Date((f.endDate || f.date) + 'T00:00:00Z');
   out.setUTCDate(out.getUTCDate() + 1);
   return `/?checkin=${f.date}&checkout=${out.toISOString().slice(0, 10)}#book`;
@@ -62,14 +64,14 @@ export default function FestivalCalendar({
   startISO,
   months = 12,
 }: {
-  festivals: Festival[];
+  festivals: DatedFestival[];
   startISO: string;
   months?: number;
 }) {
   const grids = buildMonths(startISO, months);
 
   // date -> festivals falling on it
-  const byDate = new Map<string, Festival[]>();
+  const byDate = new Map<string, DatedFestival[]>();
   for (const f of festivals) {
     for (const d of spanDates(f)) {
       const list = byDate.get(d) || [];
@@ -81,9 +83,13 @@ export default function FestivalCalendar({
   return (
     <div className="fc">
       {grids.map((month) => {
+        const key = `${month.y}-${String(month.m + 1).padStart(2, '0')}`;
+        /* Listed in the month it STARTS in only. A month-long observance like
+           Kartik still marks its days across both grids, but listing it twice
+           would duplicate the copy and emit two elements with the same id. */
         const inMonth = festivals
-          .filter((f) => f.date && spanDates(f).some((d) => d.startsWith(`${month.y}-${String(month.m + 1).padStart(2, '0')}`)))
-          .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+          .filter((f) => f.date.startsWith(key))
+          .sort((a, b) => a.date.localeCompare(b.date));
 
         return (
           <section className="fc-month" key={month.label} aria-labelledby={`fc-${month.y}-${month.m}`}>
@@ -111,20 +117,39 @@ export default function FestivalCalendar({
                     </span>
                   );
                 }
+                /* A day only caught by a month-long observance (Kartik) gets a
+                   quiet band, not a disc. Otherwise Kartik paints thirty
+                   identical marks across November and hides Govardhan Puja and
+                   Kartik Purnima among them. */
+                const pointDays = hits.filter((f) => !f.endDate || f.date === iso);
+                const isPoint = pointDays.length > 0;
+                const cls = isPoint
+                  ? 'fc-day is-festival' + (pointDays.some((f) => f.brajSpecific) ? ' is-braj' : '')
+                  : 'fc-day in-span';
                 return (
                   <span
-                    className={'fc-day is-festival' + (hits.some((f) => f.brajSpecific) ? ' is-braj' : '')}
+                    className={cls}
                     key={iso}
-                    // The overlay is decorative; the name is announced here instead.
+                    // The overlay is decorative; the names are announced below.
                     title={hits.map((f) => f.name).join(' · ')}
                   >
                     <span className="fc-n">{day}</span>
-                    <span className="fc-mark" aria-hidden="true" />
+                    {isPoint && <span className="fc-mark" aria-hidden="true" />}
                     <span className="sr-only">{hits.map((f) => f.name).join(', ')}</span>
                   </span>
                 );
               })}
             </div>
+
+            {/* A month-long observance that began in an earlier month: say so,
+                otherwise the shaded band here has no explanation on screen. */}
+            {festivals
+              .filter((f) => f.endDate && !f.date.startsWith(key) && spanDates(f).some((d) => d.startsWith(key)))
+              .map((f) => (
+                <p className="fc-continues" key={f.slug}>
+                  {f.name} continues — began {fmtDay(f.date)}, ends {fmtDay(f.endDate!)}.
+                </p>
+              ))}
 
             {inMonth.length > 0 ? (
               <ul className="fc-list">
@@ -136,7 +161,7 @@ export default function FestivalCalendar({
                         {f.brajSpecific && <span className="fc-tag">Braj</span>}
                       </h3>
                       <p className="fc-item-when">
-                        {f.date && fmtDay(f.date)}
+                        {fmtDay(f.date)}
                         {f.endDate ? ` — ${fmtDay(f.endDate)}` : ''}
                         <span className="fc-tithi">{f.tithi}</span>
                       </p>
