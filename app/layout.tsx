@@ -63,13 +63,14 @@ export const metadata: Metadata = {
     images: ['https://www.pyari-kunj.in/img/og-share.jpg'],
   },
   manifest: '/site.webmanifest',
+  /* The paisley mark. favicon.ico carries 16/32/48 for browsers and for Google's
+     favicon crawler, which is what shows beside the result in search. */
   icons: {
     icon: [
-      {
-        url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23341320'/%3E%3Cpath d='M50 20c-10 12-22 18-22 34a22 22 0 0044 0c0-16-12-22-22-34z' fill='%23e9a9c3'/%3E%3C/svg%3E",
-      },
-      { url: '/favicon.ico', sizes: '48x48' },
+      { url: '/favicon.ico', sizes: '16x16 32x32 48x48' },
       { url: '/img/icon-96.png', type: 'image/png', sizes: '96x96' },
+      { url: '/img/icon-192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/img/icon-512.png', type: 'image/png', sizes: '512x512' },
     ],
     apple: '/img/apple-touch-icon.png',
   },
