@@ -18,6 +18,7 @@ export default function Footer() {
           </address>
         </div>
         <nav className="f-links" aria-label="Footer">
+          <a href="/vrindavan-festival-calendar">Festival calendar</a>
           <a href="/temples-near-pyari-kunj">Temples nearby</a>
           <a href="/getting-to-vrindavan">Getting here</a>
           <a href="/privacy-policy">Privacy policy</a>

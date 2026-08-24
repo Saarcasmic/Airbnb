@@ -2042,6 +2042,10 @@ body.sheet-open .wa-fab{opacity:0;pointer-events:none}
 .fc-day.is-festival{color:var(--rani-deep);font-weight:700}
 .fc-day.is-braj .fc-mark{background:var(--rani);border-color:var(--rani-deep)}
 .fc-day.is-braj{color:#fff}
+/* A day inside a month-long observance: a quiet tinted band, so the discs stay
+   reserved for the festivals that actually happen on a specific day. */
+.fc-day.in-span{background:var(--rani-tint);color:var(--rani-deep)}
+.fc-day.in-span .fc-n{opacity:0.75}
 
 .fc-list{list-style:none;margin-top:18px;display:grid;gap:16px}
 .fc-item{padding-top:14px;border-top:1px solid var(--hairline-soft)}
@@ -2088,6 +2092,14 @@ body.sheet-open .wa-fab{opacity:0;pointer-events:none}
   text-underline-offset:3px;
 }
 .fc-none{margin-top:16px;font-size:13.5px;color:var(--mut);font-style:italic}
+.fc-continues{
+  margin-top:16px;
+  padding:8px 12px;
+  border-left:3px solid var(--rani-tint);
+  font-size:13px;
+  color:var(--rani-deep);
+  font-weight:600;
+}
 
 /* Author-facing notice. Never renders once every date is confirmed. */
 .fc-draft{

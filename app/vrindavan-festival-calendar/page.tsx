@@ -25,6 +25,19 @@ function startOfThisMonth(): string {
   return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-01`;
 }
 
+/* Enough months to reach the last dated festival, never fewer than 12. A fixed
+   12 would have left Jhulan Yatra (Aug 2027) emitting Event structured data with
+   nothing on the page to match it — which is exactly what Google's rich-results
+   policy forbids. */
+function monthsToCover(startISO: string): number {
+  const last = DATED_FESTIVALS[DATED_FESTIVALS.length - 1];
+  if (!last) return 12;
+  const [sy, sm] = startISO.split('-').map(Number);
+  const end = last.endDate || last.date;
+  const [ey, em] = end.split('-').map(Number);
+  return Math.max(12, (ey - sy) * 12 + (em - sm) + 1);
+}
+
 export const metadata: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
@@ -138,7 +151,11 @@ export default function FestivalCalendarPage() {
 
         <section className="section on-deep">
           <div className="shell">
-            <FestivalCalendar festivals={DATED_FESTIVALS} startISO={startOfThisMonth()} months={12} />
+            <FestivalCalendar
+              festivals={DATED_FESTIVALS}
+              startISO={startOfThisMonth()}
+              months={monthsToCover(startOfThisMonth())}
+            />
           </div>
         </section>
 
