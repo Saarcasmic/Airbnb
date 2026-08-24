@@ -27,7 +27,7 @@ import {
 import { useRouter } from 'next/navigation';
 
 import { CONFIG } from '@/booking/config';
-import { fmtRange, nightsBetween } from '@/booking/dates';
+import { fmtRange, nightsBetween, todayISO } from '@/booking/dates';
 import { appliedPct, quote } from '@/booking/price';
 import { clearDraft, loadDraft, saveDraft, stateRank } from '@/booking/draft';
 import { fetchBlockedNights, rangeHasBlockedNight } from '@/booking/availability';
@@ -47,6 +47,9 @@ import type {
 } from '@/booking/types';
 
 const RESERVE_IDLE_LABEL = 'Reserve & pay';
+
+/** Deep-linked dates are untrusted input off the URL — shape-check before use. */
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 type CouponMsg = { text: string; ok: boolean };
 type PayError = { msg: string; waReason?: string; asNote?: boolean };
@@ -421,6 +424,34 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     if (consumeCalendarRequest()) openCalendar('new-booking');
   }, [hydrated, openCalendar]);
+
+  /* Arriving from the festival calendar with dates already chosen, e.g.
+     /?checkin=2027-09-03&checkout=2027-09-05#book. Applied once, after hydration,
+     and only over an unconfirmed booking — someone returning to a paid booking
+     must not have it silently rewritten by a stale link. Blocked nights are
+     rejected here too; the server re-checks at order time regardless. */
+  const deepLinked = useRef(false);
+  useEffect(() => {
+    if (!hydrated || deepLinked.current) return;
+    deepLinked.current = true;
+    let checkin: string | null = null;
+    let checkout: string | null = null;
+    try {
+      const q = new URLSearchParams(window.location.search);
+      checkin = q.get('checkin');
+      checkout = q.get('checkout');
+    } catch {
+      return;
+    }
+    if (!checkin || !checkout) return;
+    if (!ISO_DATE.test(checkin) || !ISO_DATE.test(checkout)) return;
+    if (checkin < todayISO()) return;
+    if (nightsBetween(checkin, checkout) < CONFIG.minNights) return;
+    if (stateRank(core.state) > stateRank('review')) return;
+    if (rangeHasBlockedNight(blockedNights, checkin, checkout)) return;
+    dispatch({ type: 'dates', checkin, checkout });
+    safeTrack('dates_deep_linked', { checkin, checkout });
+  }, [hydrated, core.state, blockedNights]);
 
   // The Android back gesture closes the sheet rather than leaving the page.
   useEffect(() => {

@@ -1989,3 +1989,130 @@ body.sheet-open .wa-fab{opacity:0;pointer-events:none}
 .page-cta .btn-cta{display:inline-flex;margin-top:20px}
 .page-cta .loc-note{margin-top:18px}
 .page-cta .loc-note a{text-decoration:underline;text-underline-offset:3px}
+
+/* ===== FESTIVAL CALENDAR (/vrindavan-festival-calendar) =====
+   A reading calendar, not the booking sheet — its own grid so nothing here can
+   disturb .cal-* , which the interactive date picker depends on. */
+.fc{display:grid;gap:clamp(30px,5vw,46px)}
+@media(min-width:900px){.fc{grid-template-columns:repeat(2,1fr);gap:44px 40px}}
+.fc-month{break-inside:avoid}
+.fc-month-name{
+  font-family:var(--serif);
+  font-weight:400;
+  font-size:clamp(20px,2.2vw,25px);
+  color:var(--ink);
+  padding-bottom:10px;
+  border-bottom:1px solid var(--hairline);
+}
+/* The weekday header and the day grid share one formula so their columns line up */
+.fc-weekdays,.fc-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.fc-weekdays{margin-top:12px}
+.fc-weekdays span{
+  text-align:center;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--mut);
+  padding-bottom:6px;
+}
+.fc-grid{gap:2px}
+.fc-day{
+  position:relative;
+  aspect-ratio:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  color:var(--ink-soft);
+  font-variant-numeric:tabular-nums;
+}
+.fc-empty{visibility:hidden}
+.fc-n{position:relative;z-index:1}
+/* the overlay disc marking a festival day */
+.fc-mark{
+  position:absolute;
+  inset:50% auto auto 50%;
+  width:30px;height:30px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:var(--rani-tint);
+  border:1px solid rgba(166,30,77,0.28);
+}
+.fc-day.is-festival{color:var(--rani-deep);font-weight:700}
+.fc-day.is-braj .fc-mark{background:var(--rani);border-color:var(--rani-deep)}
+.fc-day.is-braj{color:#fff}
+
+.fc-list{list-style:none;margin-top:18px;display:grid;gap:16px}
+.fc-item{padding-top:14px;border-top:1px solid var(--hairline-soft)}
+.fc-item:first-child{border-top:0;padding-top:0}
+.fc-item-name{
+  font-family:var(--serif);
+  font-weight:400;
+  font-size:17px;
+  color:var(--ink);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.fc-tag{
+  padding:2px 8px;
+  border-radius:999px;
+  background:var(--rani);
+  color:#fff;
+  font-family:var(--sans);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+.fc-item-when{
+  margin-top:4px;
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--rani-deep);
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.fc-tithi{font-weight:400;color:var(--mut);font-style:italic}
+.fc-item-note{margin-top:8px;font-size:14px;line-height:1.65;color:var(--ink-soft)}
+.fc-item-cta{
+  display:inline-block;
+  margin-top:8px;
+  font-size:13px;
+  font-weight:700;
+  color:var(--rani-deep);
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.fc-none{margin-top:16px;font-size:13.5px;color:var(--mut);font-style:italic}
+
+/* Author-facing notice. Never renders once every date is confirmed. */
+.fc-draft{
+  margin-top:22px;
+  padding:16px 18px;
+  border-radius:var(--r-m);
+  border:1px dashed rgba(166,30,77,0.45);
+  background:var(--rani-tint);
+  display:grid;
+  gap:8px;
+  font-size:13.5px;
+  color:var(--ink-soft);
+}
+.fc-draft strong{color:var(--rani-deep)}
+.fc-draft code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+.fc-draft ul{margin:4px 0 0 18px;display:grid;gap:3px}
+.fc-draft em{color:var(--mut)}
+
+/* visually hidden, still announced */
+.sr-only{
+  position:absolute;
+  width:1px;height:1px;
+  padding:0;margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
