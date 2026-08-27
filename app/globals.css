@@ -2118,6 +2118,14 @@ body.sheet-open .wa-fab{opacity:0;pointer-events:none}
 .fc-draft ul{margin:4px 0 0 18px;display:grid;gap:3px}
 .fc-draft em{color:var(--mut)}
 
+/* Attribution for the Creative Commons festival photographs. Collapsed by
+   default — the licences require the credit to be present, not prominent. */
+.fc-credits{font-size:13px;color:var(--mut)}
+.fc-credits summary{cursor:pointer;color:var(--ink-soft)}
+.fc-credits p{margin:10px 0 0}
+.fc-credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
+.fc-credits a{color:inherit;text-decoration:underline}
+
 /* visually hidden, still announced */
 .sr-only{
   position:absolute;

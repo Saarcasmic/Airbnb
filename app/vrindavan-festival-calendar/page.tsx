@@ -6,6 +6,7 @@ import SiteMasthead from '@/components/SiteMasthead';
 import Footer from '@/components/Footer';
 import FestivalCalendar from '@/components/FestivalCalendar';
 import { FESTIVALS, DATED_FESTIVALS, CALENDAR_VERIFIED } from '@/content/festivals';
+import { imageUrlsFor, CREDITS } from '@/content/festival-images';
 
 /* The Braj festival calendar. Server component — twelve month grids, zero JS.
 
@@ -77,22 +78,16 @@ const breadcrumbs = {
   ],
 };
 
-/* Stand-ins until there are real Braj festival photographs in public/img — every
-   photo the site owns today is of the house. Swap these the moment we shoot the
-   lanes during Holi or Kartik. */
-const EVENT_IMAGES = [
-  'https://www.pyari-kunj.in/img/mandir-900.webp',
-  'https://www.pyari-kunj.in/img/og-share.jpg',
-];
-
 /* Event structured data, but only for dates a human has confirmed — publishing
    an unverified Event to Google would be worse than publishing none.
 
    Google flags offers/organizer/performer/image/endDate as recommended, and we
    fill the ones we can state truthfully: every festival is free to attend, and
-   single-day observances simply end on the day they start. `organizer` appears
-   only for the temple-specific ones (content/festivals.ts), and `performer` is
-   left out entirely — nobody performs these on our behalf, and a warning in
+   single-day observances simply end on the day they start. `image` comes from
+   content/festival-images.ts — freely licensed Commons photographs of the
+   actual festivals, credited visibly further down this page, because the site's
+   own photographs are all of the house. `organizer` appears only for the
+   temple-specific ones (content/festivals.ts), and `performer` is left out — nobody performs these on our behalf, and a warning in
    Search Console is cheaper than a structured-data policy violation. */
 const events = DATED_FESTIVALS.filter((f) => f.confirmed).map((f) => ({
   '@context': 'https://schema.org',
@@ -103,7 +98,7 @@ const events = DATED_FESTIVALS.filter((f) => f.confirmed).map((f) => ({
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
   eventStatus: 'https://schema.org/EventScheduled',
   description: f.note,
-  image: EVENT_IMAGES,
+  image: imageUrlsFor(f.slug),
   ...(f.organizer ? { organizer: { '@type': 'Organization', name: f.organizer.name } } : {}),
   offers: {
     '@type': 'Offer',
@@ -204,6 +199,31 @@ export default function FestivalCalendarPage() {
               <Link href="/temples-near-pyari-kunj">which temples you can walk to</Link> and{' '}
               <Link href="/getting-to-vrindavan">how to reach Vrindavan</Link>.
             </p>
+          </div>
+        </section>
+
+        {/* The festival photographs in this page's structured data are freely
+            licensed, and every one of those licences requires attribution. The
+            JSON-LD has nowhere to carry a credit, so it is carried here. */}
+        <section className="section">
+          <div className="shell">
+            <details className="fc-credits">
+              <summary>Festival photograph credits</summary>
+              <p>
+                Festival photographs are used under Creative Commons licences from Wikimedia
+                Commons. They are not photographs of Pyari Kunj.
+              </p>
+              <ul>
+                {CREDITS.map((img) => (
+                  <li key={img.url}>
+                    <a href={img.source} rel="noopener nofollow" target="_blank">
+                      {img.depicts}
+                    </a>{' '}
+                    &mdash; {img.credit}, {img.license}
+                  </li>
+                ))}
+              </ul>
+            </details>
           </div>
         </section>
       </main>
