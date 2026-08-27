@@ -15,6 +15,9 @@ import { FESTIVALS, DATED_FESTIVALS, CALENDAR_VERIFIED } from '@/content/festiva
    around this. CALENDAR_VERIFIED flips it, nothing else needs editing. */
 
 const CANONICAL = 'https://www.pyari-kunj.in/vrindavan-festival-calendar';
+/* When this calendar went up. A fixed date, not `new Date()` — validFrom must be
+   stable across builds, and it only has to precede the earliest festival. */
+const OFFER_VALID_FROM = '2026-08-01';
 const TITLE = 'Vrindavan & Braj Festival Calendar | Dates, Tithis and Where to Stay';
 const DESCRIPTION =
   'When Janmashtami, Radha Ashtami, Kartik, Barsana Lathmar Holi and Phoolon wali Holi fall in Vrindavan and Braj — with the tithi for each, what actually happens in the lanes, and a room five minutes from Banke Bihari Ji.';
@@ -74,17 +77,43 @@ const breadcrumbs = {
   ],
 };
 
+/* Stand-ins until there are real Braj festival photographs in public/img — every
+   photo the site owns today is of the house. Swap these the moment we shoot the
+   lanes during Holi or Kartik. */
+const EVENT_IMAGES = [
+  'https://www.pyari-kunj.in/img/mandir-900.webp',
+  'https://www.pyari-kunj.in/img/og-share.jpg',
+];
+
 /* Event structured data, but only for dates a human has confirmed — publishing
-   an unverified Event to Google would be worse than publishing none. */
+   an unverified Event to Google would be worse than publishing none.
+
+   Google flags offers/organizer/performer/image/endDate as recommended, and we
+   fill the ones we can state truthfully: every festival is free to attend, and
+   single-day observances simply end on the day they start. `organizer` appears
+   only for the temple-specific ones (content/festivals.ts), and `performer` is
+   left out entirely — nobody performs these on our behalf, and a warning in
+   Search Console is cheaper than a structured-data policy violation. */
 const events = DATED_FESTIVALS.filter((f) => f.confirmed).map((f) => ({
   '@context': 'https://schema.org',
   '@type': 'Event',
   name: f.name,
   startDate: f.date,
-  ...(f.endDate ? { endDate: f.endDate } : {}),
+  endDate: f.endDate || f.date,
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
   eventStatus: 'https://schema.org/EventScheduled',
   description: f.note,
+  image: EVENT_IMAGES,
+  ...(f.organizer ? { organizer: { '@type': 'Organization', name: f.organizer.name } } : {}),
+  offers: {
+    '@type': 'Offer',
+    name: 'Free public observance',
+    price: '0',
+    priceCurrency: 'INR',
+    availability: 'https://schema.org/InStock',
+    url: `${CANONICAL}#${f.slug}`,
+    validFrom: OFFER_VALID_FROM,
+  },
   location: {
     '@type': 'Place',
     name: 'Vrindavan, Braj',
