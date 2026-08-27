@@ -6,6 +6,7 @@ import SiteMasthead from '@/components/SiteMasthead';
 import Footer from '@/components/Footer';
 import FestivalCalendar from '@/components/FestivalCalendar';
 import { FESTIVALS, DATED_FESTIVALS, CALENDAR_VERIFIED } from '@/content/festivals';
+import { imageUrlsFor, CREDITS } from '@/content/festival-images';
 
 /* The Braj festival calendar. Server component — twelve month grids, zero JS.
 
@@ -15,6 +16,9 @@ import { FESTIVALS, DATED_FESTIVALS, CALENDAR_VERIFIED } from '@/content/festiva
    around this. CALENDAR_VERIFIED flips it, nothing else needs editing. */
 
 const CANONICAL = 'https://www.pyari-kunj.in/vrindavan-festival-calendar';
+/* When this calendar went up. A fixed date, not `new Date()` — validFrom must be
+   stable across builds, and it only has to precede the earliest festival. */
+const OFFER_VALID_FROM = '2026-08-01';
 const TITLE = 'Vrindavan & Braj Festival Calendar | Dates, Tithis and Where to Stay';
 const DESCRIPTION =
   'When Janmashtami, Radha Ashtami, Kartik, Barsana Lathmar Holi and Phoolon wali Holi fall in Vrindavan and Braj — with the tithi for each, what actually happens in the lanes, and a room five minutes from Banke Bihari Ji.';
@@ -75,16 +79,36 @@ const breadcrumbs = {
 };
 
 /* Event structured data, but only for dates a human has confirmed — publishing
-   an unverified Event to Google would be worse than publishing none. */
+   an unverified Event to Google would be worse than publishing none.
+
+   Google flags offers/organizer/performer/image/endDate as recommended, and we
+   fill the ones we can state truthfully: every festival is free to attend, and
+   single-day observances simply end on the day they start. `image` comes from
+   content/festival-images.ts — freely licensed Commons photographs of the
+   actual festivals, credited visibly further down this page, because the site's
+   own photographs are all of the house. `organizer` appears only for the
+   temple-specific ones (content/festivals.ts), and `performer` is left out — nobody performs these on our behalf, and a warning in
+   Search Console is cheaper than a structured-data policy violation. */
 const events = DATED_FESTIVALS.filter((f) => f.confirmed).map((f) => ({
   '@context': 'https://schema.org',
   '@type': 'Event',
   name: f.name,
   startDate: f.date,
-  ...(f.endDate ? { endDate: f.endDate } : {}),
+  endDate: f.endDate || f.date,
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
   eventStatus: 'https://schema.org/EventScheduled',
   description: f.note,
+  image: imageUrlsFor(f.slug),
+  ...(f.organizer ? { organizer: { '@type': 'Organization', name: f.organizer.name } } : {}),
+  offers: {
+    '@type': 'Offer',
+    name: 'Free public observance',
+    price: '0',
+    priceCurrency: 'INR',
+    availability: 'https://schema.org/InStock',
+    url: `${CANONICAL}#${f.slug}`,
+    validFrom: OFFER_VALID_FROM,
+  },
   location: {
     '@type': 'Place',
     name: 'Vrindavan, Braj',
@@ -175,6 +199,31 @@ export default function FestivalCalendarPage() {
               <Link href="/temples-near-pyari-kunj">which temples you can walk to</Link> and{' '}
               <Link href="/getting-to-vrindavan">how to reach Vrindavan</Link>.
             </p>
+          </div>
+        </section>
+
+        {/* The festival photographs in this page's structured data are freely
+            licensed, and every one of those licences requires attribution. The
+            JSON-LD has nowhere to carry a credit, so it is carried here. */}
+        <section className="section">
+          <div className="shell">
+            <details className="fc-credits">
+              <summary>Festival photograph credits</summary>
+              <p>
+                Festival photographs are used under Creative Commons licences from Wikimedia
+                Commons. They are not photographs of Pyari Kunj.
+              </p>
+              <ul>
+                {CREDITS.map((img) => (
+                  <li key={img.url}>
+                    <a href={img.source} rel="noopener nofollow" target="_blank">
+                      {img.depicts}
+                    </a>{' '}
+                    &mdash; {img.credit}, {img.license}
+                  </li>
+                ))}
+              </ul>
+            </details>
           </div>
         </section>
       </main>

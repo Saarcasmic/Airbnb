@@ -19,6 +19,10 @@ export type Festival = {
   source?: string;
   /** True for festivals observed in Braj that national calendars omit or misdate. */
   brajSpecific?: boolean;
+  /* The temple or community that actually keeps this observance, where one can
+     be named. Deliberately absent for the town-wide festivals — Pyari Kunj does
+     not organise any of these, and Event.organizer must not say otherwise. */
+  organizer?: { name: string };
   /** What actually happens here. Descriptive, not date-dependent. */
   note: string;
 };
@@ -43,6 +47,7 @@ export const FESTIVALS: Festival[] = [
     confirmed: true,
     source: 'Drik Panchang (Mathura / Vrindavan)',
     brajSpecific: true,
+    organizer: { name: 'Shri Nand Baba Temple, Nandgaon' },
     note: 'Nanda Maharaj’s celebration of the birth, kept most vividly at Nandgaon. Quieter than Janmashtami itself and, for many, the better day to actually be here.',
   },
   {
@@ -53,6 +58,7 @@ export const FESTIVALS: Festival[] = [
     confirmed: true,
     source: 'Drik Panchang (Mathura / Vrindavan)',
     brajSpecific: true,
+    organizer: { name: 'Shri Radha Rani Temple, Barsana' },
     note: 'Radharani’s appearance day, fifteen days after Janmashtami. In Braj this rivals Janmashtami — Barsana in particular. Several Vrindavan temples give darshan of the feet on this day alone.',
   },
   {
@@ -111,6 +117,7 @@ export const FESTIVALS: Festival[] = [
     confirmed: true,
     source: 'Braj Tithi Calendar / Mathura Panchang',
     brajSpecific: true,
+    organizer: { name: 'Shri Radha Rani Temple, Barsana' },
     note: 'The famous one: the women of Barsana drive off the men of Nandgaon with staves. It falls DAYS BEFORE mainstream Holi — national calendars routinely get this wrong. Barsana is a ride from Vrindavan, so plan the day.',
   },
   {
@@ -121,6 +128,7 @@ export const FESTIVALS: Festival[] = [
     confirmed: true,
     source: 'Braj Tithi Calendar / Mathura Panchang',
     brajSpecific: true,
+    organizer: { name: 'Shri Nand Baba Temple, Nandgaon' },
     note: 'The return match at Nandgaon, when Barsana’s men come to play. Most people who come for Lathmar Holi do both days.',
   },
   {
@@ -131,6 +139,7 @@ export const FESTIVALS: Festival[] = [
     confirmed: true,
     source: 'Banke Bihari Mandir Schedule / Mathura Panchang',
     brajSpecific: true,
+    organizer: { name: 'Shri Banke Bihari Mandir, Vrindavan' },
     note: 'Banke Bihari Ji’s flower Holi — perhaps twenty minutes of flowers thrown from the altar into the crowd. It is a five-minute walk from the house, and the crush is extreme. Being this close is the entire advantage.',
   },
   {
@@ -177,6 +186,7 @@ export const FESTIVALS: Festival[] = [
     confirmed: true,
     source: 'Sri Radha Raman Temple Tradition / Mathura Panchang',
     brajSpecific: true,
+    organizer: { name: 'Shri Radha Raman Temple, Vrindavan' },
     note: 'The appearance of the self-manifested deity at Radha Raman temple, fifteen minutes on foot. An abhishek is performed on this day and on no other.',
   },
   {
