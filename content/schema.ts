@@ -1,10 +1,23 @@
 import { FAQ } from '@/content/faq';
-import { REVIEWS } from '@/content/reviews';
 
-/* The single JSON-LD @graph the page injects. The review list and the FAQPage
-   entries are MAPPED from REVIEWS and FAQ rather than restated, so the rich
-   result can never claim something the visible page does not say. Everything
-   else is a straight transcription of the original <script type=ld+json>. */
+/* The single JSON-LD @graph the page injects. The FAQPage entries are MAPPED
+   from FAQ rather than restated, so the rich result can never claim something
+   the visible page does not say.
+
+   The guest reviews are NOT in here, and must not go back in. Google's
+   review-snippet guidelines rule this out twice over:
+
+     - "If the entity that's being reviewed controls the reviews about itself,
+       their pages that use LocalBusiness or any other type of Organization
+       structured data are ineligible for star review feature." LodgingBusiness
+       is a LocalBusiness subtype, and this is our own site.
+     - "Don't aggregate reviews or ratings from other websites." Ours came from
+       the Airbnb listing.
+
+   Violating those risks a spammy-structured-markup manual action, and the stars
+   were never going to render anyway. The reviews still show on the page for
+   people to read — that is unaffected, and is where they belong. Star ratings in
+   search should come from the Google Business Profile instead. */
 export const JSON_LD: Record<string, unknown> = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -59,18 +72,9 @@ export const JSON_LD: Record<string, unknown> = {
         '@type': 'QuantitativeValue',
         maxValue: 4,
       },
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: '5.0',
-        reviewCount: '16',
-        bestRating: '5',
-      },
-      review: REVIEWS.map((r) => ({
-        '@type': 'Review',
-        author: { '@type': 'Person', name: r.author },
-        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-        reviewBody: r.body,
-      })),
+      /* No aggregateRating and no review here, deliberately — see the note above.
+         REVIEWS still renders on the page for people to read; it just is not
+         claimed as a rich result. */
     },
     {
       '@type': 'FAQPage',
