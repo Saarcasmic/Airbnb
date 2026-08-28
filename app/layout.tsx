@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 
 import GoogleTag from '@/components/GoogleTag';
+import PhoneTracker from '@/components/PhoneTracker';
 
 /* globals.css is deliberately NOT imported here. It is the marketing site's
    stylesheet, and its universal `*{margin:0;padding:0}` reset would leak onto
@@ -14,13 +15,18 @@ import GoogleTag from '@/components/GoogleTag';
 
    - Meta Pixel stays `beforeInteractive`, i.e. inline in the document. It has to
      fire PageView even for a visitor who bounces in under a second, and it seeds
-     window.__pkPV so the server-side CAPI copy can deduplicate against it. This
-     is the one third party we pay for up front, deliberately.
+     window.__pkPV so the server-side CAPI copy can deduplicate against it.
+   - The Google tag joined it at `beforeInteractive` for exactly that reason: at
+     `afterInteractive` it was missing almost every paid visit, because a queued
+     dataLayer hit is never sent if the visitor leaves before gtag.js lands. See
+     components/GoogleTag.tsx. These are the two third parties we pay for up
+     front, deliberately.
    - Razorpay's checkout.js is NOT here any more. It used to load on every page
      view; it is now fetched on first booking intent (see booking/razorpay.ts), so
      readers never download a payment SDK they will not use.
    - PostHog and Speed Insights stay behind the load event, as before.
-   - preconnect for Supabase (availability is fetched on mount) and Meta. */
+   - preconnect for Supabase (availability is fetched on mount), Meta and Google
+     Tag Manager. */
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.pyari-kunj.in'),
@@ -122,8 +128,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <link rel="preconnect" href="https://uljcbbzmvqzrtonjantn.supabase.co" crossOrigin="" />
         <link rel="preconnect" href="https://connect.facebook.net" crossOrigin="" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
       </head>
       <body>
+        {/* GA4 + Google Ads base tag, up here with the Pixel so a sub-second
+            bounce is still measured. The booking conversion is reported from
+            /confirmed; enquiry conversions come through safeTrack(). */}
+        <GoogleTag />
+
         {/* Meta Pixel — init immediately so PageView fires even for quick bounces.
             A shared eventID lets the CAPI PageView (sent from the client) dedupe. */}
         <Script id="meta-pixel" strategy="beforeInteractive">{`
@@ -145,8 +157,8 @@ fbq('track','PageView',{},{eventID:window.__pkPV});
 
         {children}
 
-        {/* GA4 base tag. The booking conversion is reported from /confirmed. */}
-        <GoogleTag />
+        {/* Delegated listener for the `tel:` links, which live in server components. */}
+        <PhoneTracker />
 
         {/* PostHog + Vercel Speed Insights, held until the page is interactive. */}
         <Script id="analytics-deferred" strategy="lazyOnload">{`

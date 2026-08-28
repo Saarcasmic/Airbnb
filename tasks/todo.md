@@ -484,3 +484,69 @@ over the raw body while rejecting both a tampered signature and an altered body.
       Delete it or repoint at Vercel — left untouched deliberately.
 - [ ] `booking/config.ts` still carries the stale `!! LAUNCH GATE: replace upiId +
       payeeName` comment; both look real now. Drop the line when convenient.
+
+---
+
+## Google Ads / GA4 conversion tracking (2026-08-28)
+
+Context: Aug 23-28 Google Ads billed 73 clicks (₹325.04 + ₹58.54 GST of a ₹1,500
+top-up); GA4 recorded 5 `google / cpc` sessions with 0 engaged sessions. Search
+terms showed 75% of clicks were temple-navigation queries, so most of the gap is
+traffic quality — but GA4 was also structurally unable to see fast bounces.
+Account has never had a conversion action.
+
+- [x] **12. Google Ads conversion action wired** — `AW-3195973531` set in
+      `booking/gtag.ts`, plus its own `gtag('config', …)` in `components/GoogleTag.tsx`.
+      Without that second config line Google silently drops every `send_to` hit.
+- [x] **13. Enquiry conversions** — `safeTrack()` (`booking/tracking.ts`) now mirrors
+      every event to GA4 via `reportEventToGoogle()`, and fires an Ads conversion for
+      the four names in `ADS_EVENT_CONVERSIONS`. One chokepoint instead of a `gtag()`
+      call at ~30 sites; all existing call sites untouched.
+- [x] **13b. `tel:` taps** — new `components/PhoneTracker.tsx`, a delegated capture
+      listener on `a[href^="tel:"]`. Chosen over per-anchor `onClick` because all four
+      phone links live in server components (Footer renders on every route); an
+      onClick would have pushed them across the client boundary for one analytics call.
+- [x] **14. Google tag moved to `beforeInteractive`** and to the top of `<body>`,
+      beside the Meta Pixel.
+
+### What item 14 actually does (the first two attempts were wrong)
+
+1. First pass moved only the *inline init* early. Useless: `dataLayer` is a queue,
+   and gtag.js is what sends the request. Leave before it lands, the hit is lost.
+2. Second pass hand-rolled the loader, on the theory that a `beforeInteractive`
+   `<Script src>` gets deferred to `self.__next_s` while inline blocks are written
+   in place. Half right — inline blocks go on `__next_s` too, **the Meta Pixel
+   included**. So the Pixel was never synchronous either.
+3. Final: both scripts `beforeInteractive`, init pushed before loader, component
+   moved above `{children}`. Verified in built HTML — preload in `<head>` (pos 889),
+   init at top of `<body>` (4280), loader (4395), Pixel (4901).
+
+So this does not outrun the Pixel, it draws level with it one slot earlier in the
+same queue. Level with the tag that has been catching these bounces all along is
+the bar that matters.
+
+**Rollback criterion:** if mobile LCP regresses >150ms in Speed Insights over 48h,
+return both scripts to `afterInteractive`. The AW config and the event mirror are
+independent of the load tier and should stay regardless.
+
+### Verified
+- `npx tsc --noEmit` clean; `npm run build` clean.
+- Live in `next start`: `dataLayer` configs = `['G-HE29YL301G','AW-3195973531']`.
+- GA4 collect hit observed with `en=availability_loaded&epn.blocked_nights=7` —
+  a safeTrack event reaching GA4, which previously went to PostHog only.
+- Synthetic footer `tel:` tap produced `phone_tapped {location:'/', placement:'footer'}`.
+
+### Still open — needs Google Ads UI work (blocked on Saar)
+- All five conversion labels are `''`, so **no Ads conversion hits fire yet**. Empty
+  label = GA4 mirror only, by design. Fill in `booking/gtag.ts`:
+  - `ADS_CONVERSION.label` — "Booking – Purchase" (Purchase, value from event, Count: One)
+  - `whatsapp_fab_clicked` + `whatsapp_fallback_clicked` — "WhatsApp Enquiry" (Contact, ₹0, Count: One)
+  - `phone_tapped` — "Phone Tap" (Contact, ₹0, Count: One)
+  - `reserve_clicked` — "Reserve Started" (Secondary / observation only)
+- Enquiry actions are deliberately ₹0 and Count: One so Smart Bidding can never
+  mistake an enquiry for a booking.
+
+### Noted, not changed (out of scope)
+- `components/Attribution.tsx` is mounted only in `app/page.tsx`, not the layout, so
+  `gclid`/`utm` capture does not happen on `/getting-to-vrindavan` etc. Fine while all
+  ads point at `/`; will silently lose attribution the moment a landing page changes.
