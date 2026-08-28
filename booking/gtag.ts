@@ -19,8 +19,30 @@ const GA4_MEASUREMENT_ID = 'G-HE29YL301G';
 /* Fill both in from Google Ads → Goals → Conversions → your booking action.
    `send_to` becomes `${id}/${label}`. Leave empty and no Ads hit is sent. */
 const ADS_CONVERSION = {
-  id: '', // e.g. 'AW-123456789'
-  label: '', // e.g. 'AbC-D_efGh'
+  id: 'AW-3195973531',
+  label: '', // e.g. 'AbC-D_efGh' — from the "Booking – Purchase" action
+};
+
+/* The Ads account id, also needed as its own `gtag('config', …)` in the base tag.
+   Without that config line Google silently drops every `send_to` hit below, which
+   is the usual reason Ads conversion tracking "does not work". */
+export const ADS_ID = ADS_CONVERSION.id;
+
+/* Enquiry conversions: safeTrack event name → Google Ads conversion label.
+
+   A WhatsApp message or a phone tap is *intent*, not revenue. Each of these is
+   created in Ads with Count = "One" and value ₹0 on purpose — Ads dedupes per ad
+   click server-side, so nothing here needs its own guard, and a bid strategy can
+   never mistake an enquiry for a booking. Purchases keep the separate, valued
+   action above.
+
+   An entry with an empty label is inert: the GA4 mirror still fires, no Ads hit
+   does. That is what lets this file be filled in one action at a time. */
+const ADS_EVENT_CONVERSIONS: Record<string, string> = {
+  whatsapp_fab_clicked: '', // "WhatsApp Enquiry" — primary
+  whatsapp_fallback_clicked: '', // "WhatsApp Enquiry" — same label as above
+  phone_tapped: '', // "Phone Tap" — primary
+  reserve_clicked: '', // "Reserve Started" — secondary, observation only
 };
 
 /** Refs already reported, so a refresh or a later visit cannot double-count. */
@@ -105,3 +127,24 @@ export function trackPurchaseOnce(ref: string, value: number, nights: number): v
 
 /** True when an Ads conversion action has been configured above. */
 export const adsConversionConfigured = !!(ADS_CONVERSION.id && ADS_CONVERSION.label);
+
+/* Mirrors one product event to Google.
+
+   Called from safeTrack() for every event the site already reports to PostHog,
+   so the funnel that PostHog sees is the funnel GA4 sees — without a gtag() call
+   having to be threaded through thirty call sites. Only the handful of names in
+   ADS_EVENT_CONVERSIONS additionally reach Google Ads.
+
+   Deliberately silent when nothing is configured: no Ads id, no Ads hit. */
+export function reportEventToGoogle(name: string, props: Record<string, unknown>): void {
+  if (typeof window === 'undefined' || !name) return;
+
+  // GA4 accepts arbitrary event names, so the PostHog taxonomy carries over as is.
+  gtag('event', name, props);
+
+  const label = ADS_EVENT_CONVERSIONS[name];
+  if (ADS_CONVERSION.id && label) {
+    // No value and no transaction_id: these are enquiries, counted once per click.
+    gtag('event', 'conversion', { send_to: `${ADS_CONVERSION.id}/${label}` });
+  }
+}

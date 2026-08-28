@@ -1,5 +1,7 @@
 /* ================= TRACKING ================= */
 
+import { reportEventToGoogle } from './gtag';
+
 type TrackProps = Record<string, unknown>;
 type QueuedTrack = [string, TrackProps];
 type MetaUserData = { em?: string; ph?: string };
@@ -30,6 +32,13 @@ function phQueue(): QueuedTrack[] {
 export function safeTrack(eventName: string, properties?: TrackProps): void {
   if (typeof window === 'undefined') return;
   const props = properties || {};
+
+  /* Google first, and outside the PostHog branch on purpose. PostHog loads at
+     `lazyOnload`, so an event fired before it lands goes to the queue below and
+     is replayed later — but Google's copy must not be held hostage to that, and
+     gtag has its own dataLayer queue anyway. */
+  reportEventToGoogle(eventName, props);
+
   if (window.posthog && typeof window.posthog.capture === 'function') {
     window.posthog.capture(eventName, props);
     return;
