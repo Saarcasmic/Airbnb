@@ -19,13 +19,15 @@ const GA4_MEASUREMENT_ID = 'G-HE29YL301G';
 /* Fill both in from Google Ads → Goals → Conversions → your booking action.
    `send_to` becomes `${id}/${label}`. Leave empty and no Ads hit is sent. */
 const ADS_CONVERSION = {
-  id: 'AW-3195973531',
-  label: '', // e.g. 'AbC-D_efGh' — from the "Booking – Purchase" action
+  id: 'AW-18404875003',
+  label: 'X8ZUCIqln-kcEPu1kMhE', // "Booking – Purchase"
 };
 
-/* The Ads account id, also needed as its own `gtag('config', …)` in the base tag.
-   Without that config line Google silently drops every `send_to` hit below, which
-   is the usual reason Ads conversion tracking "does not work". */
+/* The Ads conversion id, also needed as its own `gtag('config', …)` in the base
+   tag. Without that config line Google silently drops every `send_to` hit below,
+   which is the usual reason Ads conversion tracking "does not work" — and the id
+   in the config has to be the same one the labels were minted under, since a
+   `send_to` that names an unconfigured id is dropped just as quietly. */
 export const ADS_ID = ADS_CONVERSION.id;
 
 /* Enquiry conversions: safeTrack event name → Google Ads conversion label.
@@ -39,10 +41,10 @@ export const ADS_ID = ADS_CONVERSION.id;
    An entry with an empty label is inert: the GA4 mirror still fires, no Ads hit
    does. That is what lets this file be filled in one action at a time. */
 const ADS_EVENT_CONVERSIONS: Record<string, string> = {
-  whatsapp_fab_clicked: '', // "WhatsApp Enquiry" — primary
-  whatsapp_fallback_clicked: '', // "WhatsApp Enquiry" — same label as above
-  phone_tapped: '', // "Phone Tap" — primary
-  reserve_clicked: '', // "Reserve Started" — secondary, observation only
+  whatsapp_fab_clicked: 'oLEcCI2ln-kcEPu1kMhE', // "WhatsApp Enquiry" — primary
+  whatsapp_fallback_clicked: 'oLEcCI2ln-kcEPu1kMhE', // same action: either route is one enquiry
+  phone_tapped: 'jJTdCJCln-kcEPu1kMhE', // "Phone Tap" — primary
+  reserve_clicked: 'jn21CJOln-kcEPu1kMhE', // "Reserve Started" — secondary, observation only
 };
 
 /** Refs already reported, so a refresh or a later visit cannot double-count. */

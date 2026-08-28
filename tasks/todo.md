@@ -550,3 +550,27 @@ independent of the load tier and should stay regardless.
 - `components/Attribution.tsx` is mounted only in `app/page.tsx`, not the layout, so
   `gclid`/`utm` capture does not happen on `/getting-to-vrindavan` etc. Fine while all
   ads point at `/`; will silently lose attribution the moment a landing page changes.
+
+### Correction (2026-08-28, later) — conversion id was wrong
+
+The id used above, `AW-3195973531`, was **not** the one the conversion actions were
+minted under. The four snippets from the Ads UI all carry `AW-18404875003`, and a
+`send_to` naming an id that has no matching `gtag('config', …)` is dropped without
+an error. Switched to `AW-18404875003` and filled all five labels:
+
+| Event | Action | Label |
+|---|---|---|
+| `purchase` | Booking – Purchase | `X8ZUCIqln-kcEPu1kMhE` |
+| `whatsapp_fab_clicked` | WhatsApp Enquiry | `oLEcCI2ln-kcEPu1kMhE` |
+| `whatsapp_fallback_clicked` | WhatsApp Enquiry | `oLEcCI2ln-kcEPu1kMhE` |
+| `phone_tapped` | Phone Tap | `jJTdCJCln-kcEPu1kMhE` |
+| `reserve_clicked` | Reserve Started | `jn21CJOln-kcEPu1kMhE` |
+
+Verified end to end in a browser against the built site: footer `tel:` tap and
+WhatsApp FAB each produced their conversion, and
+`googleadservices.com/pagead/conversion/18404875003/?…&label=jJTdCJCln-kcEPu1kMhE`
+returned 200. (`analytics.google.com/g/collect` 503s under `dl=http://localhost/`
+— GA rejects localhost, not a fault in the wiring.)
+
+Open question for Saar: what is `AW-3195973531`? If it is a second Ads account,
+nothing references it any more and no conversions will reach it.
